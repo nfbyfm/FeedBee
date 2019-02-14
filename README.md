@@ -4,6 +4,10 @@ This program is a simple RSS-Reader in Development. This software has been writt
 
 ![Screenshot ReedRead](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/MainApp.jpg)
 
+##used Libraries / Code
+
+OPML-Classes: [Comburo's Code](https://github.com/comburo/FeedLister)
+
 ## used Icons
 <div>
 	Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> 

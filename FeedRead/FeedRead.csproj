@@ -54,6 +54,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\OPML\Body.cs" />
+    <Compile Include="Control\OPML\Head.cs" />
+    <Compile Include="Control\OPML\OpmlDocument.cs" />
+    <Compile Include="Control\OPML\OpmlElement.cs" />
+    <Compile Include="Control\OPML\Outline.cs" />
+    <Compile Include="UI\SelectGroupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectGroupDialog.Designer.cs">
+      <DependentUpon>SelectGroupDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\AddFeedDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +80,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\SelectGroupDialog.resx">
+      <DependentUpon>SelectGroupDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\AddFeedDialog.resx">
       <DependentUpon>AddFeedDialog.cs</DependentUpon>
     </EmbeddedResource>
