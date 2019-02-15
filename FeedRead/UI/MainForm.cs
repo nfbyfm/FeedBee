@@ -27,6 +27,16 @@ namespace FeedRead.UI
             sCMainBrowse.Panel1Collapsed = true;
         }
 
+        private void openListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.OpenList();
+        }
+
+        private void saveListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SaveList();
+        }
+
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.ImportFeedList();

@@ -1,4 +1,5 @@
 ﻿using CodeHollow.FeedReader;
+using FeedRead.Model;
 using FeedRead.UI;
 using FeedRead.Utilities.OPML;
 //using FeedLister;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace FeedRead
 {
@@ -17,13 +19,49 @@ namespace FeedRead
     {
         private OPML opmlDoc;       //only for testing (import / export)
         private MainForm mainForm;
+        private FeedGroup mainModel;
+
+        private const string mainModelID = "mainModel";
 
         public Controller(MainForm mainForm)
         {
             this.mainForm = mainForm;
+            this.mainModel = new FeedGroup(mainModelID, "");
         }
 
         #region UI-Functions
+        public void OpenList()
+        {
+            OpenFileDialog odi = new OpenFileDialog();
+            odi.Title = "Open Feed-List";
+            odi.RestoreDirectory = true;
+            odi.Multiselect = false;
+            odi.Filter = "xml-File|*.xml";
+            
+            if(odi.ShowDialog() == DialogResult.OK)
+            {
+                OpenListFromXML(odi.FileName);
+            }
+        }
+
+
+        public void SaveList()
+        {
+            SaveFileDialog sadi = new SaveFileDialog();
+            sadi.Title = "Save Feed-List";
+            sadi.RestoreDirectory = true;
+            sadi.Filter = "xml-File|*.xml";
+
+            if (sadi.ShowDialog() == DialogResult.OK)
+            {
+                if (mainModel != null)
+                {
+                    SaveListAsXML(sadi.FileName);
+                }
+
+            }
+        }
+
         public void ImportFeedList()
         {
             OpenFileDialog odi = new OpenFileDialog();
@@ -124,9 +162,9 @@ namespace FeedRead
         public void ExportFeedList()
         {
             SaveFileDialog sadi = new SaveFileDialog();
-            sadi.Title = "Export opml-file";
+            sadi.Title = "Export opml-File";
             sadi.RestoreDirectory = true;
-            sadi.Filter = "ompl-file|*.opml";
+            sadi.Filter = "ompl-File|*.opml";
 
             if (sadi.ShowDialog() == DialogResult.OK)
             {
@@ -193,11 +231,13 @@ namespace FeedRead
         {
             //check if Model has any changes that should get saved
             opmlDoc = null;
+            mainModel = null;
 
             //close Application / MainForm
             mainForm.Close();
         }
 
+        
         #endregion
 
 
@@ -208,6 +248,47 @@ namespace FeedRead
             List<string> result = null;
 
             return result;
+        }
+
+        private void OpenListFromXML(string filename)
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(filename);
+
+                XmlSerializer ser = new XmlSerializer(typeof(FeedGroup));
+                mainModel = (FeedGroup)ser.Deserialize(reader);
+
+                reader.Close();
+                reader.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while loading Coildata:" + Environment.NewLine + ex.Message);
+            }
+        }
+
+
+        private void SaveListAsXML(string filename)
+        {
+            try
+            {
+                if(mainModel != null)
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(FeedGroup));
+                    TextWriter writer = new StreamWriter(filename);
+                    ser.Serialize(writer, mainModelID);
+                    writer.Close();
+                }
+                else
+                {
+                    Console.WriteLine("Controller.SaveList: main Model is null. Can't save.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while saving to file: " + Environment.NewLine + ex.Message, "Error while saving data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         //checks a url for feeds. returns null if none could be found

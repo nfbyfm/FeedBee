@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeedRead.Utilities.ComicFeed
+namespace FeedRead.Model.ComicFeed
 {
     ///class for creating pseudo-feeds from webpages
     class ComicFeed : Feed

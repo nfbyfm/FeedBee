@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\FeedGroup.cs" />
     <Compile Include="UI\AboutBoxFeedRead.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,7 +66,7 @@
     <Compile Include="Utilities\FeedLister\OpmlDocument.cs" />
     <Compile Include="Utilities\FeedLister\OpmlElement.cs" />
     <Compile Include="Utilities\FeedLister\Outline.cs" />
-    <Compile Include="Utilities\ComicFeed\ComicFeed.cs" />
+    <Compile Include="Model\ComicFeed\ComicFeed.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
     <Compile Include="Utilities\OPML\OPML.cs" />
