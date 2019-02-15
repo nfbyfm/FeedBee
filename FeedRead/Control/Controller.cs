@@ -1,4 +1,5 @@
 ﻿using CodeHollow.FeedReader;
+using FeedRead.UI;
 using FeedRead.Utilities.OPML;
 //using FeedLister;
 using System;
@@ -15,13 +16,14 @@ namespace FeedRead
     public class Controller
     {
         private OPML opmlDoc;       //only for testing (import / export)
+        private MainForm mainForm;
 
         public Controller(MainForm mainForm)
         {
-
+            this.mainForm = mainForm;
         }
 
-        #region UI-Fucntions
+        #region UI-Functions
         public void ImportFeedList()
         {
             OpenFileDialog odi = new OpenFileDialog();
@@ -119,8 +121,6 @@ namespace FeedRead
             }
         }
 
-        
-
         public void ExportFeedList()
         {
             SaveFileDialog sadi = new SaveFileDialog();
@@ -180,12 +180,22 @@ namespace FeedRead
 
         public void ShowAboutDialog()
         {
-
+            AboutBoxFeedRead aboutWindow = new AboutBoxFeedRead();
+            aboutWindow.ShowDialog();
         }
 
         public void ShowSettings()
         {
 
+        }
+
+        public void CloseApplication()
+        {
+            //check if Model has any changes that should get saved
+            opmlDoc = null;
+
+            //close Application / MainForm
+            mainForm.Close();
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿namespace FeedRead
+﻿namespace FeedRead.UI
 {
     partial class SelectGroupDialog
     {

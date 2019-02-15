@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FeedRead
+namespace FeedRead.UI
 {
     public partial class MainForm : Form
     {
@@ -39,7 +39,7 @@ namespace FeedRead
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            controller.CloseApplication();
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)

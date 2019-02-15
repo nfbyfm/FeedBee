@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("FeedRead")]
-[assembly: AssemblyDescription("simple RSS-Reader")]
+[assembly: AssemblyDescription("A simple RSS-Reader. Homepage: https://github.com/nfbyfm/FeedRead")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("nfbyfm")]
 [assembly: AssemblyProduct("FeedRead")]

@@ -54,11 +54,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Control\OPML\Body.cs" />
-    <Compile Include="Control\OPML\Head.cs" />
-    <Compile Include="Control\OPML\OpmlDocument.cs" />
-    <Compile Include="Control\OPML\OpmlElement.cs" />
-    <Compile Include="Control\OPML\Outline.cs" />
+    <Compile Include="UI\AboutBoxFeedRead.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AboutBoxFeedRead.Designer.cs">
+      <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\FeedLister\Body.cs" />
+    <Compile Include="Utilities\FeedLister\Head.cs" />
+    <Compile Include="Utilities\FeedLister\OpmlDocument.cs" />
+    <Compile Include="Utilities\FeedLister\OpmlElement.cs" />
+    <Compile Include="Utilities\FeedLister\Outline.cs" />
     <Compile Include="Utilities\ComicFeed\ComicFeed.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
@@ -85,6 +91,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\AboutBoxFeedRead.resx">
+      <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SelectGroupDialog.resx">
       <DependentUpon>SelectGroupDialog.cs</DependentUpon>
     </EmbeddedResource>

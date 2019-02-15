@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FeedRead
+namespace FeedRead.UI
 {
     public partial class AddFeedDialog : Form
     {
