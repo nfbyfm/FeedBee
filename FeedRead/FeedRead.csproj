@@ -59,6 +59,11 @@
     <Compile Include="Control\OPML\OpmlDocument.cs" />
     <Compile Include="Control\OPML\OpmlElement.cs" />
     <Compile Include="Control\OPML\Outline.cs" />
+    <Compile Include="Utilities\ComicFeed\ComicFeed.cs" />
+    <Compile Include="Utilities\OPML\Body.cs" />
+    <Compile Include="Utilities\OPML\Head.cs" />
+    <Compile Include="Utilities\OPML\OPML.cs" />
+    <Compile Include="Utilities\OPML\Outline.cs" />
     <Compile Include="UI\SelectGroupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,5 +130,6 @@
   <ItemGroup>
     <None Include="Resources\rss_32.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

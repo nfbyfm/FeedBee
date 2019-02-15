@@ -1,7 +1,9 @@
 ﻿using CodeHollow.FeedReader;
-using FeedLister;
+using FeedRead.Utilities.OPML;
+//using FeedLister;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ namespace FeedRead
 {
     public class Controller
     {
+        private OPML opmlDoc;       //only for testing (import / export)
+
         public Controller(MainForm mainForm)
         {
 
@@ -28,7 +32,7 @@ namespace FeedRead
 
             if(odi.ShowDialog() == DialogResult.OK)
             {
-                
+                /*
                 try
                 {
                     var opmlData = XDocument.Load(odi.FileName, LoadOptions.SetLineInfo);
@@ -59,12 +63,84 @@ namespace FeedRead
                 {
                     Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
                 }
+                */
+
+                //Code from http://www.gutgames.com/post/OPML-in-CASPNet.aspx
+                //doesn't seem to be able to handle nestes outlines well
+
+                try
+                {
+                    opmlDoc = new OPML(odi.FileName);
+
+                    if(opmlDoc != null)
+                    {
+                        if(opmlDoc.Body != null)
+                        {
+                            List<Outline> outlineList = opmlDoc.Body.Outlines;
+                            if (outlineList != null)
+                            {
+                                foreach (Outline oline in outlineList)
+                                {
+                                    if (oline.IsFinalNode())
+                                    {
+                                        Console.WriteLine(oline.ToString());
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
+                                        foreach (Outline o2line in oline.Outlines)
+                                        {
+                                            Console.WriteLine(oline.Title + " -> " + o2line.ToString());
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Outline-List is null.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Body of ompl-File is null.");
+                        }
+                       
+                    }
+                    else
+                    {
+                        Console.WriteLine("OPML-File is null.");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
+                }
+
             }
         }
 
+        
+
         public void ExportFeedList()
         {
+            SaveFileDialog sadi = new SaveFileDialog();
+            sadi.Title = "Export opml-file";
+            sadi.RestoreDirectory = true;
+            sadi.Filter = "ompl-file|*.opml";
 
+            if (sadi.ShowDialog() == DialogResult.OK)
+            {
+                if(opmlDoc != null)
+                {
+                    StreamWriter writer = new StreamWriter(sadi.FileName);
+                    writer.Write(opmlDoc.ToString());
+                    writer.Close();
+                    writer.Dispose();
+
+                    MessageBox.Show("Successfully exported opml-file to: " + sadi.FileName);
+                }
+                
+            }
         }
 
         public void AddNewFeed()
