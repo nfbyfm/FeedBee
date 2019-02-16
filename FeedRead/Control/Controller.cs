@@ -15,6 +15,9 @@ using System.Xml.Serialization;
 
 namespace FeedRead
 {
+    /// <summary>
+    /// main Class for controlling everything
+    /// </summary>
     public class Controller
     {
         private OPML opmlDoc;       //only for testing (import / export)
@@ -26,7 +29,7 @@ namespace FeedRead
         public Controller(MainForm mainForm)
         {
             this.mainForm = mainForm;
-            this.mainModel = new FeedGroup(mainModelID, "");
+            this.mainModel = new FeedGroup(mainModelID, ""); 
         }
 
         #region UI-Functions
@@ -247,6 +250,25 @@ namespace FeedRead
         {
             List<string> result = null;
 
+            if(mainModel != null)
+            {
+                if(mainModel.FeedGroups != null)
+                {
+                    if(mainModel.FeedGroups.Count >0)
+                    {
+                        result = new List<string>();
+
+                        //go through list recursively (?)
+
+                        //simple version:
+                        foreach(FeedGroup group in mainModel.FeedGroups)
+                        {
+                            result.Add(group.Title);
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 
@@ -261,10 +283,12 @@ namespace FeedRead
 
                 reader.Close();
                 reader.Dispose();
+
+                Console.WriteLine("List of feed gtoups opened. Filename: " + filename);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error while loading Coildata:" + Environment.NewLine + ex.Message);
+                MessageBox.Show("Error while loading FeedList:" + Environment.NewLine + ex.Message);
             }
         }
 
@@ -277,8 +301,10 @@ namespace FeedRead
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(FeedGroup));
                     TextWriter writer = new StreamWriter(filename);
-                    ser.Serialize(writer, mainModelID);
+                    ser.Serialize(writer, mainModel);
                     writer.Close();
+
+                    Console.WriteLine("Saved current list of feed-groups to: " + filename);
                 }
                 else
                 {
@@ -287,7 +313,7 @@ namespace FeedRead
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error while saving to file: " + Environment.NewLine + ex.Message, "Error while saving data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Error while saving to xml-file: " + Environment.NewLine + ex.Message, "Error while saving data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 

@@ -61,11 +61,11 @@
     <Compile Include="UI\AboutBoxFeedRead.Designer.cs">
       <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\FeedLister\Body.cs" />
-    <Compile Include="Utilities\FeedLister\Head.cs" />
-    <Compile Include="Utilities\FeedLister\OpmlDocument.cs" />
-    <Compile Include="Utilities\FeedLister\OpmlElement.cs" />
-    <Compile Include="Utilities\FeedLister\Outline.cs" />
+    <Compile Include="Utilities\Feed\Body.cs" />
+    <Compile Include="Utilities\Feed\Head.cs" />
+    <Compile Include="Utilities\Feed\OpmlDocument.cs" />
+    <Compile Include="Utilities\Feed\OpmlElement.cs" />
+    <Compile Include="Utilities\Feed\Outline.cs" />
     <Compile Include="Model\ComicFeed\ComicFeed.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
