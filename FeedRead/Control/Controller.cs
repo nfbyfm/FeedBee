@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -71,10 +72,83 @@ namespace FeedRead
             odi.Title = "Import opml-file";
             odi.RestoreDirectory = true;
             odi.Multiselect = false;
-            odi.Filter = "ompl-file|*.opml";
+            odi.Filter = "ompl-file|*.opml|txt-file|*.txt";
 
             if(odi.ShowDialog() == DialogResult.OK)
             {
+                switch(odi.FilterIndex)
+                {
+                    case 1:
+                        //open opml-file
+                        //Code from http://www.gutgames.com/post/OPML-in-CASPNet.aspx
+                        //doesn't seem to be able to handle nestes outlines well
+
+                        try
+                        {
+                            opmlDoc = new OPML(odi.FileName);
+
+                            if (opmlDoc != null)
+                            {
+                                if (opmlDoc.Body != null)
+                                {
+                                    List<Outline> outlineList = opmlDoc.Body.Outlines;
+                                    if (outlineList != null)
+                                    {
+                                        foreach (Outline oline in outlineList)
+                                        {
+                                            if (oline.IsFinalNode())
+                                            {
+                                                Console.WriteLine(oline.ToString());
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
+                                                foreach (Outline o2line in oline.Outlines)
+                                                {
+                                                    Console.WriteLine(oline.Title + " -> " + o2line.ToString());
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Outline-List is null.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Body of ompl-File is null.");
+                                }
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("OPML-File is null.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
+                        }
+                        break;
+                    case 2:
+                        //open txt-file
+                        var feeds = System.IO.File.ReadAllLines(odi.FileName);
+                        Parallel.ForEach<string>(feeds, x =>
+                        {
+                            try
+                            {
+                                Do(x);
+
+                            }
+                            catch { }
+                        });
+                        
+                        break;
+                    default:
+                        //do nothing
+                        break;
+                }
                 /*
                 try
                 {
@@ -108,56 +182,8 @@ namespace FeedRead
                 }
                 */
 
-                //Code from http://www.gutgames.com/post/OPML-in-CASPNet.aspx
-                //doesn't seem to be able to handle nestes outlines well
-
-                try
-                {
-                    opmlDoc = new OPML(odi.FileName);
-
-                    if(opmlDoc != null)
-                    {
-                        if(opmlDoc.Body != null)
-                        {
-                            List<Outline> outlineList = opmlDoc.Body.Outlines;
-                            if (outlineList != null)
-                            {
-                                foreach (Outline oline in outlineList)
-                                {
-                                    if (oline.IsFinalNode())
-                                    {
-                                        Console.WriteLine(oline.ToString());
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
-                                        foreach (Outline o2line in oline.Outlines)
-                                        {
-                                            Console.WriteLine(oline.Title + " -> " + o2line.ToString());
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Outline-List is null.");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Body of ompl-File is null.");
-                        }
-                       
-                    }
-                    else
-                    {
-                        Console.WriteLine("OPML-File is null.");
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
-                }
+                
+                
 
             }
         }
@@ -365,7 +391,36 @@ namespace FeedRead
             return result;
         }
 
+        static void Do(string url)
+        {
+            var linksTask = FeedReader.GetFeedUrlsFromUrlAsync(url);
+            linksTask.ConfigureAwait(false);
 
+            foreach (var link in linksTask.Result)
+            {
+                try
+                {
+                    string title = link.Title;
+                    if (string.IsNullOrEmpty(title))
+                    {
+                        title = url.Replace("https", "").Replace("http", "").Replace("www.", "");
+
+                    }
+                    title = Regex.Replace(title.ToLower(), "[^a-z]*", "");
+                    var curl = FeedReader.GetAbsoluteFeedUrl(url, link);
+
+                    var contentTask = Helpers.DownloadAsync(curl.Url);
+                    contentTask.ConfigureAwait(false);
+
+                    //System.IO.File.WriteAllText("d:\\feeds\\" + title + "_" + Guid.NewGuid().ToString() + ".xml", contentTask.Result);
+                    Console.Write("+");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(link.Title + " - " + link.Url + ": " + ex.ToString());
+                }
+            }
+        }
         #endregion
     }
 }
