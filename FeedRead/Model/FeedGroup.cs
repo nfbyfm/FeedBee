@@ -81,7 +81,110 @@ namespace FeedRead.Model
             return result;
         }
 
+        
+        /// <summary>
+        /// method for adding a new feed to the list
+        /// </summary>
+        /// <param name="newFeed">the Feed to add to the list</param>
+        public void AddFeed(Feed newFeed)
+        {
+            if (FeedList == null)
+                FeedList = new List<Feed>();
 
+            FeedList.Add(newFeed);
+        }
+
+        /// <summary>
+        /// method for adding a feed to an existing group
+        /// </summary>
+        /// <param name="newFeed">the feed to be added to the group</param>
+        /// <param name="groupName">name of the(sub-)group</param>
+        /// <returns>returns false if group couldn't be found</returns>
+        public bool AddFeed(Feed newFeed, string groupName)
+        {
+            bool result = false;
+
+            FeedGroup searchGroup = null;
+
+            //try to find the group we're looking for
+            searchGroup = FindGroup(groupName);
+
+            //if search was successfull -> add the new feed
+            if(searchGroup != null)
+            {
+                searchGroup.AddFeed(newFeed);
+                result = true;
+            }
+
+            return result;
+        }
+
+        
+
+        /// <summary>
+        /// method for adding a new group to the list
+        /// </summary>
+        /// <param name="name">name of the new feed</param>
+        /// <param name="url">url of the group (optional)</param>
+        public void AddGroup(string name, string url="")
+        {
+            if (FeedGroups == null)
+                FeedGroups = new List<FeedGroup>();
+
+            FeedGroups.Add(new FeedGroup(name, url));
+        }
+
+        /// <summary>
+        /// method for adding a new group and a feed to this group at the same time
+        /// </summary>
+        /// <param name="newFeed">the feed to be added to the group</param>
+        /// <param name="groupName">name of the new group</param>
+        /// <param name="groupurl">URL of the new group (optional)</param>
+        public void AddFeedAndGroup(Feed newFeed, string groupName, string groupUrl = "")
+        {
+            if (FeedList == null)
+                FeedList = new List<Feed>();
+
+            if (FeedGroups == null)
+                FeedGroups = new List<FeedGroup>();
+
+            FeedGroup newGroup = new FeedGroup(groupName, groupUrl);
+            newGroup.AddFeed(newFeed);
+
+            FeedGroups.Add(newGroup);
+        }
+
+        /// <summary>
+        /// method for finding a group within the group-tree
+        /// </summary>
+        /// <param name="name">name of the group</param>
+        /// <returns>returns null if nothing can be found</returns>
+        private FeedGroup FindGroup(string name)
+        {
+            FeedGroup result = null;
+
+            if (this.Title == name)
+            {
+                result = this;
+            }
+            else
+            {
+                if (!IsLeaf())
+                {
+                    foreach (FeedGroup fGroup in FeedGroups)
+                    {
+                        FeedGroup tmpGr = fGroup.FindGroup(name);
+                        if (tmpGr != null)
+                        {
+                            result = tmpGr;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
 
         #region Overridden Functions
         public override string ToString()

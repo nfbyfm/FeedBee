@@ -25,7 +25,8 @@ namespace FeedRead
         private MainForm mainForm;
         private FeedGroup mainModel;
 
-        private const string mainModelID = "mainModel";
+        public const string mainModelID = "mainModel";
+        private const string youtubeID = "Youtube";
 
         public Controller(MainForm mainForm)
         {
@@ -45,6 +46,8 @@ namespace FeedRead
             if(odi.ShowDialog() == DialogResult.OK)
             {
                 OpenListFromXML(odi.FileName);
+
+                UpdateTreeview();
             }
         }
 
@@ -233,12 +236,20 @@ namespace FeedRead
                     {
                         //create a new group and add the feed to it
                         Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                        Feed newFeed = FeedReader.Read(newFeedUrl);
+                        mainModel.AddFeedAndGroup(newFeed, groupName, "");
+
+                        UpdateTreeview();
                     }
                     else
                     {
                         //find selected group
                         //check if feed already exists and if not, add the new feed to it
                         Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                        Feed newFeed = FeedReader.Read(newFeedUrl);
+                        mainModel.AddFeed(newFeed, groupName);
+
+                        UpdateTreeview();
                     }
                    
                 }
@@ -266,7 +277,21 @@ namespace FeedRead
             mainForm.Close();
         }
 
+
+
+
+
+
+        private void UpdateTreeview()
+        {
+            mainForm.UpdateTreeView(mainModel);
+        }
         
+
+        public string GetYoutubeID()
+        {
+            return youtubeID;
+        }
         #endregion
 
 
@@ -310,7 +335,7 @@ namespace FeedRead
                 reader.Close();
                 reader.Dispose();
 
-                Console.WriteLine("List of feed gtoups opened. Filename: " + filename);
+                Console.WriteLine("List of feed groups opened. Filename: " + filename);
             }
             catch (Exception ex)
             {
@@ -393,6 +418,8 @@ namespace FeedRead
 
         static void Do(string url)
         {
+            Console.WriteLine("trying to get feed from: " + url);
+
             var linksTask = FeedReader.GetFeedUrlsFromUrlAsync(url);
             linksTask.ConfigureAwait(false);
 
