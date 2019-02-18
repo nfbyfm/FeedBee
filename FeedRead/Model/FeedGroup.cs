@@ -39,7 +39,8 @@ namespace FeedRead.Model
         /// </summary>
         [XmlArray("FeedList"), XmlArrayItem("Feed")]
         public List<Feed> FeedList { get; set; }
-
+        
+                
 
         #endregion
 

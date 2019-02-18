@@ -35,11 +35,8 @@
     <ApplicationIcon>Resources\rss_32.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CodeHollow.FeedReader, Version=1.1.6.0, Culture=neutral, PublicKeyToken=66d870f2b3d70f48, processorArchitecture=MSIL">
-      <HintPath>..\packages\CodeHollow.FeedReader.1.1.6\lib\net452\CodeHollow.FeedReader.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.5.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.5.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.9.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.9.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,11 +58,70 @@
     <Compile Include="UI\AboutBoxFeedRead.Designer.cs">
       <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\Feed\Body.cs" />
-    <Compile Include="Utilities\Feed\Head.cs" />
-    <Compile Include="Utilities\Feed\OpmlDocument.cs" />
-    <Compile Include="Utilities\Feed\OpmlElement.cs" />
-    <Compile Include="Utilities\Feed\Outline.cs" />
+    <Compile Include="Utilities\FeedReader\Extensions.cs" />
+    <Compile Include="Utilities\FeedReader\Feed.cs" />
+    <Compile Include="Utilities\FeedReader\FeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\FeedReader.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.91\Rss091Feed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.91\Rss091FeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.91\Rss091FeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.92\Rss092Feed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.92\Rss092FeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\0.92\Rss092FeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\1.0\Rss10Feed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\1.0\Rss10FeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\1.0\Rss10FeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\1.0\Rss10FeedTextInput.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\2.0\Rss20Feed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\2.0\Rss20FeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\2.0\Rss20FeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Atom\AtomFeed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Atom\AtomFeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Atom\AtomLink.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Atom\AtomPerson.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\BaseFeed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\BaseFeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\FeedCloud.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\FeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\FeedItemEnclosure.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\FeedItemSource.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Base\FeedTextInput.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\DublinCore.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesCategory.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesChannel.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesExtensions.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Itunes\ItunesOwner.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\Media.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\MediaGroup.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\MediaRssFeed.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\MediaRssFeedImage.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\MediaRssFeedItem.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\Medium.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\MediaRSS\Thumbnail.cs" />
+    <Compile Include="Utilities\FeedReader\Feeds\Syndication.cs" />
+    <Compile Include="Utilities\FeedReader\FeedType.cs" />
+    <Compile Include="Utilities\FeedReader\Helpers.cs" />
+    <Compile Include="Utilities\FeedReader\HtmlFeedLink.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\AbstractXmlFeedParser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\AtomParser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Exceptions\FeedTypeNotSupportedException.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Exceptions\InvalidFeedLinkException.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Factory.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\FeedParser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\IFeedParser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\MediaRssParser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Rss091Parser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Rss092Parser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Rss10Parser.cs" />
+    <Compile Include="Utilities\FeedReader\Parser\Rss20Parser.cs" />
+    <Compile Include="Utilities\FeedReader\UrlNotFoundException.cs" />
+    <Compile Include="Utilities\OMPL2\Body.cs" />
+    <Compile Include="Utilities\OMPL2\Head.cs" />
+    <Compile Include="Utilities\OMPL2\OpmlDocument.cs" />
+    <Compile Include="Utilities\OMPL2\OpmlElement.cs" />
+    <Compile Include="Utilities\OMPL2\Outline.cs" />
     <Compile Include="Model\ComicFeed\ComicFeed.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />

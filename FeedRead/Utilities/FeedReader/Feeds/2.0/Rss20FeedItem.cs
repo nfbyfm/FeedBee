@@ -53,7 +53,7 @@
         /// <summary>
         /// All entries "category" entries
         /// </summary>
-        public ICollection<string> Categories { get; set; }
+        public List<string> Categories { get; set; }
 
         /// <summary>
         /// The "content:encoded" field

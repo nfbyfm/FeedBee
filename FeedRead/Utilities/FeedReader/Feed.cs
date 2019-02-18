@@ -1,9 +1,12 @@
-﻿namespace CodeHollow.FeedReader
+﻿
+
+namespace CodeHollow.FeedReader
 {
     using Feeds;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// Generic Feed object that contains some basic properties. If a property is not available
@@ -16,58 +19,69 @@
         /// <summary>
         /// The Type of the feed - Rss 2.0, 1.0, 0.92, Atom or others
         /// </summary>
+        [XmlElement("Feedtype")]
         public FeedType Type { get; set; }
 
         /// <summary>
         /// The title of the field
         /// </summary>
+        [XmlElement("Title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The link (url) to the feed
         /// </summary>
+        [XmlElement("Link")]
         public string Link { get; set; }
 
         /// <summary>
         /// The description of the feed
         /// </summary>
+        [XmlElement("Description")]
         public string Description { get; set; }
 
         /// <summary>
         /// The language of the feed
         /// </summary>
+        [XmlElement("Language")]
         public string Language { get; set; }
 
         /// <summary>
         /// The copyright of the feed
         /// </summary>
+        [XmlElement("Copyright")]
         public string Copyright { get; set; }
 
         /// <summary>
         /// The last updated date as string. This is filled, if a last updated
         /// date is set - independent if it is a correct date or not
         /// </summary>
+        [XmlElement("LastUpdate")]
         public string LastUpdatedDateString { get; set; }
 
         /// <summary>
         /// The last updated date as datetime. Null if parsing failed or if
         /// no last updated date is set. If null, please check <see cref="LastUpdatedDateString"/> property.
         /// </summary>
+        [XmlElement("LastUpdateDate")]
         public DateTime? LastUpdatedDate { get; set; }
 
         /// <summary>
         /// The url of the image
         /// </summary>
+        [XmlElement("ImageURL")]
         public string ImageUrl { get; set; }
 
         /// <summary>
         /// List of items
         /// </summary>
-        public ICollection<FeedItem> Items { get; set; }
+        [XmlArray("FeedItems"), XmlArrayItem("Item")]
+        public List<FeedItem> Items { get; set; }
 
         /// <summary>
         /// Gets the whole, original feed as string
         /// </summary>
+        [XmlIgnore]
         public string OriginalDocument
         {
             get { return SpecificFeed.OriginalDocument; }
@@ -77,6 +91,7 @@
         /// The parsed feed element - e.g. of type <see cref="Rss20Feed"/> which contains
         /// e.g. the Generator property which does not exist in others.
         /// </summary>
+        [XmlIgnore]
         public BaseFeed SpecificFeed { get; set; }
 
         /// <summary>
