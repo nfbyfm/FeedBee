@@ -5,6 +5,7 @@ using FeedRead.Utilities.OPML;
 //using FeedLister;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -264,14 +265,19 @@ namespace FeedRead
 
         public void ShowSettings()
         {
-
+            SettingsDialog sedi = new SettingsDialog();
+            if(sedi.ShowDialog() == DialogResult.OK)
+            {
+                //save settings
+                Properties.Settings.Default.Save();
+            }
         }
 
         public void CloseApplication()
         {
             //check if Model has any changes that should get saved
-            opmlDoc = null;
-            mainModel = null;
+            //opmlDoc = null;
+            //mainModel = null;
 
             //close Application / MainForm
             mainForm.Close();
@@ -281,18 +287,52 @@ namespace FeedRead
 
 
 
-
+        /// <summary>
+        /// update the treeview-control of the main form
+        /// </summary>
         private void UpdateTreeview()
         {
             mainForm.UpdateTreeView(mainModel);
         }
         
 
+        /// <summary>
+        /// get the string-ID for youtube
+        /// </summary>
+        /// <returns></returns>
         public string GetYoutubeID()
         {
             return youtubeID;
         }
+
+
+        /// <summary>
+        /// download a (youtube-) video 
+        /// </summary>
+        /// <param name="url"></param>
+        public void DownloadVideo(string url)
+        {
+            try
+            {
+                //call youtube-dl.exe
+                Process p = new Process();
+                ProcessStartInfo pi = new ProcessStartInfo();
+
+                string argument = "/c start " + Properties.Settings.Default.youtubedlFolder + "\\youtube-dl.exe " + url + " -o \"" + Properties.Settings.Default.youtubedlFolder.Replace("\\", "/") + "/%(title)s.%(ext)s\" && exit";
+
+
+                pi.Arguments = argument;
+                pi.FileName = "cmd.exe";
+                p.StartInfo = pi;
+                p.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while downloading the video. Errormessage: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
         #endregion
+
 
 
         #region Feed-related functions

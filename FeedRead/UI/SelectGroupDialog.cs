@@ -39,7 +39,10 @@ namespace FeedRead.UI
                     {
                         cB_Groups.Items.Add(groupName);
                     }
+                    cB_Groups.SelectedIndex = 0;
+
                     allowAddToGroup = true;
+                    
                 }
 
             }
@@ -80,6 +83,26 @@ namespace FeedRead.UI
             this.Close();
         }
 
-        
+        private void rB_addToGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            rBSelectionChanged();
+        }
+
+        private void rB_CreateNewGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            rBSelectionChanged();
+        }
+
+        /// <summary>
+        /// radio-button-selection has changed
+        /// </summary>
+        private void rBSelectionChanged()
+        {
+            cB_Groups.Enabled = rB_addToGroup.Checked;
+            b_AddToGroup.Enabled = rB_addToGroup.Checked;
+
+            tB_NewGroupName.Enabled = rB_CreateNewGroup.Checked;
+            b_AddToNewGroup.Enabled = rB_CreateNewGroup.Checked;
+        }
     }
 }

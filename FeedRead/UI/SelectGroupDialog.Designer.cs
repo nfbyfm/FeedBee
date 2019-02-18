@@ -48,6 +48,7 @@
             this.rB_addToGroup.TabStop = true;
             this.rB_addToGroup.Text = "add to group:";
             this.rB_addToGroup.UseVisualStyleBackColor = true;
+            this.rB_addToGroup.CheckedChanged += new System.EventHandler(this.rB_addToGroup_CheckedChanged);
             // 
             // rB_CreateNewGroup
             // 
@@ -59,6 +60,7 @@
             this.rB_CreateNewGroup.TabStop = true;
             this.rB_CreateNewGroup.Text = "create new group:";
             this.rB_CreateNewGroup.UseVisualStyleBackColor = true;
+            this.rB_CreateNewGroup.CheckedChanged += new System.EventHandler(this.rB_CreateNewGroup_CheckedChanged);
             // 
             // cB_Groups
             // 

@@ -343,5 +343,15 @@ namespace FeedRead.UI
         {
             System.Diagnostics.Process.Start(lL_Url.Text);
         }
+
+        /// <summary>
+        /// download a (youtube-) video
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_DownloadVideo_Click(object sender, EventArgs e)
+        {
+            controller.DownloadVideo(lL_Url.Text);
+        }
     }
 }

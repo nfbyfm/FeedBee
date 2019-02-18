@@ -33,6 +33,7 @@ namespace FeedRead.UI
             if (Clipboard.ContainsText())
             {
                 tB_Url.Text = Clipboard.GetText();
+                CheckForFeeds();
             }
         }
 
@@ -107,6 +108,11 @@ namespace FeedRead.UI
                     foreach(string newFeed in results)
                     {
                         lb_FoundFeeds.Items.Add(newFeed);
+                    }
+
+                    if(results.Count() == 1)
+                    {
+                        lb_FoundFeeds.SelectedIndex = 0;
                     }
                 }
             }
