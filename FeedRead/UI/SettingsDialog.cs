@@ -96,6 +96,35 @@ namespace FeedRead.UI
             this.Close();
         }
 
+        /// <summary>
+        /// set enable-properties depending upon checkbox-control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cB_LoadUponStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            tB_FeedListPath.Enabled = cB_LoadUponStartup.Checked;
+            bSelectFeedList.Enabled = cB_LoadUponStartup.Checked;
+        }
+
+        /// <summary>
+        /// select feed-list file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bSelectFeedList_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog odi = new OpenFileDialog();
+            odi.Multiselect = false;
+            odi.RestoreDirectory = true;
+            odi.Filter = "xml-file|*.xml";
+            odi.Title = "select feed-list";
+
+            if(odi.ShowDialog() == DialogResult.OK)
+            {
+                tB_FeedListPath.Text = odi.FileName;
+            }
+        }
         #endregion
 
 
@@ -106,6 +135,9 @@ namespace FeedRead.UI
         private void LoadSettings()
         {
             tB_youtubedlFolder.Text = Properties.Settings.Default.youtubedlFolder;
+            tB_FeedListPath.Text = Properties.Settings.Default.loadListPath;
+            cB_LoadUponStartup.Checked = Properties.Settings.Default.bLoadUponStartup;
+            cB_LoadUponStartup_CheckedChanged(null,null);
         }
 
         /// <summary>
@@ -114,13 +146,15 @@ namespace FeedRead.UI
         private void SaveSettings()
         {
             Properties.Settings.Default.youtubedlFolder = tB_youtubedlFolder.Text;
+            Properties.Settings.Default.loadListPath = tB_FeedListPath.Text;
+            Properties.Settings.Default.bLoadUponStartup = cB_LoadUponStartup.Checked;
 
 
-
-            
         }
+
 
         #endregion
 
+        
     }
 }

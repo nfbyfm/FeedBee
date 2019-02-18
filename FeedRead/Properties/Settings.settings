@@ -5,5 +5,11 @@
     <Setting Name="youtubedlFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\User\Default\youtube-dl</Value>
     </Setting>
+    <Setting Name="bLoadUponStartup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="loadListPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\User\Default\FeedList.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

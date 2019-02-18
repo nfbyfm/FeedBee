@@ -34,5 +34,29 @@ namespace FeedRead.Properties {
                 this["youtubedlFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool bLoadUponStartup {
+            get {
+                return ((bool)(this["bLoadUponStartup"]));
+            }
+            set {
+                this["bLoadUponStartup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\User\\Default\\FeedList.xml")]
+        public string loadListPath {
+            get {
+                return ((string)(this["loadListPath"]));
+            }
+            set {
+                this["loadListPath"] = value;
+            }
+        }
     }
 }

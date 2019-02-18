@@ -50,8 +50,16 @@ namespace FeedRead.UI
             {
                 feedUrl = lb_FoundFeeds.Items[lb_FoundFeeds.SelectedIndex].ToString();
 
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                if(feedUrl == errorNoFeedFound)
+                {
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                }
+                else
+                {
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
             }
             else
             {

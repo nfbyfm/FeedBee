@@ -33,9 +33,19 @@ namespace FeedRead
         {
             this.mainForm = mainForm;
             this.mainModel = new FeedGroup(mainModelID, ""); 
+
+            if(Properties.Settings.Default.bLoadUponStartup)
+            {
+                OpenListFromXML(Properties.Settings.Default.loadListPath);
+                UpdateTreeview();
+            }
         }
 
         #region UI-Functions
+
+        /// <summary>
+        /// open an exisiting list (xml-file) of feeds
+        /// </summary>
         public void OpenList()
         {
             OpenFileDialog odi = new OpenFileDialog();
@@ -52,7 +62,9 @@ namespace FeedRead
             }
         }
 
-
+        /// <summary>
+        /// save current list as xml-file
+        /// </summary>
         public void SaveList()
         {
             SaveFileDialog sadi = new SaveFileDialog();
@@ -70,6 +82,10 @@ namespace FeedRead
             }
         }
 
+
+        /// <summary>
+        /// import a list of feeds either as a txt- or ompl-file
+        /// </summary>
         public void ImportFeedList()
         {
             OpenFileDialog odi = new OpenFileDialog();
@@ -192,6 +208,9 @@ namespace FeedRead
             }
         }
 
+        /// <summary>
+        /// export the current mainModel / FeedGroup
+        /// </summary>
         public void ExportFeedList()
         {
             SaveFileDialog sadi = new SaveFileDialog();
@@ -214,6 +233,10 @@ namespace FeedRead
             }
         }
 
+
+        /// <summary>
+        /// add a new feed to the current mainModel / FeedGroup
+        /// </summary>
         public void AddNewFeed()
         {
             AddFeedDialog addFeedDialog = new AddFeedDialog(this);
@@ -222,7 +245,7 @@ namespace FeedRead
                 //show next dialog (add Feed to a Group)
                 string newFeedUrl = addFeedDialog.feedUrl;
 
-                Console.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
+                //Console.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
 
                 //show group-Dialog
                 SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
@@ -236,7 +259,7 @@ namespace FeedRead
                     if(sGD.addNewGroupName)
                     {
                         //create a new group and add the feed to it
-                        Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                        //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
                         Feed newFeed = FeedReader.Read(newFeedUrl);
                         mainModel.AddFeedAndGroup(newFeed, groupName, "");
 
@@ -246,7 +269,7 @@ namespace FeedRead
                     {
                         //find selected group
                         //check if feed already exists and if not, add the new feed to it
-                        Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                        //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
                         Feed newFeed = FeedReader.Read(newFeedUrl);
                         mainModel.AddFeed(newFeed, groupName);
 
@@ -278,6 +301,26 @@ namespace FeedRead
             //check if Model has any changes that should get saved
             //opmlDoc = null;
             //mainModel = null;
+            if (Properties.Settings.Default.bLoadUponStartup)
+            {
+                if(mainModel != null)
+                {
+                    if(mainModel.FeedGroups != null && mainModel.FeedList != null)
+                    {
+                        if(mainModel.FeedGroups.Count()>0 || mainModel.FeedList.Count() >0)
+                        {
+                            try
+                            {
+                                SaveListAsXML(Properties.Settings.Default.loadListPath);
+                            }
+                            catch(Exception ex)
+                            {
+                                MessageBox.Show("Error while saving current list to xml-file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+            }
 
             //close Application / MainForm
             mainForm.Close();

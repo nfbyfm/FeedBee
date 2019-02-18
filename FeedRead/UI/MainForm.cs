@@ -191,7 +191,9 @@ namespace FeedRead.UI
         /// <param name="e"></param>
         private void tVMain_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if(tVMain.SelectedNode != null)
+            ClearPropertyDisplays();
+
+            if (tVMain.SelectedNode != null)
             {
                 object tagObj = tVMain.SelectedNode.Tag;
                 if(tagObj != null)
@@ -203,14 +205,6 @@ namespace FeedRead.UI
                         ShowFeedList(ref selFeed);
                     }
                 }
-                else
-                {
-                    ClearPropertyDisplays();
-                }
-            }
-            else
-            {
-                ClearPropertyDisplays();
             }
         }
 
