@@ -348,6 +348,15 @@ namespace FeedRead
             return youtubeID;
         }
 
+        /// <summary>
+        /// get the ID of the mainModel
+        /// </summary>
+        /// <returns></returns>
+        public string GetMainModelID()
+        {
+            return mainModelID;
+        }
+
 
         /// <summary>
         /// download a (youtube-) video 

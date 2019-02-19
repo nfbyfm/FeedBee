@@ -16,6 +16,7 @@ namespace FeedRead.UI
     {
         private Controller controller;
 
+        #region Constructor(-s) and setup-functions
 
         public MainForm()
         {
@@ -28,6 +29,10 @@ namespace FeedRead.UI
 
             ClearPropertyDisplays();            
         }
+
+        #endregion
+
+        #region Input-functions
 
         private void openListToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -68,8 +73,10 @@ namespace FeedRead.UI
         {
             controller.ShowSettings();
         }
+        #endregion
 
-        
+        #region draw-functions
+
         /// <summary>
         /// triggers redraw of the treeview (feeds and feed-groups)
         /// </summary>
@@ -81,10 +88,44 @@ namespace FeedRead.UI
 
             if(mainModel != null)
             {
+                //list of all the primary nodes of the treeview
                 List<TreeNode> mainNodes = new List<TreeNode>();
-                BuildFeedTree(null, ref mainNodes, mainModel);
 
-                if(mainNodes.Count() > 0)
+                //add feedgroup-Nodes to the list
+                if (mainModel.FeedGroups != null)
+                {
+                    if (mainModel.FeedGroups.Count() > 0)
+                    {
+                        for (int i = 0; i < mainModel.FeedGroups.Count(); i++)
+                        {
+                            TreeNode tmpNode = GetNode(mainModel.FeedGroups[i]);
+                            if (tmpNode != null)
+                            {
+                                mainNodes.Add(tmpNode);
+                            }
+                        }
+                    }
+                }
+
+                //add feeds
+                if (mainModel.FeedList != null)
+                {
+                    if (mainModel.FeedList.Count > 0)
+                    {
+                        for (int i = 0; i < mainModel.FeedList.Count(); i++)
+                        {
+                            TreeNode feedNode = new TreeNode(mainModel.FeedList[i].Title);
+                            feedNode.Tag = mainModel.FeedList[i];
+
+                            mainNodes.Add(feedNode);
+
+                        }
+                    }
+                }
+
+
+                //add Nodes to the control
+                if (mainNodes.Count() > 0)
                 {
                     for(int i = 0; i < mainNodes.Count(); i++)
                     {
@@ -96,93 +137,130 @@ namespace FeedRead.UI
             }
         }
 
+        
+
         /// <summary>
-        /// method for recursively building the treeview with the feeds and Feed-Groups
+        /// method for (recursively) getting the TreeNode (and subnodes) of a feedgroup
         /// </summary>
-        /// <param name="parentNode"></param>
-        /// <param name="mainNodes"></param>
         /// <param name="group"></param>
-        private void BuildFeedTree(TreeNode parentNode, ref List<TreeNode> mainNodes, FeedGroup group)
+        /// <returns></returns>
+        private TreeNode GetNode(FeedGroup group)
         {
+            TreeNode groupNode = null;
+
             if(group != null)
             {
-                TreeNode groupNode = new TreeNode(group.Title);
+                groupNode = new TreeNode(group.Title);
                 groupNode.Tag = group;
 
-                //handle main-Node (don't show in Treeview)
-                if (parentNode == null)
+                //check for sub-Feedgroups and add them to this group's node
+                if(group.FeedGroups != null)
                 {
-                    groupNode = null;
-                }
-
-                //add sub-groups
-                if (group.FeedGroups != null)
-                {
-                    if(group.FeedGroups.Count() > 0 )
+                    if(group.FeedGroups.Count > 0)
                     {
-                        for (int i = 0; i < group.FeedGroups.Count(); i++)
+                        for(int i=0; i< group.FeedGroups.Count(); i++)
                         {
-                            if(groupNode == null)
+                            TreeNode subNode = GetNode(group.FeedGroups[i]);
+                            if(subNode != null)
                             {
-                                //add groups to list
-                                TreeNode newGroupNode = new TreeNode(group.FeedGroups[i].Title);
-                                newGroupNode.Tag = group.FeedGroups[i];
-                                mainNodes.Add(newGroupNode);
-                                BuildFeedTree(newGroupNode, ref mainNodes, group.FeedGroups[i]);
+                                groupNode.Nodes.Add(subNode);
                             }
-                            else
-                            {
-                                BuildFeedTree(groupNode, ref mainNodes, group.FeedGroups[i]);
-                            }
-                            
                         }
                     }
                 }
 
-                //add feeds
-                if (group.FeedList != null)
+                //check if there are feeds in this group
+                if(group.FeedList != null)
                 {
-                    if (group.FeedList.Count > 0)
+                    if(group.FeedList.Count() > 0)
                     {
-                        for (int i = 0; i < group.FeedList.Count(); i++)
+                        //add feeds to this group's node
+                        for(int i = 0; i< group.FeedList.Count(); i++)
                         {
                             TreeNode feedNode = new TreeNode(group.FeedList[i].Title);
                             feedNode.Tag = group.FeedList[i];
 
-                            if(groupNode == null)
-                            {
-                                //add to list instead of groupNode
-                                mainNodes.Add(feedNode);
-                            }
-                            else
-                            {
-                                groupNode.Nodes.Add(feedNode);
-                            }
-                            
+                            groupNode.Nodes.Add(feedNode);
                         }
                     }
                 }
+            }
 
-                
+            return groupNode;
+        }
 
-                if (parentNode == null)
+        /// <summary>
+        /// clears and hides controls which show information about a feed-item
+        /// </summary>
+        private void ClearPropertyDisplays()
+        {
+            sCMainBrowse.Panel1Collapsed = true;
+            browser.Navigate("about:blank");
+
+            lL_Url.Text = "";
+            lL_Url.Links.Clear();
+            lL_Url.LinkVisited = false;
+
+            b_DownloadVideo.Visible = false;
+            b_DownloadVideo.Enabled = false;
+
+            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lVFeedItems.View = View.Details;
+        }
+
+        /// <summary>
+        /// lists feeditems in listview
+        /// </summary>
+        /// <param name="currentFeed"></param>
+        private void ShowFeedList(ref Feed currentFeed)
+        {
+            if (currentFeed != null)
+            {
+                lVFeedItems.Clear();
+
+                ColumnHeader columnHeader1 = new ColumnHeader();
+                columnHeader1.Text = "Title";
+                ColumnHeader columnHeader2 = new ColumnHeader();
+                columnHeader2.Text = "publishing date";
+
+                ColumnHeader columnHeader3 = new ColumnHeader();
+                columnHeader3.Text = "Author";
+
+                lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3 });
+
+                if (currentFeed.Items != null)
                 {
-                    if (groupNode != null)
+                    foreach (FeedItem feedItem in currentFeed.Items)
                     {
-                        //add group-Node to list
-                        mainNodes.Add(groupNode);
+                        string[] itemProperties = new string[] {     feedItem.Title,
+                                                            feedItem.PublishingDate.Value.ToShortDateString(),
+                                                            feedItem.Author
+                                                        };
+
+                        ListViewItem item = new ListViewItem(itemProperties);
+                        item.Tag = feedItem;
+                        lVFeedItems.Items.Add(item);
                     }
                 }
                 else
                 {
-                    if (groupNode != null)
-                    {
-                        //add group-Node to parent-Node
-                        parentNode.Nodes.Add(groupNode);
-                    }
+                    Console.WriteLine("selected feed has no items");
                 }
+                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                lVFeedItems.View = View.Details;
+
+            }
+            else
+            {
+                Console.WriteLine("selected Feed equals null");
             }
         }
+
+        #endregion
+
+        #region selection-reaction-functions
 
         /// <summary>
         /// method for reacting on users click upon treeview-Node and displaying / loading lists accordingly
@@ -208,62 +286,7 @@ namespace FeedRead.UI
             }
         }
 
-        /// <summary>
-        /// clears and hides controls which show information about a feed-item
-        /// </summary>
-        private void ClearPropertyDisplays()
-        {
-            sCMainBrowse.Panel1Collapsed = true;
-            browser.Navigate("about:blank");
-
-            l_Title.Text = "...";
-            l_Update.Text = "...";
-            lL_Url.Text = "";
-            b_DownloadVideo.Visible = false;
-            b_DownloadVideo.Enabled = false;
-
-            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            lVFeedItems.View = View.Details;
-        }
-
-        /// <summary>
-        /// lists feeditems in listview
-        /// </summary>
-        /// <param name="currentFeed"></param>
-        private void ShowFeedList(ref Feed currentFeed)
-        {
-            if (currentFeed != null)
-            {
-                lVFeedItems.Clear();
-
-                ColumnHeader columnHeader1 = new ColumnHeader();
-                columnHeader1.Text = "Title";
-                lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
-
-                if (currentFeed.Items != null)
-                {
-                    foreach (FeedItem feedItem in currentFeed.Items)
-                    {
-                        ListViewItem item = new ListViewItem(feedItem.Title);
-                        item.Tag = feedItem;
-                        lVFeedItems.Items.Add(item);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("selected feed has no items");
-                }
-                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                lVFeedItems.View = View.Details;
-
-            }
-            else
-            {
-                Console.WriteLine("selected Feed equals null");
-            }
-        }
+        
 
         /// <summary>
         /// method for displaying information about a selected feed-item
@@ -307,9 +330,9 @@ namespace FeedRead.UI
                         FeedItem item = (FeedItem)(ob.Tag);
                         if (item != null)
                         {
-                            l_Title.Text = item.Title;
-                            l_Update.Text = item.PublishingDateString;//.ToString("dd.MM.yyyy");
-                            lL_Url.Text = item.Link;
+                            lL_Url.Text = item.Title;
+                            lL_Url.Links.Add(0, item.Title.Length, item.Link);
+
                             sCMainBrowse.Panel1Collapsed = false;
 
                             if (item.Link.ToLower().Contains(controller.GetYoutubeID().ToLower()))
@@ -335,7 +358,8 @@ namespace FeedRead.UI
         /// <param name="e"></param>
         private void lL_Url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(lL_Url.Text);
+            lL_Url.LinkVisited = true;
+            System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
         }
 
         /// <summary>
@@ -345,7 +369,15 @@ namespace FeedRead.UI
         /// <param name="e"></param>
         private void b_DownloadVideo_Click(object sender, EventArgs e)
         {
-            controller.DownloadVideo(lL_Url.Text);
+            if(lL_Url.Links != null)
+            {
+                if (lL_Url.Links[0] != null)
+                {
+                    controller.DownloadVideo(lL_Url.Links[0].LinkData.ToString());
+                }
+            }
         }
+
+        #endregion
     }
 }

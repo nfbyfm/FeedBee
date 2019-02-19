@@ -51,13 +51,10 @@
             this.lVFeedItems = new System.Windows.Forms.ListView();
             this.sCMainBrowse = new System.Windows.Forms.SplitContainer();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.b_DownloadVideo = new System.Windows.Forms.Button();
             this.lL_Url = new System.Windows.Forms.LinkLabel();
-            this.l_Update = new System.Windows.Forms.Label();
-            this.l_Title = new System.Windows.Forms.Label();
             this.browser = new System.Windows.Forms.WebBrowser();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -71,6 +68,7 @@
             this.sCMainBrowse.Panel1.SuspendLayout();
             this.sCMainBrowse.Panel2.SuspendLayout();
             this.sCMainBrowse.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -96,14 +94,14 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // openListToolStripMenuItem
             // 
             this.openListToolStripMenuItem.Name = "openListToolStripMenuItem";
             this.openListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openListToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.openListToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.openListToolStripMenuItem.Text = "&Open List";
             this.openListToolStripMenuItem.Click += new System.EventHandler(this.openListToolStripMenuItem_Click);
             // 
@@ -112,39 +110,39 @@
             this.saveListToolStripMenuItem.Name = "saveListToolStripMenuItem";
             this.saveListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.saveListToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.saveListToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.saveListToolStripMenuItem.Text = "&Save List";
             this.saveListToolStripMenuItem.Click += new System.EventHandler(this.saveListToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(206, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(241, 6);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.importToolStripMenuItem.Text = "&Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.exportToolStripMenuItem.Text = "&Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(206, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(241, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -153,14 +151,14 @@
             this.feedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addToolStripMenuItem});
             this.feedToolStripMenuItem.Name = "feedToolStripMenuItem";
-            this.feedToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.feedToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.feedToolStripMenuItem.Text = "&Feed";
             // 
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.addToolStripMenuItem.Text = "add ...";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
@@ -171,25 +169,25 @@
             this.toolStripSeparator2,
             this.settingsToolStripMenuItem});
             this.extrasToolStripMenuItem.Name = "extrasToolStripMenuItem";
-            this.extrasToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
+            this.extrasToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.extrasToolStripMenuItem.Text = "&Extras";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(101, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingsToolStripMenuItem.Text = "&Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -266,52 +264,30 @@
             // 
             // sCMainBrowse.Panel1
             // 
-            this.sCMainBrowse.Panel1.Controls.Add(this.label3);
-            this.sCMainBrowse.Panel1.Controls.Add(this.label2);
-            this.sCMainBrowse.Panel1.Controls.Add(this.label1);
-            this.sCMainBrowse.Panel1.Controls.Add(this.b_DownloadVideo);
-            this.sCMainBrowse.Panel1.Controls.Add(this.lL_Url);
-            this.sCMainBrowse.Panel1.Controls.Add(this.l_Update);
-            this.sCMainBrowse.Panel1.Controls.Add(this.l_Title);
+            this.sCMainBrowse.Panel1.Controls.Add(this.tableLayoutPanel1);
             // 
             // sCMainBrowse.Panel2
             // 
             this.sCMainBrowse.Panel2.Controls.Add(this.browser);
             this.sCMainBrowse.Size = new System.Drawing.Size(639, 312);
-            this.sCMainBrowse.SplitterDistance = 68;
+            this.sCMainBrowse.SplitterDistance = 31;
             this.sCMainBrowse.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 47);
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(30, 13);
+            this.label3.Size = new System.Drawing.Size(62, 31);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Link:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Date:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(30, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Title:";
+            this.label3.Text = "Webpage:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // b_DownloadVideo
             // 
             this.b_DownloadVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_DownloadVideo.Location = new System.Drawing.Point(527, 42);
+            this.b_DownloadVideo.Location = new System.Drawing.Point(527, 5);
             this.b_DownloadVideo.Name = "b_DownloadVideo";
             this.b_DownloadVideo.Size = new System.Drawing.Size(109, 23);
             this.b_DownloadVideo.TabIndex = 3;
@@ -322,31 +298,15 @@
             // lL_Url
             // 
             this.lL_Url.AutoSize = true;
-            this.lL_Url.Location = new System.Drawing.Point(59, 47);
+            this.lL_Url.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lL_Url.Location = new System.Drawing.Point(71, 0);
             this.lL_Url.Name = "lL_Url";
-            this.lL_Url.Size = new System.Drawing.Size(23, 13);
+            this.lL_Url.Size = new System.Drawing.Size(176, 31);
             this.lL_Url.TabIndex = 2;
             this.lL_Url.TabStop = true;
             this.lL_Url.Text = "link";
+            this.lL_Url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lL_Url.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lL_Url_LinkClicked);
-            // 
-            // l_Update
-            // 
-            this.l_Update.AutoSize = true;
-            this.l_Update.Location = new System.Drawing.Point(59, 24);
-            this.l_Update.Name = "l_Update";
-            this.l_Update.Size = new System.Drawing.Size(59, 13);
-            this.l_Update.TabIndex = 1;
-            this.l_Update.Text = "last update";
-            // 
-            // l_Title
-            // 
-            this.l_Title.AutoSize = true;
-            this.l_Title.Location = new System.Drawing.Point(55, 0);
-            this.l_Title.Name = "l_Title";
-            this.l_Title.Size = new System.Drawing.Size(27, 13);
-            this.l_Title.TabIndex = 0;
-            this.l_Title.Text = "Title";
             // 
             // browser
             // 
@@ -355,8 +315,29 @@
             this.browser.MinimumSize = new System.Drawing.Size(20, 20);
             this.browser.Name = "browser";
             this.browser.ScriptErrorsSuppressed = true;
-            this.browser.Size = new System.Drawing.Size(639, 240);
+            this.browser.Size = new System.Drawing.Size(639, 277);
             this.browser.TabIndex = 0;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 6;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lL_Url, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.b_DownloadVideo, 5, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(639, 31);
+            this.tableLayoutPanel1.TabIndex = 7;
             // 
             // MainForm
             // 
@@ -382,10 +363,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.sCMainBrowse.Panel1.ResumeLayout(false);
-            this.sCMainBrowse.Panel1.PerformLayout();
             this.sCMainBrowse.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sCMainBrowse)).EndInit();
             this.sCMainBrowse.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -415,13 +397,10 @@
         private System.Windows.Forms.ToolStripMenuItem openListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveListToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.Label l_Update;
-        private System.Windows.Forms.Label l_Title;
         private System.Windows.Forms.Button b_DownloadVideo;
         private System.Windows.Forms.LinkLabel lL_Url;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
 
