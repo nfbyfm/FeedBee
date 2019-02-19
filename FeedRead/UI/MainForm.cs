@@ -73,6 +73,11 @@ namespace FeedRead.UI
         {
             controller.ShowSettings();
         }
+
+        private void updateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFeeds();
+        }
         #endregion
 
         #region draw-functions
@@ -227,20 +232,47 @@ namespace FeedRead.UI
                 ColumnHeader columnHeader3 = new ColumnHeader();
                 columnHeader3.Text = "Author";
 
-                lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3 });
+                ColumnHeader columnHeader4 = new ColumnHeader();
+                columnHeader4.Text = "read";
+
+
+                lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4 });
 
                 if (currentFeed.Items != null)
                 {
                     foreach (FeedItem feedItem in currentFeed.Items)
                     {
-                        string[] itemProperties = new string[] {     feedItem.Title,
-                                                            feedItem.PublishingDate.Value.ToShortDateString(),
-                                                            feedItem.Author
-                                                        };
+                        if(feedItem != null)
+                        {
+                            //try
+                            //{
+                            string update = "";
 
-                        ListViewItem item = new ListViewItem(itemProperties);
-                        item.Tag = feedItem;
-                        lVFeedItems.Items.Add(item);
+                            if (feedItem.PublishingDate != null)
+                            {
+                                if (feedItem.PublishingDate.Value != null)
+                                {
+                                    update = feedItem.PublishingDate.Value.ToShortDateString();
+                                }
+                            }
+
+                            string read = "no";
+
+                            if(feedItem.Read)
+                            {
+                                read = "yes";
+                            }
+
+                            string[] itemProperties = new string[] {     feedItem.Title,
+                                                        update,
+                                                        feedItem.Author,
+                                                        read
+                                                    };
+
+                            ListViewItem item = new ListViewItem(itemProperties);
+                            item.Tag = feedItem;
+                            lVFeedItems.Items.Add(item);
+                        }
                     }
                 }
                 else
@@ -379,5 +411,7 @@ namespace FeedRead.UI
         }
 
         #endregion
+
+        
     }
 }

@@ -107,7 +107,7 @@
 
             this.UpdatedDateString = feed.GetValue("updated");
             this.UpdatedDate = Helpers.TryParseDateTime(this.UpdatedDateString);
-
+            
             var items = feed.GetElements("entry");
 
             foreach (var item in items)

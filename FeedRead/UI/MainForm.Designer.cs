@@ -50,11 +50,13 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lVFeedItems = new System.Windows.Forms.ListView();
             this.sCMainBrowse = new System.Windows.Forms.SplitContainer();
-            this.label3 = new System.Windows.Forms.Label();
-            this.b_DownloadVideo = new System.Windows.Forms.Button();
-            this.lL_Url = new System.Windows.Forms.LinkLabel();
-            this.browser = new System.Windows.Forms.WebBrowser();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lL_Url = new System.Windows.Forms.LinkLabel();
+            this.b_DownloadVideo = new System.Windows.Forms.Button();
+            this.browser = new System.Windows.Forms.WebBrowser();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -149,16 +151,18 @@
             // feedToolStripMenuItem
             // 
             this.feedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem});
+            this.addToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.updateToolStripMenuItem});
             this.feedToolStripMenuItem.Name = "feedToolStripMenuItem";
-            this.feedToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.feedToolStripMenuItem.Text = "&Feed";
+            this.feedToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.feedToolStripMenuItem.Text = "&Feeds";
             // 
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addToolStripMenuItem.Text = "add ...";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
@@ -273,51 +277,6 @@
             this.sCMainBrowse.SplitterDistance = 31;
             this.sCMainBrowse.TabIndex = 1;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Location = new System.Drawing.Point(3, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(62, 31);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Webpage:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // b_DownloadVideo
-            // 
-            this.b_DownloadVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_DownloadVideo.Location = new System.Drawing.Point(527, 5);
-            this.b_DownloadVideo.Name = "b_DownloadVideo";
-            this.b_DownloadVideo.Size = new System.Drawing.Size(109, 23);
-            this.b_DownloadVideo.TabIndex = 3;
-            this.b_DownloadVideo.Text = "download video";
-            this.b_DownloadVideo.UseVisualStyleBackColor = true;
-            this.b_DownloadVideo.Click += new System.EventHandler(this.b_DownloadVideo_Click);
-            // 
-            // lL_Url
-            // 
-            this.lL_Url.AutoSize = true;
-            this.lL_Url.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lL_Url.Location = new System.Drawing.Point(71, 0);
-            this.lL_Url.Name = "lL_Url";
-            this.lL_Url.Size = new System.Drawing.Size(176, 31);
-            this.lL_Url.TabIndex = 2;
-            this.lL_Url.TabStop = true;
-            this.lL_Url.Text = "link";
-            this.lL_Url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lL_Url.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lL_Url_LinkClicked);
-            // 
-            // browser
-            // 
-            this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.browser.Location = new System.Drawing.Point(0, 0);
-            this.browser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.browser.Name = "browser";
-            this.browser.ScriptErrorsSuppressed = true;
-            this.browser.Size = new System.Drawing.Size(639, 277);
-            this.browser.TabIndex = 0;
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 6;
@@ -334,10 +293,68 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(639, 31);
             this.tableLayoutPanel1.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Location = new System.Drawing.Point(3, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 31);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Webpage:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lL_Url
+            // 
+            this.lL_Url.AutoSize = true;
+            this.lL_Url.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lL_Url.Location = new System.Drawing.Point(71, 0);
+            this.lL_Url.Name = "lL_Url";
+            this.lL_Url.Size = new System.Drawing.Size(176, 31);
+            this.lL_Url.TabIndex = 2;
+            this.lL_Url.TabStop = true;
+            this.lL_Url.Text = "link";
+            this.lL_Url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lL_Url.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lL_Url_LinkClicked);
+            // 
+            // b_DownloadVideo
+            // 
+            this.b_DownloadVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.b_DownloadVideo.Location = new System.Drawing.Point(527, 5);
+            this.b_DownloadVideo.Name = "b_DownloadVideo";
+            this.b_DownloadVideo.Size = new System.Drawing.Size(109, 23);
+            this.b_DownloadVideo.TabIndex = 3;
+            this.b_DownloadVideo.Text = "download video";
+            this.b_DownloadVideo.UseVisualStyleBackColor = true;
+            this.b_DownloadVideo.Click += new System.EventHandler(this.b_DownloadVideo_Click);
+            // 
+            // browser
+            // 
+            this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.browser.Location = new System.Drawing.Point(0, 0);
+            this.browser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.browser.Name = "browser";
+            this.browser.ScriptErrorsSuppressed = true;
+            this.browser.Size = new System.Drawing.Size(639, 277);
+            this.browser.TabIndex = 0;
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // updateToolStripMenuItem
+            // 
+            this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
+            this.updateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.updateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.updateToolStripMenuItem.Text = "update";
+            this.updateToolStripMenuItem.Click += new System.EventHandler(this.updateToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -401,6 +418,8 @@
         private System.Windows.Forms.LinkLabel lL_Url;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem updateToolStripMenuItem;
     }
 }
 

@@ -26,6 +26,12 @@
         [XmlIgnore]
         public XElement Element { get; }
 
+        /// <summary>
+        /// if item has been read or not
+        /// </summary>
+        [XmlElement("Read")]
+        public bool Read { get; set; }
+
         internal abstract FeedItem ToFeedItem();
 
         /// <summary>

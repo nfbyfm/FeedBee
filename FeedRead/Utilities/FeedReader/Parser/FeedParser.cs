@@ -94,7 +94,7 @@
 
             var parser = Factory.GetParser(feedType);
             var feed = parser.Parse(feedContent);
-
+            
             return feed.ToFeed();
         }
 

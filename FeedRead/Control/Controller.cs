@@ -280,6 +280,15 @@ namespace FeedRead
             }
         }
 
+        /// <summary>
+        /// update feed-list / get new feeditems
+        /// </summary>
+        public void UpdateFeeds()
+        {
+            UpdateFeed();
+            UpdateTreeview();
+        }
+
         public void ShowAboutDialog()
         {
             AboutBoxFeedRead aboutWindow = new AboutBoxFeedRead();
@@ -537,6 +546,44 @@ namespace FeedRead
                 catch (Exception ex)
                 {
                     Console.WriteLine(link.Title + " - " + link.Url + ": " + ex.ToString());
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// update each feed of the main model
+        /// </summary>
+        private void UpdateFeed()
+        {
+            if(mainModel != null)
+            {
+                UpdateFeedList(mainModel);
+            }
+        }
+
+
+        private void UpdateFeedList(FeedGroup group)
+        {
+            if(group != null)
+            {
+                if(group.FeedGroups != null)
+                {
+                    if(group.FeedGroups.Count() > 0 )
+                    {
+                        foreach(FeedGroup subGroup in group.FeedGroups)
+                        {
+                            UpdateFeedList(subGroup);
+                        }
+                    }
+                }
+
+                if(group.FeedList != null)
+                {
+                    if(group.FeedList.Count > 0)
+                    {
+
+                    }
                 }
             }
         }

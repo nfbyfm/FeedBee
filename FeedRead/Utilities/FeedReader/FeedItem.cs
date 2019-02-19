@@ -71,6 +71,12 @@
         public string Content { get; set; }
 
         /// <summary>
+        /// if item has been read or not
+        /// </summary>
+        [XmlElement("Read")]
+        public bool Read { get; set; }
+
+        /// <summary>
         /// The parsed feed item element - e.g. of type <see cref="Rss20FeedItem"/> which contains
         /// e.g. the Enclosure property which does not exist in other feed types.
         /// </summary>
@@ -96,6 +102,7 @@
             this.Link = feedItem.Link;
             this.Categories = new List<string>();
             this.SpecificItem = feedItem;
+            this.Read = feedItem.Read;
         }
     }
 }
