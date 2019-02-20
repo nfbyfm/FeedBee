@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -19,6 +20,7 @@ using System.Xml.Serialization;
 
 namespace FeedRead
 {
+    
     /// <summary>
     /// main Class for controlling everything
     /// </summary>
@@ -288,14 +290,30 @@ namespace FeedRead
             }
         }
 
+
+        public delegate void UpdateTreeViewCallback(FeedGroup mainModel);
+
         /// <summary>
-        /// update feed-list / get new feeditems
+        /// update feed-list / get new feeditems in separate thread
         /// </summary>
         public void UpdateFeeds()
         {
-            UpdateFeed(Properties.Settings.Default.updateNSFW);
-            UpdateTreeview();
+            
+            Thread t2 = new Thread(delegate ()
+            {
+                mainForm.SetStatusText("updating feeds ...", -1);
+                UpdateFeed(Properties.Settings.Default.updateNSFW);
+                mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeView), mainModel);
+                mainForm.SetStatusText("feeds updated", 2000);
+            });
+            t2.Start();
+            
         }
+
+        
+
+        
+
 
         /// <summary>
         /// open all unread feeds in external browser
@@ -803,12 +821,7 @@ namespace FeedRead
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="url">The URL.</param>
-
-
+        
 
         /// <summary>
         /// Gets the image from URL.
@@ -833,5 +846,12 @@ namespace FeedRead
         }
 
         #endregion
+
+
+
+
+        
     }
+
+    
 }

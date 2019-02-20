@@ -94,6 +94,7 @@ namespace FeedRead.UI
 
         #region draw-functions
 
+        
         /// <summary>
         /// triggers redraw of the treeview (feeds and feed-groups)
         /// </summary>
@@ -101,8 +102,6 @@ namespace FeedRead.UI
         public void UpdateTreeView(FeedGroup mainModel)
         {
             tVMain.Nodes.Clear();
-
-            
 
             
             if(mainModel != null)
@@ -249,7 +248,12 @@ namespace FeedRead.UI
             return groupNode;
         }
 
-
+        /// <summary>
+        /// get TreeNode out of feed
+        /// </summary>
+        /// <param name="feed"></param>
+        /// <param name="icons"></param>
+        /// <returns></returns>
         private TreeNode GetFeedNode(Feed feed, ref ImageList icons)
         {
             TreeNode feedNode = new TreeNode(feed.GetNodeText());
@@ -405,6 +409,15 @@ namespace FeedRead.UI
             }
         }
 
+        /// <summary>
+        /// set text (timed) of the statusStripLabel
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="milliseconds"></param>
+        public void SetStatusText(string text, int milliseconds)
+        {
+            statusLabel.Text = text;
+        }
         #endregion
 
         #region selection-reaction-functions
@@ -524,6 +537,7 @@ namespace FeedRead.UI
                 }
             }
         }
+
 
 
 
