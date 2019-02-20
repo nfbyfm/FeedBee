@@ -73,6 +73,18 @@ namespace CodeHollow.FeedReader
         public string ImageUrl { get; set; }
 
         /// <summary>
+        /// tells whether the feed has been updated or not
+        /// </summary>
+        [XmlElement("Updated")]
+        public bool Updated { get; set; }
+
+        /// <summary>
+        /// original url of the feed
+        /// </summary>
+        [XmlElement("FeedURL")]
+        public string FeedURL { get; set; }
+
+        /// <summary>
         /// List of items
         /// </summary>
         [XmlArray("FeedItems"), XmlArrayItem("Item")]
@@ -93,6 +105,8 @@ namespace CodeHollow.FeedReader
         /// </summary>
         [XmlIgnore]
         public BaseFeed SpecificFeed { get; set; }
+
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Feed"/> class.
@@ -115,6 +129,57 @@ namespace CodeHollow.FeedReader
             Link = feed.Link;
 
             Items = feed.Items.Select(x => x.ToFeedItem()).ToList();
+        }
+
+        /// <summary>
+        /// get Text for Treeview-Node
+        /// </summary>
+        /// <returns>Title and appendices/prefixes (number of unread Feeditems and so on)</returns>
+        public string GetNodeText()
+        {
+            string result = Title;
+
+            //get number of unread feed-items
+            int unreadCount = GetNoOfUnreadItems();
+
+            if(unreadCount > 0)
+            {
+                result = "(" + unreadCount.ToString() + ") " + Title;
+            }
+            
+            if(Updated == false)
+            {
+                result = "* " + result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// get number of unread feeditems
+        /// </summary>
+        /// <returns>returns -1 if no feeditems exists, otherwise the nubmer of unread items</returns>
+        public int GetNoOfUnreadItems()
+        {
+            int result= -1; 
+
+            if(Items != null)
+            {
+                if(Items.Count() > 0)
+                {
+                    result = 0;
+
+                    foreach(FeedItem item in Items)
+                    {
+                        if (item.Read == false)
+                        {
+                            result++;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

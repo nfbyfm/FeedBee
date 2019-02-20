@@ -12,12 +12,6 @@
     /// or a string <see cref="ReadFromString(string)"/>. If the feed url is not known, <see cref="ParseFeedUrlsFromHtml(string)"/>
     /// returns all feed links on a given page.
     /// </summary>
-    /// <example>
-    /// var links = FeedReader.ParseFeedUrlsFromHtml("https://codehollow.com");
-    /// var firstLink = links.First();
-    /// var feed = FeedReader.Read(firstLink.Url);
-    /// Console.WriteLine(feed.Title);
-    /// </example>
     public static class FeedReader
     {
         /// <summary>
@@ -69,8 +63,6 @@
         /// </summary>
         /// <param name="url">the url of the page</param>
         /// <returns>a list of links including the type and title, an empty list if no links are found</returns>
-        /// <example>FeedReader.GetFeedUrlsFromUrl("codehollow.com"); // returns a list of all available feeds at
-        /// https://codehollow.com </example>
         [Obsolete("Use GetFeedUrlsFromUrlAsync method")]
         public static IEnumerable<HtmlFeedLink> GetFeedUrlsFromUrl(string url)
         {
@@ -85,8 +77,6 @@
         /// <param name="url">the url of the page</param>
         /// /// <param name="autoRedirect">autoredirect if page is moved permanently</param>
         /// <returns>a list of links including the type and title, an empty list if no links are found</returns>
-        /// <example>FeedReader.GetFeedUrlsFromUrl("codehollow.com"); // returns a list of all available feeds at
-        /// https://codehollow.com </example>
         public static async Task<IEnumerable<HtmlFeedLink>> GetFeedUrlsFromUrlAsync(string url, bool autoRedirect = true)
         {
             url = GetAbsoluteUrl(url);

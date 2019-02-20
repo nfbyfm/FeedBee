@@ -37,6 +37,7 @@ namespace FeedRead.UI
             }
         }
 
+        #region ui-methods (clicks, change-events, ...)
         private void b_checkFeeds_Click(object sender, EventArgs e)
         {
             CheckForFeeds();
@@ -94,8 +95,12 @@ namespace FeedRead.UI
             this.Close();
         }
 
+        private void tB_Url_MouseClick(object sender, MouseEventArgs e)
+        {
+            tB_Url.SelectAll();
+        }
 
-
+        #endregion
 
 
         private void CheckForFeeds()
@@ -126,6 +131,6 @@ namespace FeedRead.UI
             }
         }
 
-        
+       
     }
 }

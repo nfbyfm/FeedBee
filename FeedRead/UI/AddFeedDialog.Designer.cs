@@ -55,6 +55,7 @@
             this.tB_Url.Name = "tB_Url";
             this.tB_Url.Size = new System.Drawing.Size(267, 20);
             this.tB_Url.TabIndex = 1;
+            this.tB_Url.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tB_Url_MouseClick);
             // 
             // lb_FoundFeeds
             // 

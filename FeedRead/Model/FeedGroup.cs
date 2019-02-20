@@ -186,6 +186,59 @@ namespace FeedRead.Model
             return result;
         }
 
+
+        /// <summary>
+        /// get title for Treenode
+        /// </summary>
+        /// <returns>returns title with prefixes (number of unread items and so on)</returns>
+        public string GetNodeText()
+        {
+            string result = Title;
+
+            int unreadFeedItems = GetNoOfUnreadFeedItems();
+
+            if(unreadFeedItems > 0)
+            {
+                result = "(" + unreadFeedItems.ToString() + ") " + Title;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// get number of unread feed-items (including subgroups)
+        /// </summary>
+        /// <returns>returns number of unread feeditems</returns>
+        public int GetNoOfUnreadFeedItems()
+        {
+            int result = 0;
+
+            if(FeedGroups != null)
+            {
+                if(FeedGroups.Count() > 0)
+                {
+                    foreach(FeedGroup fGroup in FeedGroups)
+                    {
+                        result += fGroup.GetNoOfUnreadFeedItems();
+                    }
+                }
+            }
+
+            if(FeedList != null)
+            {
+                if(FeedList.Count() > 0)
+                {
+                    foreach(Feed feed in FeedList)
+                    {
+                        result += feed.GetNoOfUnreadItems();
+                    }
+                }
+            }
+
+            return result;
+        }
+
         #region Overridden Functions
         public override string ToString()
         {

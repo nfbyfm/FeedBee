@@ -153,16 +153,7 @@ namespace FeedRead
                         break;
                     case 2:
                         //open txt-file
-                        var feeds = System.IO.File.ReadAllLines(odi.FileName);
-                        Parallel.ForEach<string>(feeds, x =>
-                        {
-                            try
-                            {
-                                Do(x);
-
-                            }
-                            catch { }
-                        });
+                        
                         
                         break;
                     default:
@@ -255,12 +246,15 @@ namespace FeedRead
                     //get group-name
                     string groupName = sGD.groupName;
 
+                    Feed newFeed = FeedReader.Read(newFeedUrl);
+                    newFeed.FeedURL = newFeedUrl;
+
                     //check if it's anew group
-                    if(sGD.addNewGroupName)
+                    if (sGD.addNewGroupName)
                     {
                         //create a new group and add the feed to it
                         //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
-                        Feed newFeed = FeedReader.Read(newFeedUrl);
+                        
                         mainModel.AddFeedAndGroup(newFeed, groupName, "");
 
                         UpdateTreeview();
@@ -270,7 +264,6 @@ namespace FeedRead
                         //find selected group
                         //check if feed already exists and if not, add the new feed to it
                         //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
-                        Feed newFeed = FeedReader.Read(newFeedUrl);
                         mainModel.AddFeed(newFeed, groupName);
 
                         UpdateTreeview();
@@ -285,7 +278,7 @@ namespace FeedRead
         /// </summary>
         public void UpdateFeeds()
         {
-            UpdateFeed();
+            UpdateFeed(true);
             UpdateTreeview();
         }
 
@@ -517,53 +510,26 @@ namespace FeedRead
             return result;
         }
 
-        static void Do(string url)
-        {
-            Console.WriteLine("trying to get feed from: " + url);
-
-            var linksTask = FeedReader.GetFeedUrlsFromUrlAsync(url);
-            linksTask.ConfigureAwait(false);
-
-            foreach (var link in linksTask.Result)
-            {
-                try
-                {
-                    string title = link.Title;
-                    if (string.IsNullOrEmpty(title))
-                    {
-                        title = url.Replace("https", "").Replace("http", "").Replace("www.", "");
-
-                    }
-                    title = Regex.Replace(title.ToLower(), "[^a-z]*", "");
-                    var curl = FeedReader.GetAbsoluteFeedUrl(url, link);
-
-                    var contentTask = Helpers.DownloadAsync(curl.Url);
-                    contentTask.ConfigureAwait(false);
-
-                    //System.IO.File.WriteAllText("d:\\feeds\\" + title + "_" + Guid.NewGuid().ToString() + ".xml", contentTask.Result);
-                    Console.Write("+");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(link.Title + " - " + link.Url + ": " + ex.ToString());
-                }
-            }
-        }
-
+        
 
         /// <summary>
         /// update each feed of the main model
         /// </summary>
-        private void UpdateFeed()
+        /// <param name="atWork">if true nsfw-feeds won't get checked</param>
+        private void UpdateFeed(bool atWork)
         {
             if(mainModel != null)
             {
-                UpdateFeedList(mainModel);
+                UpdateFeedList(mainModel, atWork);
             }
         }
 
-
-        private void UpdateFeedList(FeedGroup group)
+        /// <summary>
+        /// get update for a specific feed
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="atWork"></param>
+        private void UpdateFeedList(FeedGroup group, bool atWork)
         {
             if(group != null)
             {
@@ -573,16 +539,62 @@ namespace FeedRead
                     {
                         foreach(FeedGroup subGroup in group.FeedGroups)
                         {
-                            UpdateFeedList(subGroup);
+                            UpdateFeedList(subGroup, atWork);
                         }
                     }
                 }
 
                 if(group.FeedList != null)
                 {
-                    if(group.FeedList.Count > 0)
-                    {
+                    bool checkNSFW = true;
 
+                    //if "atWork" = true -> check if group has nsfw in the title -> ignore / don't update if so
+                    if(atWork)
+                    {
+                        checkNSFW = !group.Title.ToLower().Contains("nsfw");
+                    }
+
+                    if(group.FeedList.Count > 0 && checkNSFW)
+                    {
+                        for(int i =0; i< group.FeedList.Count(); i++)
+                        {
+                            //get Feeditems
+                            Feed tmpFeed = null;
+                            bool updateSuccess = false;
+
+                            try
+                            {
+                                tmpFeed = FeedReader.Read(group.FeedList[i].FeedURL);
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine("Error getting update-feed for '" + group.FeedList[i].Title + "': " + ex.Message);
+                            }
+
+                            if(tmpFeed != null)
+                            {
+                                if(tmpFeed.Items != null)
+                                {
+                                    if(tmpFeed.Items.Count() > 0)
+                                    {
+                                        List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                                        group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                                        for(int k = 0; k < group.FeedList[i].Items.Count(); k++)
+                                        {
+                                            updateList[k].Read = group.FeedList[i].Items[k].Read;
+                                        }
+                                        group.FeedList[i].Items = updateList;
+
+                                        updateSuccess = true;
+                                    }
+                                }
+                                
+                            }
+
+                            //mark Feed as updated or not
+                            group.FeedList[i].Updated = updateSuccess;
+                        }
                     }
                 }
             }

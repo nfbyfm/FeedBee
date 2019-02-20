@@ -119,7 +119,7 @@ namespace FeedRead.UI
                     {
                         for (int i = 0; i < mainModel.FeedList.Count(); i++)
                         {
-                            TreeNode feedNode = new TreeNode(mainModel.FeedList[i].Title);
+                            TreeNode feedNode = new TreeNode(mainModel.FeedList[i].GetNodeText());
                             feedNode.Tag = mainModel.FeedList[i];
 
                             mainNodes.Add(feedNode);
@@ -155,7 +155,7 @@ namespace FeedRead.UI
 
             if(group != null)
             {
-                groupNode = new TreeNode(group.Title);
+                groupNode = new TreeNode(group.GetNodeText());
                 groupNode.Tag = group;
 
                 //check for sub-Feedgroups and add them to this group's node
@@ -182,7 +182,7 @@ namespace FeedRead.UI
                         //add feeds to this group's node
                         for(int i = 0; i< group.FeedList.Count(); i++)
                         {
-                            TreeNode feedNode = new TreeNode(group.FeedList[i].Title);
+                            TreeNode feedNode = new TreeNode(group.FeedList[i].GetNodeText());
                             feedNode.Tag = group.FeedList[i];
 
                             groupNode.Nodes.Add(feedNode);
