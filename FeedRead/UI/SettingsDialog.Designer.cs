@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.bSelectFeedList = new System.Windows.Forms.Button();
             this.tB_FeedListPath = new System.Windows.Forms.TextBox();
+            this.cB_UpdateNSFW = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -143,11 +144,22 @@
             this.tB_FeedListPath.Size = new System.Drawing.Size(208, 20);
             this.tB_FeedListPath.TabIndex = 9;
             // 
+            // cB_UpdateNSFW
+            // 
+            this.cB_UpdateNSFW.AutoSize = true;
+            this.cB_UpdateNSFW.Location = new System.Drawing.Point(15, 78);
+            this.cB_UpdateNSFW.Name = "cB_UpdateNSFW";
+            this.cB_UpdateNSFW.Size = new System.Drawing.Size(113, 17);
+            this.cB_UpdateNSFW.TabIndex = 10;
+            this.cB_UpdateNSFW.Text = "update nsfw-feeds";
+            this.cB_UpdateNSFW.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(439, 161);
+            this.Controls.Add(this.cB_UpdateNSFW);
             this.Controls.Add(this.tB_FeedListPath);
             this.Controls.Add(this.bSelectFeedList);
             this.Controls.Add(this.label2);
@@ -179,5 +191,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button bSelectFeedList;
         private System.Windows.Forms.TextBox tB_FeedListPath;
+        private System.Windows.Forms.CheckBox cB_UpdateNSFW;
     }
 }

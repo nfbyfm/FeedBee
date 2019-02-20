@@ -6,8 +6,10 @@ using FeedRead.Utilities.OPML;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -205,21 +207,34 @@ namespace FeedRead
         public void ExportFeedList()
         {
             SaveFileDialog sadi = new SaveFileDialog();
-            sadi.Title = "Export opml-File";
+            sadi.Title = "Export feeds";
             sadi.RestoreDirectory = true;
-            sadi.Filter = "ompl-File|*.opml";
+            sadi.Filter = "txt-File|*.txt|ompl-File|*.opml";
 
             if (sadi.ShowDialog() == DialogResult.OK)
             {
-                if(opmlDoc != null)
+                switch(sadi.FilterIndex)
                 {
-                    StreamWriter writer = new StreamWriter(sadi.FileName);
-                    writer.Write(opmlDoc.ToString());
-                    writer.Close();
-                    writer.Dispose();
+                    case 1:
+                        //export as txt-file
+                        SaveListAsTxt(sadi.FileName);
+                        break;
+                    case 2:
+                        //export as opml-file
+                        if (opmlDoc != null)
+                        {
+                            StreamWriter writer = new StreamWriter(sadi.FileName);
+                            writer.Write(opmlDoc.ToString());
+                            writer.Close();
+                            writer.Dispose();
 
-                    MessageBox.Show("Successfully exported opml-file to: " + sadi.FileName);
+                            MessageBox.Show("Successfully exported opml-file to: " + sadi.FileName);
+                        }
+                        break;
+                    default:
+                        break;
                 }
+                
                 
             }
         }
@@ -278,10 +293,24 @@ namespace FeedRead
         /// </summary>
         public void UpdateFeeds()
         {
-            UpdateFeed(true);
+            UpdateFeed(Properties.Settings.Default.updateNSFW);
             UpdateTreeview();
         }
 
+        /// <summary>
+        /// open all unread feeds in external browser
+        /// </summary>
+        public void OpenUnreadFeeds()
+        {
+            if(mainModel != null)
+            {
+                OpenUnreadFeeds(mainModel, false);
+            }
+        }
+
+        /// <summary>
+        /// show the "about"-Dialog
+        /// </summary>
         public void ShowAboutDialog()
         {
             AboutBoxFeedRead aboutWindow = new AboutBoxFeedRead();
@@ -359,6 +388,17 @@ namespace FeedRead
             return mainModelID;
         }
 
+        /// <summary>
+        /// mark all feeds as read
+        /// </summary>
+        public void MarkAllAsRead()
+        {
+            if (mainModel != null)
+            {
+                MarkGroupAsRead(mainModel);
+                UpdateTreeview();
+            }
+        }
 
         /// <summary>
         /// download a (youtube-) video 
@@ -462,7 +502,28 @@ namespace FeedRead
             }
         }
 
-        //checks a url for feeds. returns null if none could be found
+        /// <summary>
+        /// save every feed-url in a txt-file
+        /// </summary>
+        /// <param name="filename"></param>
+        private void SaveListAsTxt(string filename)
+        {
+            string result = "";
+            GetFeedsFromGroup(mainModel, ref result);
+
+            StreamWriter writer = new StreamWriter(filename);
+            writer.Write(result);
+            writer.Close();
+            writer.Dispose();
+        }
+
+        
+        
+        /// <summary>
+        /// checks a url for feeds. returns null if none could be found
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public List<string> CheckUrlForFeeds(string url)
         {
             List<string> result = null;
@@ -562,9 +623,16 @@ namespace FeedRead
                             Feed tmpFeed = null;
                             bool updateSuccess = false;
 
+                            string url = group.FeedList[i].FeedURL;
+                            /*
+                            if (group.FeedList[i].Type == FeedType.Atom)
+                            {
+                                url = group.FeedList[i].Link;
+                            }
+                            */
                             try
                             {
-                                tmpFeed = FeedReader.Read(group.FeedList[i].FeedURL);
+                                tmpFeed = FeedReader.Read(url);
                             }
                             catch(Exception ex)
                             {
@@ -580,13 +648,24 @@ namespace FeedRead
                                         List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
                                         group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-                                        for(int k = 0; k < group.FeedList[i].Items.Count(); k++)
-                                        {
-                                            updateList[k].Read = group.FeedList[i].Items[k].Read;
-                                        }
-                                        group.FeedList[i].Items = updateList;
+                                        int limit = Math.Min(updateList.Count(), group.FeedList[i].Items.Count());
 
-                                        updateSuccess = true;
+                                        if(limit > 0)
+                                        {
+                                            //for(int k = 0; k < group.FeedList[i].Items.Count(); k++)
+                                            for (int k = 0; k < limit; k++)
+                                            {
+                                                updateList[k].Read = group.FeedList[i].Items[k].Read;
+                                            }
+                                            group.FeedList[i].Items = updateList;
+
+                                            updateSuccess = true;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Error while updating feed '" + group.FeedList[i].Title + "': number of new feeditems is smaller than one (" + limit + ").");
+                                        }
+                                        
                                     }
                                 }
                                 
@@ -599,6 +678,160 @@ namespace FeedRead
                 }
             }
         }
+        
+        
+        
+        /// <summary>
+        /// mark all feeds in feedgroup (and sub-groups) as read
+        /// </summary>
+        /// <param name="group"></param>
+        private void MarkGroupAsRead(FeedGroup group)
+        {
+            if(group != null)
+            {
+                if(group.FeedGroups != null)
+                {
+                    if(group.FeedGroups.Count() > 0)
+                    {
+                        foreach(FeedGroup subgroup in group.FeedGroups)
+                        {
+                            MarkGroupAsRead(subgroup);
+                        }
+                    }
+                }
+
+                if(group.FeedList != null)
+                {
+                    if(group.FeedList.Count() > 0)
+                    {
+                        foreach(Feed feed in group.FeedList)
+                        {
+                            if(feed.Items != null)
+                            {
+                                if(feed.Items.Count() > 0)
+                                {
+                                    foreach(FeedItem item in feed.Items)
+                                    {
+                                        item.Read = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine("All feeditems marked as read.");
+            }
+        }
+
+        /// <summary>
+        /// get a "list" of all feeds in a group (each url on a new line)
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="result">each url on a new line</param>
+        private void GetFeedsFromGroup(FeedGroup group, ref string result)
+        {
+            if (group != null)
+            {
+                if (group.FeedGroups != null)
+                {
+                    if (group.FeedGroups.Count() > 0)
+                    {
+                        foreach (FeedGroup subgroup in group.FeedGroups)
+                        {
+                            GetFeedsFromGroup(subgroup, ref result);
+                        }
+                    }
+                }
+
+                if (group.FeedList != null)
+                {
+                    if (group.FeedList.Count() > 0)
+                    {
+                        foreach (Feed feed in group.FeedList)
+                        {
+                            result += feed.FeedURL + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// open unread feeds in external browser (by choice only this group's feeds)
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="thisGroupOnly"></param>
+        private void OpenUnreadFeeds(FeedGroup group, bool thisGroupOnly)
+        {
+            if (group != null)
+            {
+                if (group.FeedGroups != null && !thisGroupOnly)
+                {
+                    if (group.FeedGroups.Count() > 0)
+                    {
+                        foreach (FeedGroup subgroup in group.FeedGroups)
+                        {
+                            OpenUnreadFeeds(subgroup, thisGroupOnly);
+                        }
+                    }
+                }
+
+                if (group.FeedList != null)
+                {
+                    if (group.FeedList.Count() > 0)
+                    {
+                        foreach (Feed feed in group.FeedList)
+                        {
+                            if (feed.Items != null)
+                            {
+                                if (feed.Items.Count() > 0)
+                                {
+                                    foreach (FeedItem item in feed.Items)
+                                    {
+                                        if(item.Read == false)
+                                        {
+                                            System.Diagnostics.Process.Start(item.Link);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url">The URL.</param>
+
+
+
+        /// <summary>
+        /// Gets the image from URL.
+        /// </summary>
+        /// <param name="url">the url of the image</param>
+        /// <param name="resultImage">image which gets loaded</param>
+        public void GetImageFromURL(string url, ref Image resultImage)
+        {
+            try
+            {
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+                HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream stream = httpWebReponse.GetResponseStream();
+                resultImage = Image.FromStream(stream);
+                stream.Close();
+                httpWebReponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("There was a problem downloading the image from '" + url + "': " + ex.Message);
+            }
+        }
+
         #endregion
     }
 }

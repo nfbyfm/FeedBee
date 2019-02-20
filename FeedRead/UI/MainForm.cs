@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -78,6 +80,16 @@ namespace FeedRead.UI
         {
             controller.UpdateFeeds();
         }
+
+        private void MarkAllAsReadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.MarkAllAsRead();
+        }
+
+        private void OpenAllUnreadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.OpenUnreadFeeds();
+        }
         #endregion
 
         #region draw-functions
@@ -90,9 +102,16 @@ namespace FeedRead.UI
         {
             tVMain.Nodes.Clear();
 
+            
 
+            
             if(mainModel != null)
             {
+                //list of icons for the feed-nodes
+                ImageList icons = new ImageList();
+                icons.Images.Add(Properties.Resources.defaultTreeNodeIcon);
+                Console.WriteLine("Length of imagelist for treeview before update: " + icons.Images.Count);
+
                 //list of all the primary nodes of the treeview
                 List<TreeNode> mainNodes = new List<TreeNode>();
 
@@ -103,7 +122,7 @@ namespace FeedRead.UI
                     {
                         for (int i = 0; i < mainModel.FeedGroups.Count(); i++)
                         {
-                            TreeNode tmpNode = GetNode(mainModel.FeedGroups[i]);
+                            TreeNode tmpNode = GetNode(mainModel.FeedGroups[i], ref icons);
                             if (tmpNode != null)
                             {
                                 mainNodes.Add(tmpNode);
@@ -119,11 +138,7 @@ namespace FeedRead.UI
                     {
                         for (int i = 0; i < mainModel.FeedList.Count(); i++)
                         {
-                            TreeNode feedNode = new TreeNode(mainModel.FeedList[i].GetNodeText());
-                            feedNode.Tag = mainModel.FeedList[i];
-
-                            mainNodes.Add(feedNode);
-
+                            mainNodes.Add(GetFeedNode(mainModel.FeedList[i], ref icons));
                         }
                     }
                 }
@@ -137,8 +152,11 @@ namespace FeedRead.UI
                         tVMain.Nodes.Add(mainNodes[i]);
                     }
                 }
-               
-               
+
+
+                tVMain.ImageList = icons;
+                
+                Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
             }
         }
 
@@ -149,7 +167,7 @@ namespace FeedRead.UI
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        private TreeNode GetNode(FeedGroup group)
+        private TreeNode GetNode(FeedGroup group, ref ImageList icons)
         {
             TreeNode groupNode = null;
 
@@ -165,7 +183,7 @@ namespace FeedRead.UI
                     {
                         for(int i=0; i< group.FeedGroups.Count(); i++)
                         {
-                            TreeNode subNode = GetNode(group.FeedGroups[i]);
+                            TreeNode subNode = GetNode(group.FeedGroups[i], ref icons);
                             if(subNode != null)
                             {
                                 groupNode.Nodes.Add(subNode);
@@ -179,19 +197,116 @@ namespace FeedRead.UI
                 {
                     if(group.FeedList.Count() > 0)
                     {
+                        /*
+                        foreach(Feed feed in group.FeedList)
+                        {
+                            TreeNode feedNode = new TreeNode(feed.GetNodeText());
+                            feedNode.Tag = feed;
+
+                            string imageUrl = feed.ImageUrl;
+
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(imageUrl) && !string.IsNullOrWhiteSpace(imageUrl))
+                                {
+
+                                    Image feedIcon = null;
+                                    controller.GetImageFromURL(imageUrl, ref feedIcon);
+
+                                    if (feedIcon != null)
+                                    {
+                                        icons.Images.Add(feedIcon);
+
+                                        feedNode.ImageIndex = icons.Images.Count - 1;
+                                        feedNode.SelectedImageIndex = icons.Images.Count - 1;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Image for " + feed.Title + "'. Image-URL = " + imageUrl + " is null.");
+                                    }
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
+                            }
+                            groupNode.Nodes.Add(feedNode);
+
+                        }
+                        */
                         //add feeds to this group's node
                         for(int i = 0; i< group.FeedList.Count(); i++)
                         {
-                            TreeNode feedNode = new TreeNode(group.FeedList[i].GetNodeText());
-                            feedNode.Tag = group.FeedList[i];
 
-                            groupNode.Nodes.Add(feedNode);
+                            groupNode.Nodes.Add(GetFeedNode(group.FeedList[i], ref icons));
                         }
+                        
                     }
                 }
             }
 
             return groupNode;
+        }
+
+
+        private TreeNode GetFeedNode(Feed feed, ref ImageList icons)
+        {
+            TreeNode feedNode = new TreeNode(feed.GetNodeText());
+            feedNode.Tag = feed;
+
+            string imageUrl = feed.ImageUrl;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(imageUrl) && !string.IsNullOrWhiteSpace(imageUrl))
+                {
+
+                    Image feedIcon = null;
+                    GetImageFromURL(imageUrl, ref feedIcon);
+
+                    if (feedIcon != null)
+                    {
+                        icons.Images.Add(feedIcon);
+
+                        feedNode.ImageIndex = icons.Images.Count - 1;
+                        feedNode.SelectedImageIndex = icons.Images.Count - 1;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Image for " + feed.Title + "'. Image-URL = " + imageUrl + " is null.");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
+            }
+
+            return feedNode;
+        }
+
+        /// <summary>
+        /// Gets the image from URL.
+        /// </summary>
+        /// <param name="url">the url of the image</param>
+        /// <param name="resultImage">image which gets loaded</param>
+        public void GetImageFromURL(string url, ref Image resultImage)
+        {
+            try
+            {
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+                HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream stream = httpWebReponse.GetResponseStream();
+                resultImage = Image.FromStream(stream);
+                stream.Close();
+                httpWebReponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("There was a problem downloading the image from '" + url + "': " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -409,6 +524,8 @@ namespace FeedRead.UI
                 }
             }
         }
+
+
 
         #endregion
 

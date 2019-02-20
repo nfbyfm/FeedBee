@@ -138,6 +138,8 @@ namespace FeedRead.UI
             tB_FeedListPath.Text = Properties.Settings.Default.loadListPath;
             cB_LoadUponStartup.Checked = Properties.Settings.Default.bLoadUponStartup;
             cB_LoadUponStartup_CheckedChanged(null,null);
+
+            cB_UpdateNSFW.Checked = Properties.Settings.Default.updateNSFW;
         }
 
         /// <summary>
@@ -148,7 +150,7 @@ namespace FeedRead.UI
             Properties.Settings.Default.youtubedlFolder = tB_youtubedlFolder.Text;
             Properties.Settings.Default.loadListPath = tB_FeedListPath.Text;
             Properties.Settings.Default.bLoadUponStartup = cB_LoadUponStartup.Checked;
-
+            Properties.Settings.Default.updateNSFW = cB_UpdateNSFW.Checked;
 
         }
 

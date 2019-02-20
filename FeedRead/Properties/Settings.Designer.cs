@@ -58,5 +58,17 @@ namespace FeedRead.Properties {
                 this["loadListPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool updateNSFW {
+            get {
+                return ((bool)(this["updateNSFW"]));
+            }
+            set {
+                this["updateNSFW"] = value;
+            }
+        }
     }
 }

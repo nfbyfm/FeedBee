@@ -205,6 +205,8 @@
   <ItemGroup>
     <None Include="Resources\rss_32.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\defaultTreeNodeIcon.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
