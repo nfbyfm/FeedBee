@@ -381,15 +381,22 @@ namespace FeedRead.UI
                             {
                                 read = "yes";
                             }
+                            
 
-                            string[] itemProperties = new string[] {     feedItem.Title,
-                                                        update,
-                                                        feedItem.Author,
-                                                        read
-                                                    };
+                            string[] itemProperties = new string[] {    feedItem.Title,
+                                                                        update,
+                                                                        feedItem.Author,
+                                                                        read
+                                                                    };
 
                             ListViewItem item = new ListViewItem(itemProperties);
                             item.Tag = feedItem;
+
+                            if (!feedItem.Read)
+                            {
+                                item.BackColor = Color.DarkOrange;
+                            }
+
                             lVFeedItems.Items.Add(item);
                         }
                     }
@@ -509,7 +516,23 @@ namespace FeedRead.UI
                             }
                             else
                             {
-                                browser.Navigate(item.Link);
+                                //try to display the description of the feed -> if not possible: load webpage
+                                bool loadWebpage = true;
+
+                                if(item.Description != null)
+                                {
+                                    if(!string.IsNullOrEmpty(item.Description) && !string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        browser.DocumentText = item.Description;
+                                        loadWebpage = false;
+                                    }
+                                }
+
+                                if(loadWebpage)
+                                {
+                                    browser.Navigate(item.Link);
+                                }
+                                
                             }
                         }
                     }

@@ -664,25 +664,69 @@ namespace FeedRead
                                     if(tmpFeed.Items.Count() > 0)
                                     {
                                         List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                                        
+
                                         group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-                                        int limit = Math.Min(updateList.Count(), group.FeedList[i].Items.Count());
+                                        int itemCountNew = updateList.Count();
+                                        int itemCountOld = group.FeedList[i].Items.Count();
 
-                                        if(limit > 0)
+                                        if((itemCountNew != itemCountOld) && (itemCountNew > 0))
                                         {
-                                            //for(int k = 0; k < group.FeedList[i].Items.Count(); k++)
-                                            for (int k = 0; k < limit; k++)
+                                            Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
+
+                                            List<FeedItem> tmpSwapList = new List<FeedItem>();
+
+                                            //compare both lists
+                                            foreach (FeedItem newItem in updateList)
                                             {
-                                                updateList[k].Read = group.FeedList[i].Items[k].Read;
+                                                newItem.Read = false;
+
+                                                
+                                                bool found = false;
+
+                                                //compare new item with all the old items
+                                                foreach(FeedItem oldItem in group.FeedList[i].Items)
+                                                {
+                                                    //compare id's
+                                                    if(newItem.Id == oldItem.Id)
+                                                    {
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                //if item couldn't be found in list -> add to temp. List
+                                                if(found == false)
+                                                {
+                                                    tmpSwapList.Add(newItem);
+                                                }
                                             }
-                                            group.FeedList[i].Items = updateList;
+
+                                            if(tmpSwapList.Count > 0)
+                                            {
+                                                //append old List
+                                                group.FeedList[i].Items.AddRange(tmpSwapList);
+
+                                                Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+
+                                                //order list again
+                                                group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
+                                            }
 
                                             updateSuccess = true;
+                                            
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Error while updating feed '" + group.FeedList[i].Title + "': number of new feeditems is smaller than one (" + limit + ").");
+                                            if(itemCountNew == itemCountOld)
+                                            {
+                                                updateSuccess = true;
+                                                Console.WriteLine("no updates found for '" + group.FeedList[i].Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+                                            }
                                         }
+                                        
                                         
                                     }
                                 }
