@@ -18,7 +18,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace FeedRead
+namespace FeedRead.Control
 {
     
     /// <summary>
@@ -263,8 +263,27 @@ namespace FeedRead
                     //get group-name
                     string groupName = sGD.groupName;
 
-                    Feed newFeed = FeedReader.Read(newFeedUrl);
-                    newFeed.FeedURL = newFeedUrl;
+                    Feed newFeed = null;
+
+                    if(newFeedUrl.ToLower().Contains("mangarock"))
+                    {
+                        newFeed = new Feed();
+                        ComicFeedReader reader = new ComicFeedReader();
+                        reader.Read(newFeedUrl, ref newFeed);
+
+                        if(newFeed == null)
+                        {
+                            MessageBox.Show("Error while adding new feed to list.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        newFeed = FeedReader.Read(newFeedUrl);
+                        newFeed.FeedURL = newFeedUrl;
+                    }
+                    
+                    
 
                     //check if it's anew group
                     if (sGD.addNewGroupName)
@@ -302,7 +321,7 @@ namespace FeedRead
             Thread t2 = new Thread(delegate ()
             {
                 mainForm.SetStatusText("updating feeds ...", -1);
-                UpdateFeed(Properties.Settings.Default.updateNSFW);
+                UpdateFeed(!Properties.Settings.Default.updateNSFW);
                 mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeView), mainModel);
                 mainForm.SetStatusText("feeds updated", 2000);
             });
@@ -551,38 +570,44 @@ namespace FeedRead
 
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrWhiteSpace(url) && validURL)
             {
-
-                var urls = FeedReader.GetFeedUrlsFromUrl(url);
-                
-                if (urls.Count() < 1) // no url - probably the url is already the right feed url
+                if(url.ToLower().Contains("mangarock"))
                 {
-                    
-                    //try to get the actual Feed-Items from the url
-                    try
-                    {
-                        var feed = FeedReader.Read(url);
-
-                        //if successful: add to list
-                        result = new List<string>();
-                        result.Add(url);
-
-                    }
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
-                    }
+                    result = new List<string>();
+                    result.Add(url);
                 }
                 else
                 {
-                    result = new List<string>();
+                    var urls = FeedReader.GetFeedUrlsFromUrl(url);
 
-                    //add each found feed to list
-                    foreach(HtmlFeedLink feedLink in urls)
+                    if (urls.Count() < 1) // no url - probably the url is already the right feed url
                     {
-                        result.Add(feedLink.Url);
+
+                        //try to get the actual Feed-Items from the url
+                        try
+                        {
+                            var feed = FeedReader.Read(url);
+
+                            //if successful: add to list
+                            result = new List<string>();
+                            result.Add(url);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        result = new List<string>();
+
+                        //add each found feed to list
+                        foreach (HtmlFeedLink feedLink in urls)
+                        {
+                            result.Add(feedLink.Url);
+                        }
                     }
                 }
-
             }
 
 
@@ -642,15 +667,30 @@ namespace FeedRead
                             bool updateSuccess = false;
 
                             string url = group.FeedList[i].FeedURL;
-                            /*
-                            if (group.FeedList[i].Type == FeedType.Atom)
-                            {
-                                url = group.FeedList[i].Link;
-                            }
-                            */
+                            
                             try
                             {
-                                tmpFeed = FeedReader.Read(url);
+                                if (url.ToLower().Contains("mangarock"))
+                                {
+                                    tmpFeed = new Feed();
+                                    ComicFeedReader reader = new ComicFeedReader();
+                                    reader.Read(url, ref tmpFeed);
+
+                                    if (tmpFeed == null)
+                                    {
+                                        Console.WriteLine("Error while getting update for '" + group.FeedList[i].Title + "': Couldn't get new feed for comparing.");
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("done getting manga-feed for comapring '" + group.FeedList[i].Title + "'");
+                                    }
+                                }
+                                else
+                                {
+                                    tmpFeed = FeedReader.Read(url);
+                                }
+                                
                             }
                             catch(Exception ex)
                             {

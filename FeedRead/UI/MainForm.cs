@@ -1,4 +1,5 @@
 ﻿using CodeHollow.FeedReader;
+using FeedRead.Control;
 using FeedRead.Model;
 using System;
 using System.Collections.Generic;

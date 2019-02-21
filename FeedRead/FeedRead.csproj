@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\ComicFeedReader.cs" />
     <Compile Include="Model\FeedGroup.cs" />
     <Compile Include="UI\AboutBoxFeedRead.cs">
       <SubType>Form</SubType>
@@ -131,7 +133,6 @@
     <Compile Include="Utilities\OMPL2\OpmlDocument.cs" />
     <Compile Include="Utilities\OMPL2\OpmlElement.cs" />
     <Compile Include="Utilities\OMPL2\Outline.cs" />
-    <Compile Include="Model\ComicFeed\ComicFeed.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
     <Compile Include="Utilities\OPML\OPML.cs" />
