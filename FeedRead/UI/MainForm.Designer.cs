@@ -52,7 +52,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new TimedStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tVMain = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -480,7 +480,7 @@
         private System.Windows.Forms.ToolStripMenuItem MarkAllAsReadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openExternallyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenAllUnreadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private TimedStatusLabel statusLabel;
     }
 }
 

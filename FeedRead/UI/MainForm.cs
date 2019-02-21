@@ -413,10 +413,17 @@ namespace FeedRead.UI
         /// set text (timed) of the statusStripLabel
         /// </summary>
         /// <param name="text"></param>
-        /// <param name="milliseconds"></param>
+        /// <param name="milliseconds">if smaller than 1 -> text gets shown permanently</param>
         public void SetStatusText(string text, int milliseconds)
         {
-            statusLabel.Text = text;
+            if(milliseconds > 0)
+            {
+                statusLabel.setTimedText(text, milliseconds);
+            }
+            else
+            {
+                statusLabel.Text = text;
+            }
         }
         #endregion
 

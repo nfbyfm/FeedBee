@@ -64,6 +64,9 @@
     <Compile Include="UI\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\TimedStatusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utilities\FeedReader\Extensions.cs" />
     <Compile Include="Utilities\FeedReader\Feed.cs" />
     <Compile Include="Utilities\FeedReader\FeedItem.cs" />
