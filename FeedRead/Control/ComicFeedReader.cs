@@ -98,7 +98,7 @@ namespace FeedRead.Control
                                         url += suburl.Remove(suburl.IndexOf("\""));
                                     }
 
-                                    Console.WriteLine("suburl = " + suburl + "   url = " + url);
+                                    //Console.WriteLine("suburl = " + suburl + "   url = " + url);
 
                                     
                                     string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();

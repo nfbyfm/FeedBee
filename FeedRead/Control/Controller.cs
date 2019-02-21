@@ -157,8 +157,7 @@ namespace FeedRead.Control
                         break;
                     case 2:
                         //open txt-file
-                        
-                        
+                        ImportFromTxt(odi.FileName);
                         break;
                     default:
                         //do nothing
@@ -202,6 +201,8 @@ namespace FeedRead.Control
 
             }
         }
+
+        
 
         /// <summary>
         /// export the current mainModel / FeedGroup
@@ -265,45 +266,31 @@ namespace FeedRead.Control
 
                     Feed newFeed = null;
 
-                    if(newFeedUrl.ToLower().Contains("mangarock"))
-                    {
-                        newFeed = new Feed();
-                        ComicFeedReader reader = new ComicFeedReader();
-                        reader.Read(newFeedUrl, ref newFeed);
+                    GetFeed(newFeedUrl, ref newFeed);
 
-                        if(newFeed == null)
+                    if(newFeed != null)
+                    {
+                        //check if it's anew group
+                        if (sGD.addNewGroupName)
                         {
-                            MessageBox.Show("Error while adding new feed to list.");
-                            return;
+                            //create a new group and add the feed to it
+                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+
+                            mainModel.AddFeedAndGroup(newFeed, groupName, "");
+
+                            UpdateTreeview();
+                        }
+                        else
+                        {
+                            //find selected group
+                            //check if feed already exists and if not, add the new feed to it
+                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                            mainModel.AddFeed(newFeed, groupName);
+
+                            UpdateTreeview();
                         }
                     }
-                    else
-                    {
-                        newFeed = FeedReader.Read(newFeedUrl);
-                        newFeed.FeedURL = newFeedUrl;
-                    }
                     
-                    
-
-                    //check if it's anew group
-                    if (sGD.addNewGroupName)
-                    {
-                        //create a new group and add the feed to it
-                        //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
-                        
-                        mainModel.AddFeedAndGroup(newFeed, groupName, "");
-
-                        UpdateTreeview();
-                    }
-                    else
-                    {
-                        //find selected group
-                        //check if feed already exists and if not, add the new feed to it
-                        //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
-                        mainModel.AddFeed(newFeed, groupName);
-
-                        UpdateTreeview();
-                    }
                    
                 }
             }
@@ -514,6 +501,109 @@ namespace FeedRead.Control
             }
         }
 
+        private void ImportFromTxt(string filename)
+        {
+            if(File.Exists(filename))
+            {
+                //show group-Dialog
+                SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
+
+                if (sGD.ShowDialog() == DialogResult.OK)
+                {
+                    //get group-name
+                    string groupName = sGD.groupName;
+
+                    //check if group has to get added first
+                    bool groupAdded = false;
+
+                    if (!sGD.addNewGroupName)
+                    {
+                        groupAdded = true;
+                    }
+
+                    //start own new thread for importing
+                    Thread t2 = new Thread(delegate ()
+                    {
+                        mainForm.SetStatusText("importing feeds ...", -1);
+
+                        ImportFromTxtSubFunction(filename, ref groupAdded, groupName);
+
+                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeView), mainModel);
+                        mainForm.SetStatusText("import done", 2000);
+                    });
+                    t2.Start();
+
+
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Error: Selected file doesn't exist.", "Import feed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ImportFromTxtSubFunction(string filename, ref bool groupAdded, string groupName)
+        {
+            var feedFile = File.ReadAllLines(filename);
+            List<string> lines = new List<string>(feedFile);
+
+            if (lines != null)
+            {
+                if (lines.Count() > 0)
+                {
+                    foreach (string line in lines)
+                    {
+                        Feed newFeed = new Feed();
+
+                        GetFeed(line, ref newFeed);
+
+                        if (newFeed != null)
+                        {
+                            if (groupAdded == false)
+                            {
+                                //add new group and the the feed to it
+                                mainModel.AddFeedAndGroup(newFeed, groupName, "");
+                                groupAdded = true;
+                            }
+                            else
+                            {
+                                //add feed to existing grooup
+                                mainModel.AddFeed(newFeed, groupName);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// get feed from a url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="newFeed"></param>
+        private void GetFeed(string url, ref Feed newFeed)
+        {
+            
+            if (url.ToLower().Contains("mangarock"))
+            {
+                newFeed = new Feed();
+                ComicFeedReader reader = new ComicFeedReader();
+                reader.Read(url, ref newFeed);
+
+                if (newFeed == null)
+                {
+                    MessageBox.Show("Error while adding new feed from '" + url + "' to list.");
+                    return;
+                }
+            }
+            else
+            {
+                newFeed = FeedReader.Read(url);
+                newFeed.FeedURL = url;
+            }
+        }
 
         private void SaveListAsXML(string filename)
         {
