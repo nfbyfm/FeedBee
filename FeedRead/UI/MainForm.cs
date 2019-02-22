@@ -95,7 +95,32 @@ namespace FeedRead.UI
 
         #region draw-functions
 
-        
+        /// <summary>
+        /// dis-/enable gui-functions that let the user manipulate the feeds
+        /// </summary>
+        /// <param name="enable"></param>
+        public void EnableFeedFunctionalities(bool enable)
+        {
+            feedToolStripMenuItem.Enabled = enable;
+            addToolStripMenuItem.Enabled = enable;
+            updateToolStripMenuItem.Enabled = enable;
+            importToolStripMenuItem.Enabled = enable;
+            exportToolStripMenuItem.Enabled = enable;
+            openListToolStripMenuItem.Enabled = enable;
+            saveListToolStripMenuItem.Enabled = enable;
+            settingsToolStripMenuItem.Enabled = enable;
+        }
+
+        /// <summary>
+        /// method for updating treeview after update of feeds
+        /// </summary>
+        /// <param name="mainModel"></param>
+        public void UpdateTreeViewUnlock(FeedGroup mainModel)
+        {
+            UpdateTreeView(mainModel);
+            EnableFeedFunctionalities(true);
+        }
+
         /// <summary>
         /// triggers redraw of the treeview (feeds and feed-groups)
         /// </summary>

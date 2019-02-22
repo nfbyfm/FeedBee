@@ -304,12 +304,12 @@ namespace FeedRead.Control
         /// </summary>
         public void UpdateFeeds()
         {
-            
+            mainForm.EnableFeedFunctionalities(false);
             Thread t2 = new Thread(delegate ()
             {
                 mainForm.SetStatusText("updating feeds ...", -1);
                 UpdateFeed(!Properties.Settings.Default.updateNSFW);
-                mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeView), mainModel);
+                mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
                 mainForm.SetStatusText("feeds updated", 2000);
             });
             t2.Start();
@@ -521,6 +521,8 @@ namespace FeedRead.Control
                         groupAdded = true;
                     }
 
+                    mainForm.EnableFeedFunctionalities(false);
+
                     //start own new thread for importing
                     Thread t2 = new Thread(delegate ()
                     {
@@ -528,7 +530,7 @@ namespace FeedRead.Control
 
                         ImportFromTxtSubFunction(filename, ref groupAdded, groupName);
 
-                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeView), mainModel);
+                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
                         mainForm.SetStatusText("import done", 2000);
                     });
                     t2.Start();
