@@ -102,6 +102,9 @@ namespace FeedRead.UI
         /// <param name="mainModel"></param>
         public void UpdateTreeView(FeedGroup mainModel)
         {
+            ClearPropertyDisplays();
+            lVFeedItems.Items.Clear();
+
             tVMain.Nodes.Clear();
 
             
@@ -110,7 +113,7 @@ namespace FeedRead.UI
                 //list of icons for the feed-nodes
                 ImageList icons = new ImageList();
                 icons.Images.Add(Properties.Resources.defaultTreeNodeIcon);
-                Console.WriteLine("Length of imagelist for treeview before update: " + icons.Images.Count);
+                //Console.WriteLine("Length of imagelist for treeview before update: " + icons.Images.Count);
 
                 //list of all the primary nodes of the treeview
                 List<TreeNode> mainNodes = new List<TreeNode>();
@@ -156,7 +159,7 @@ namespace FeedRead.UI
 
                 tVMain.ImageList = icons;
                 
-                Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
+                //Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
             }
         }
 
@@ -445,6 +448,7 @@ namespace FeedRead.UI
         private void tVMain_AfterSelect(object sender, TreeViewEventArgs e)
         {
             ClearPropertyDisplays();
+            lVFeedItems.Items.Clear();
 
             if (tVMain.SelectedNode != null)
             {

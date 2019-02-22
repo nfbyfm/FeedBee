@@ -1,12 +1,9 @@
 # FeedRead
 
-This program is a simple RSS-Reader in Development. This software has been written for Windows 7 and up. You can download the latest release [here](https://github.com/nfbyfm/FeedRead/releases).
+This program is a simple RSS-Reader in Development. This software has been written for Windows 7 and up. (Once published) You can download the latest release [here](https://github.com/nfbyfm/FeedRead/releases).
 
 ![Screenshot ReedRead](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/MainApp.jpg)
 
-## used libraries and code
-
-OPML-Classes: [Comburo's Code (FeedLister)](https://github.com/comburo/FeedLister)
 
 ## used icons
 <div>

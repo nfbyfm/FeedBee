@@ -594,7 +594,7 @@ namespace FeedRead.Control
 
                 if (newFeed == null)
                 {
-                    MessageBox.Show("Error while adding new feed from '" + url + "' to list.");
+                    Console.WriteLine("Error while getting feed from '" + url + "' to list.");
                     return;
                 }
             }
@@ -748,130 +748,178 @@ namespace FeedRead.Control
                         checkNSFW = !group.Title.ToLower().Contains("nsfw");
                     }
 
+
+                    
+
                     if(group.FeedList.Count > 0 && checkNSFW)
                     {
-                        for(int i =0; i< group.FeedList.Count(); i++)
+                        //create a list of threads
+                        List<Thread> tList = new List<Thread>();
+
+                        for (int i =0; i< group.FeedList.Count(); i++)
                         {
-                            //get Feeditems
-                            Feed tmpFeed = null;
-                            bool updateSuccess = false;
-
-                            string url = group.FeedList[i].FeedURL;
+                            Feed fed = group.FeedList[i];
+                            //start own new thread for importing
+                            Thread t1 = new Thread(delegate ()
+                            {
+                                
+                                UpdateFeed(fed);
+                            });
                             
-                            try
+                            //add thread to list
+                            tList.Add(t1);
+                        }
+
+                        int numberOfThreads = tList.Count();
+                        Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
+
+                        //start every thread at once
+                        foreach (Thread th in tList)
+                        {
+                            th.Start();
+                        }
+
+                        bool updateFinished = false;
+                        int counter_before = 0;
+
+                        //wait until each thread ist finished
+                        while (!updateFinished)
+                        {
+                            int counter = 0;
+
+                            foreach (Thread thr in tList)
                             {
-                                if (url.ToLower().Contains("mangarock"))
+                                if (thr.IsAlive == false)
                                 {
-                                    tmpFeed = new Feed();
-                                    ComicFeedReader reader = new ComicFeedReader();
-                                    reader.Read(url, ref tmpFeed);
-
-                                    if (tmpFeed == null)
-                                    {
-                                        Console.WriteLine("Error while getting update for '" + group.FeedList[i].Title + "': Couldn't get new feed for comparing.");
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("done getting manga-feed for comapring '" + group.FeedList[i].Title + "'");
-                                    }
+                                    counter++;
                                 }
-                                else
-                                {
-                                    tmpFeed = FeedReader.Read(url);
-                                }
-                                
-                            }
-                            catch(Exception ex)
-                            {
-                                Console.WriteLine("Error getting update-feed for '" + group.FeedList[i].Title + "': " + ex.Message);
-                            }
-
-                            if(tmpFeed != null)
-                            {
-                                if(tmpFeed.Items != null)
-                                {
-                                    if(tmpFeed.Items.Count() > 0)
-                                    {
-                                        List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-                                        
-
-                                        group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-                                        int itemCountNew = updateList.Count();
-                                        int itemCountOld = group.FeedList[i].Items.Count();
-
-                                        if((itemCountNew != itemCountOld) && (itemCountNew > 0))
-                                        {
-                                            Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
-
-                                            List<FeedItem> tmpSwapList = new List<FeedItem>();
-
-                                            //compare both lists
-                                            foreach (FeedItem newItem in updateList)
-                                            {
-                                                newItem.Read = false;
-
-                                                
-                                                bool found = false;
-
-                                                //compare new item with all the old items
-                                                foreach(FeedItem oldItem in group.FeedList[i].Items)
-                                                {
-                                                    //compare id's
-                                                    if(newItem.Id == oldItem.Id)
-                                                    {
-                                                        found = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                                //if item couldn't be found in list -> add to temp. List
-                                                if(found == false)
-                                                {
-                                                    tmpSwapList.Add(newItem);
-                                                }
-                                            }
-
-                                            if(tmpSwapList.Count > 0)
-                                            {
-                                                //append old List
-                                                group.FeedList[i].Items.AddRange(tmpSwapList);
-
-                                                Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
-
-                                                //order list again
-                                                group.FeedList[i].Items = group.FeedList[i].Items.OrderByDescending(o => o.PublishingDate).ToList();
-                                            }
-
-                                            updateSuccess = true;
-                                            
-                                        }
-                                        else
-                                        {
-                                            if(itemCountNew == itemCountOld)
-                                            {
-                                                updateSuccess = true;
-                                                Console.WriteLine("no updates found for '" + group.FeedList[i].Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
-                                            }
-                                        }
-                                        
-                                        
-                                    }
-                                }
-                                
                             }
 
-                            //mark Feed as updated or not
-                            group.FeedList[i].Updated = updateSuccess;
+                            if (counter != counter_before)
+                            {
+                                mainForm.SetStatusText("Updating " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                                //Console.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
+                                counter_before = counter;
+                            }
+
+                            if (counter == numberOfThreads)
+                            {
+                                updateFinished = true;
+                            }
                         }
                     }
+                    
+
+                    //Console.WriteLine("update finished");
+                    //MessageBox.Show("Update finished");
                 }
             }
         }
+
         
-        
+
+        /// <summary>
+        /// update a single feed
+        /// </summary>
+        /// <param name="origFeed"></param>
+        private void UpdateFeed(Feed origFeed)
+        {
+
+            //Console.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+
+            //get Feeditems
+            Feed tmpFeed = null;
+
+            bool updateSuccess = false;
+
+            string url = origFeed.FeedURL;
+
+
+            //try to get current feed
+            GetFeed(url, ref tmpFeed);
+
+            if (tmpFeed != null)
+            {
+                if (tmpFeed.Items != null)
+                {
+                    if (tmpFeed.Items.Count() > 0)
+                    {
+                        List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+
+
+                        origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                        int itemCountNew = updateList.Count();
+                        int itemCountOld = origFeed.Items.Count();
+
+                        if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
+                        {
+                            //Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
+
+                            List<FeedItem> tmpSwapList = new List<FeedItem>();
+
+                            //compare both lists
+                            foreach (FeedItem newItem in updateList)
+                            {
+                                newItem.Read = false;
+
+
+                                bool found = false;
+
+                                //compare new item with all the old items
+                                foreach (FeedItem oldItem in origFeed.Items)
+                                {
+                                    //compare id's
+                                    if (newItem.Id == oldItem.Id)
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                //if item couldn't be found in list -> add to temp. List
+                                if (found == false)
+                                {
+                                    tmpSwapList.Add(newItem);
+                                }
+                            }
+
+                            if (tmpSwapList.Count > 0)
+                            {
+                                //append old List
+                                origFeed.Items.AddRange(tmpSwapList);
+
+                                //Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+
+                                //order list again
+                                origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                            }
+
+                            updateSuccess = true;
+
+                        }
+                        else
+                        {
+                            if (itemCountNew == itemCountOld)
+                            {
+                                updateSuccess = true;
+                                Console.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+                            }
+                        }
+
+
+                    }
+                }
+
+            }
+
+            //mark Feed as updated or not
+            origFeed.Updated = updateSuccess;
+
+            //Console.WriteLine("Update of '" + origFeed.Title + "' is done.");
+        }
+
         
         /// <summary>
         /// mark all feeds in feedgroup (and sub-groups) as read
