@@ -40,6 +40,9 @@
             this.bSelectFeedList = new System.Windows.Forms.Button();
             this.tB_FeedListPath = new System.Windows.Forms.TextBox();
             this.cB_UpdateNSFW = new System.Windows.Forms.CheckBox();
+            this.cB_UpdateUponLoad = new System.Windows.Forms.CheckBox();
+            this.cB_DisplayFeedIcons = new System.Windows.Forms.CheckBox();
+            this.cB_FilterIFrames = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -74,7 +77,7 @@
             // b_Reset
             // 
             this.b_Reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.b_Reset.Location = new System.Drawing.Point(12, 126);
+            this.b_Reset.Location = new System.Drawing.Point(12, 183);
             this.b_Reset.Name = "b_Reset";
             this.b_Reset.Size = new System.Drawing.Size(75, 23);
             this.b_Reset.TabIndex = 3;
@@ -85,7 +88,7 @@
             // b_Save
             // 
             this.b_Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Save.Location = new System.Drawing.Point(271, 126);
+            this.b_Save.Location = new System.Drawing.Point(271, 183);
             this.b_Save.Name = "b_Save";
             this.b_Save.Size = new System.Drawing.Size(75, 23);
             this.b_Save.TabIndex = 4;
@@ -96,7 +99,7 @@
             // b_Cancel
             // 
             this.b_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Cancel.Location = new System.Drawing.Point(352, 126);
+            this.b_Cancel.Location = new System.Drawing.Point(352, 183);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
             this.b_Cancel.TabIndex = 5;
@@ -154,11 +157,44 @@
             this.cB_UpdateNSFW.Text = "update nsfw-feeds";
             this.cB_UpdateNSFW.UseVisualStyleBackColor = true;
             // 
+            // cB_UpdateUponLoad
+            // 
+            this.cB_UpdateUponLoad.AutoSize = true;
+            this.cB_UpdateUponLoad.Location = new System.Drawing.Point(15, 101);
+            this.cB_UpdateUponLoad.Name = "cB_UpdateUponLoad";
+            this.cB_UpdateUponLoad.Size = new System.Drawing.Size(138, 17);
+            this.cB_UpdateUponLoad.TabIndex = 11;
+            this.cB_UpdateUponLoad.Text = "update feeds upon load";
+            this.cB_UpdateUponLoad.UseVisualStyleBackColor = true;
+            // 
+            // cB_DisplayFeedIcons
+            // 
+            this.cB_DisplayFeedIcons.AutoSize = true;
+            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(15, 124);
+            this.cB_DisplayFeedIcons.Name = "cB_DisplayFeedIcons";
+            this.cB_DisplayFeedIcons.Size = new System.Drawing.Size(183, 17);
+            this.cB_DisplayFeedIcons.TabIndex = 12;
+            this.cB_DisplayFeedIcons.Text = "display feed-icons where possible";
+            this.cB_DisplayFeedIcons.UseVisualStyleBackColor = true;
+            // 
+            // cB_FilterIFrames
+            // 
+            this.cB_FilterIFrames.AutoSize = true;
+            this.cB_FilterIFrames.Location = new System.Drawing.Point(15, 147);
+            this.cB_FilterIFrames.Name = "cB_FilterIFrames";
+            this.cB_FilterIFrames.Size = new System.Drawing.Size(168, 17);
+            this.cB_FilterIFrames.TabIndex = 13;
+            this.cB_FilterIFrames.Text = "Browser: don\'t display IFrames";
+            this.cB_FilterIFrames.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(439, 161);
+            this.ClientSize = new System.Drawing.Size(439, 218);
+            this.Controls.Add(this.cB_FilterIFrames);
+            this.Controls.Add(this.cB_DisplayFeedIcons);
+            this.Controls.Add(this.cB_UpdateUponLoad);
             this.Controls.Add(this.cB_UpdateNSFW);
             this.Controls.Add(this.tB_FeedListPath);
             this.Controls.Add(this.bSelectFeedList);
@@ -192,5 +228,8 @@
         private System.Windows.Forms.Button bSelectFeedList;
         private System.Windows.Forms.TextBox tB_FeedListPath;
         private System.Windows.Forms.CheckBox cB_UpdateNSFW;
+        private System.Windows.Forms.CheckBox cB_UpdateUponLoad;
+        private System.Windows.Forms.CheckBox cB_DisplayFeedIcons;
+        private System.Windows.Forms.CheckBox cB_FilterIFrames;
     }
 }

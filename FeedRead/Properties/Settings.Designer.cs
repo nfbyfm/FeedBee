@@ -70,5 +70,41 @@ namespace FeedRead.Properties {
                 this["updateNSFW"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool updateUponLoad {
+            get {
+                return ((bool)(this["updateUponLoad"]));
+            }
+            set {
+                this["updateUponLoad"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool filterIFrames {
+            get {
+                return ((bool)(this["filterIFrames"]));
+            }
+            set {
+                this["filterIFrames"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool displayFeedIcons {
+            get {
+                return ((bool)(this["displayFeedIcons"]));
+            }
+            set {
+                this["displayFeedIcons"] = value;
+            }
+        }
     }
 }

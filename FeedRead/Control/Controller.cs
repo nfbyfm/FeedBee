@@ -38,10 +38,17 @@ namespace FeedRead.Control
             this.mainForm = mainForm;
             this.mainModel = new FeedGroup(mainModelID, ""); 
 
+            //load default-List upon startup
             if(Properties.Settings.Default.bLoadUponStartup)
             {
                 OpenListFromXML(Properties.Settings.Default.loadListPath);
                 UpdateTreeview();
+            }
+
+            //update feeds upon load
+            if(Properties.Settings.Default.updateUponLoad)
+            {
+                UpdateFeeds();
             }
         }
 

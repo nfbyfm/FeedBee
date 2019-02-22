@@ -52,7 +52,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new TimedStatusLabel();
+            this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tVMain = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -408,6 +408,7 @@
             this.browser.ScriptErrorsSuppressed = true;
             this.browser.Size = new System.Drawing.Size(639, 277);
             this.browser.TabIndex = 0;
+            this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
             // 
             // MainForm
             // 

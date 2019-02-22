@@ -140,6 +140,10 @@ namespace FeedRead.UI
             cB_LoadUponStartup_CheckedChanged(null,null);
 
             cB_UpdateNSFW.Checked = Properties.Settings.Default.updateNSFW;
+
+            cB_DisplayFeedIcons.Checked = Properties.Settings.Default.displayFeedIcons;
+            cB_FilterIFrames.Checked = Properties.Settings.Default.filterIFrames;
+            cB_UpdateUponLoad.Checked = Properties.Settings.Default.updateUponLoad;
         }
 
         /// <summary>
@@ -151,6 +155,11 @@ namespace FeedRead.UI
             Properties.Settings.Default.loadListPath = tB_FeedListPath.Text;
             Properties.Settings.Default.bLoadUponStartup = cB_LoadUponStartup.Checked;
             Properties.Settings.Default.updateNSFW = cB_UpdateNSFW.Checked;
+
+
+            Properties.Settings.Default.displayFeedIcons = cB_DisplayFeedIcons.Checked;
+            Properties.Settings.Default.filterIFrames = cB_FilterIFrames.Checked;
+            Properties.Settings.Default.updateUponLoad = cB_UpdateUponLoad.Checked;
 
         }
 
