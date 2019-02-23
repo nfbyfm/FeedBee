@@ -1,6 +1,7 @@
 ﻿using CodeHollow.FeedReader;
 using FeedRead.Control;
 using FeedRead.Model;
+using FeedRead.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ namespace FeedRead.UI
     public partial class MainForm : Form
     {
         private Controller controller;
+        private InternetCheck internetCheck;
 
         #region Constructor(-s) and setup-functions
 
@@ -28,7 +30,9 @@ namespace FeedRead.UI
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            controller = new Controller(this);
+            internetCheck = new InternetCheck();
+
+            controller = new Controller(this, internetCheck);
 
             ClearPropertyDisplays();            
         }
@@ -157,7 +161,10 @@ namespace FeedRead.UI
 
             tVMain.Nodes.Clear();
 
-            bool displayIcons = Properties.Settings.Default.displayFeedIcons;
+            //to display icons the setting has to be true and a internet-connection has to be available
+            bool displayIcons = Properties.Settings.Default.displayFeedIcons && internetCheck.ConnectedToInternet();
+
+                       
             
             if(mainModel != null)
             {
@@ -544,26 +551,26 @@ namespace FeedRead.UI
                                 b_DownloadVideo.Visible = true;
                                 b_DownloadVideo.Enabled = true;
                             }
-                            else
-                            {
+                            //else
+                            //{
                                 //try to display the description of the feed -> if not possible: load webpage
-                                bool loadWebpage = true;
+                            bool loadWebpage = true;
 
-                                if(item.Description != null)
+                            if(item.Description != null)
+                            {
+                                if(!string.IsNullOrEmpty(item.Description) && !string.IsNullOrWhiteSpace(item.Description))
                                 {
-                                    if(!string.IsNullOrEmpty(item.Description) && !string.IsNullOrWhiteSpace(item.Description))
-                                    {
-                                        browser.DocumentText = item.Description;
-                                        loadWebpage = false;
-                                    }
+                                    browser.DocumentText = item.Description;
+                                    loadWebpage = false;
                                 }
-
-                                if(loadWebpage)
-                                {
-                                    browser.Navigate(item.Link);
-                                }
-                                
                             }
+
+                            if(loadWebpage)
+                            {
+                                browser.Navigate(item.Link);
+                            }
+                                
+                            //}
                         }
                     }
                 }

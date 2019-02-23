@@ -1,6 +1,7 @@
 ﻿using CodeHollow.FeedReader;
 using FeedRead.Model;
 using FeedRead.UI;
+using FeedRead.Utilities;
 using FeedRead.Utilities.OPML;
 //using FeedLister;
 using System;
@@ -10,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -20,7 +22,6 @@ using System.Xml.Serialization;
 
 namespace FeedRead.Control
 {
-    
     /// <summary>
     /// main Class for controlling everything
     /// </summary>
@@ -33,16 +34,40 @@ namespace FeedRead.Control
         public const string mainModelID = "mainModel";
         private const string youtubeID = "Youtube";
 
-        public Controller(MainForm mainForm)
+        private InternetCheck internetCheck;
+        
+        public Controller(MainForm mainForm, InternetCheck iCheck)
         {
             this.mainForm = mainForm;
-            this.mainModel = new FeedGroup(mainModelID, ""); 
+            this.mainModel = new FeedGroup(mainModelID, "");
+            this.internetCheck = iCheck;
+
 
             //load default-List upon startup
             if(Properties.Settings.Default.bLoadUponStartup)
             {
-                OpenListFromXML(Properties.Settings.Default.loadListPath);
-                UpdateTreeview();
+                try
+                {
+                    OpenListFromXML(Properties.Settings.Default.loadListPath);
+                    
+
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error while loading list: " + ex.Message);
+                }
+
+                try
+                {
+                    UpdateTreeview();
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while updating treeview: " + ex.Message);
+                }
+                
             }
 
             //update feeds upon load
@@ -103,7 +128,14 @@ namespace FeedRead.Control
             odi.Title = "Import opml-file";
             odi.RestoreDirectory = true;
             odi.Multiselect = false;
-            odi.Filter = "ompl-file|*.opml|txt-file|*.txt";
+            odi.Filter = "ompl-file|*.opml";
+
+            //only import from txt-file if internet-connectivity is guaranteed
+            if (CheckInternetConnectivity())
+            {
+                odi.Filter += "|txt-file|*.txt";
+            }
+            
 
             if(odi.ShowDialog() == DialogResult.OK)
             {
@@ -255,51 +287,58 @@ namespace FeedRead.Control
         /// </summary>
         public void AddNewFeed()
         {
-            AddFeedDialog addFeedDialog = new AddFeedDialog(this);
-            if(addFeedDialog.ShowDialog() == DialogResult.OK)
+            if(CheckInternetConnectivity())
             {
-                //show next dialog (add Feed to a Group)
-                string newFeedUrl = addFeedDialog.feedUrl;
-
-                //Console.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
-
-                //show group-Dialog
-                SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
-
-                if(sGD.ShowDialog() == DialogResult.OK)
+                AddFeedDialog addFeedDialog = new AddFeedDialog(this);
+                if (addFeedDialog.ShowDialog() == DialogResult.OK)
                 {
-                    //get group-name
-                    string groupName = sGD.groupName;
+                    //show next dialog (add Feed to a Group)
+                    string newFeedUrl = addFeedDialog.feedUrl;
 
-                    Feed newFeed = null;
+                    //Console.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
 
-                    GetFeed(newFeedUrl, ref newFeed);
+                    //show group-Dialog
+                    SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
 
-                    if(newFeed != null)
+                    if (sGD.ShowDialog() == DialogResult.OK)
                     {
-                        //check if it's anew group
-                        if (sGD.addNewGroupName)
+                        //get group-name
+                        string groupName = sGD.groupName;
+
+                        Feed newFeed = null;
+
+                        GetFeed(newFeedUrl, ref newFeed);
+
+                        if (newFeed != null)
                         {
-                            //create a new group and add the feed to it
-                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                            //check if it's anew group
+                            if (sGD.addNewGroupName)
+                            {
+                                //create a new group and add the feed to it
+                                //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
 
-                            mainModel.AddFeedAndGroup(newFeed, groupName, "");
+                                mainModel.AddFeedAndGroup(newFeed, groupName, "");
 
-                            UpdateTreeview();
+                                UpdateTreeview();
+                            }
+                            else
+                            {
+                                //find selected group
+                                //check if feed already exists and if not, add the new feed to it
+                                //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                                mainModel.AddFeed(newFeed, groupName);
+
+                                UpdateTreeview();
+                            }
                         }
-                        else
-                        {
-                            //find selected group
-                            //check if feed already exists and if not, add the new feed to it
-                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
-                            mainModel.AddFeed(newFeed, groupName);
 
-                            UpdateTreeview();
-                        }
+
                     }
-                    
-                   
                 }
+            }
+            else
+            {
+                MessageBox.Show("No internet-connection could be detected. Can't add a new feed.", "Add new feed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
@@ -311,19 +350,26 @@ namespace FeedRead.Control
         /// </summary>
         public void UpdateFeeds()
         {
-            mainForm.EnableFeedFunctionalities(false);
-            Thread t2 = new Thread(delegate ()
+            //check if update is even possible
+            if(CheckInternetConnectivity())
             {
-                mainForm.SetStatusText("updating feeds ...", -1);
-                UpdateFeed(!Properties.Settings.Default.updateNSFW);
-                mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
-                mainForm.SetStatusText("feeds updated", 2000);
-            });
-            t2.Start();
+                //start the update-thread
+                mainForm.EnableFeedFunctionalities(false);
+                Thread t2 = new Thread(delegate ()
+                {
+                    mainForm.SetStatusText("updating feeds ...", -1);
+                    UpdateFeed(!Properties.Settings.Default.updateNSFW);
+                    mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
+                    mainForm.SetStatusText("feeds updated", 2000);
+                });
+                t2.Start();
+            }
+            else
+            {
+                mainForm.SetStatusText("no connection to internet detected ...", 5000);
+            }
             
         }
-
-        
 
         
 
@@ -508,6 +554,10 @@ namespace FeedRead.Control
             }
         }
 
+        /// <summary>
+        /// import a list of feeds from a txt-file and add them to a group
+        /// </summary>
+        /// <param name="filename"></param>
         private void ImportFromTxt(string filename)
         {
             if(File.Exists(filename))
@@ -806,7 +856,7 @@ namespace FeedRead.Control
 
                             if (counter != counter_before)
                             {
-                                mainForm.SetStatusText("Updating " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                                mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
                                 //Console.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
                                 counter_before = counter;
                             }
@@ -1079,10 +1129,22 @@ namespace FeedRead.Control
         #endregion
 
 
+        #region public utility-functions
 
+        /// <summary>
+        /// checks if a internet-connection is available
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckInternetConnectivity()
+        {
+            if (internetCheck == null)
+                internetCheck = new InternetCheck();
 
-        
+            return internetCheck.ConnectedToInternet();
+        }
+        #endregion
+
     }
 
-    
+
 }

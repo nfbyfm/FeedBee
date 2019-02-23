@@ -128,6 +128,7 @@
     <Compile Include="Utilities\FeedReader\Parser\Rss10Parser.cs" />
     <Compile Include="Utilities\FeedReader\Parser\Rss20Parser.cs" />
     <Compile Include="Utilities\FeedReader\UrlNotFoundException.cs" />
+    <Compile Include="Utilities\InternetCheck.cs" />
     <Compile Include="Utilities\OMPL2\Body.cs" />
     <Compile Include="Utilities\OMPL2\Head.cs" />
     <Compile Include="Utilities\OMPL2\OpmlDocument.cs" />
