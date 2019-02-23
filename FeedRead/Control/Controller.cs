@@ -394,6 +394,9 @@ namespace FeedRead.Control
             aboutWindow.ShowDialog();
         }
 
+        /// <summary>
+        /// show settings-dialog
+        /// </summary>
         public void ShowSettings()
         {
             SettingsDialog sedi = new SettingsDialog();
@@ -404,6 +407,9 @@ namespace FeedRead.Control
             }
         }
 
+        /// <summary>
+        /// close the whole application
+        /// </summary>
         public void CloseApplication()
         {
             //check if Model has any changes that should get saved
@@ -502,12 +508,354 @@ namespace FeedRead.Control
                 MessageBox.Show("Error while downloading the video. Errormessage: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
+
+        #endregion
+
+
+        #region get / delete Feeds and Groups
+
+        /// <summary>
+        /// search for a feed / feedgroup with the given hash-code
+        /// </summary>
+        /// <param name="hash">HasCode we're looking for</param>
+        /// <returns>null, Feed or FeedGroup-Object if it could be found</returns>
+        private object GetFeedElementFromHash(FeedGroup subGroup, int hash)
+        {
+            object result = null;
+
+            if(subGroup != null)
+            {
+                bool continueSearch = true;
+
+                //check current Group
+                if(subGroup.GetHashCode() == hash)
+                {
+                    result = subGroup;
+                    continueSearch = false;
+                }
+
+                //search in feedlist first
+                if ((subGroup.FeedList != null) && (continueSearch == true))
+                {
+                    if(subGroup.FeedList.Count() > 0)
+                    {
+                        for(int i =0; i< subGroup.FeedList.Count(); i++)
+                        {
+                            if(subGroup.FeedList[i].GetHashCode() == hash)
+                            {
+                                continueSearch = false;
+                                result = subGroup.FeedList[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //search in sub-groups
+                if ((subGroup.FeedGroups != null) && (continueSearch == true))
+                {
+                    if(subGroup.FeedGroups.Count() > 0)
+                    {
+                        for (int i = 0; i < subGroup.FeedGroups.Count(); i++)
+                        {
+                            //search in subgroup
+                            object tmpResult = GetFeedElementFromHash(subGroup.FeedGroups[i], hash);
+                            if(tmpResult != null)
+                            {
+                                result = tmpResult;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// identify and delete an element in the mainModel by it's Hash-Code
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns>returns true if item could be found and deleted</returns>
+        private bool DeleteFeedElementByHash(FeedGroup subGroup, int hash)
+        {
+            bool result = false;
+
+            if (subGroup != null)
+            {
+                bool continueSearch = true;
+
+                //search in feedlist first
+                if ((subGroup.FeedList != null) && (continueSearch == true))
+                {
+                    if (subGroup.FeedList.Count() > 0)
+                    {
+                        for (int i = 0; i < subGroup.FeedList.Count(); i++)
+                        {
+                            if (subGroup.FeedList[i].GetHashCode() == hash)
+                            {
+                                continueSearch = false;
+                                subGroup.FeedList.RemoveAt(i);
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //search in sub-groups
+                if ((subGroup.FeedGroups != null) && (continueSearch == true))
+                {
+                    if (subGroup.FeedGroups.Count() > 0)
+                    {
+                        bool groupfound = false;
+
+                        //search in group-list herself first
+                        for (int i = 0; i < subGroup.FeedGroups.Count(); i++)
+                        {
+                            if(subGroup.FeedGroups[i].GetHashCode() == hash)
+                            {
+                                groupfound = true;
+                                subGroup.FeedGroups.RemoveAt(i);
+                                result = true;
+                                break;
+                            }
+                        }
+
+                        //start search in subgroups themselfes
+                        if(groupfound == false)
+                        {
+                            for (int i = 0; i < subGroup.FeedGroups.Count(); i++)
+                            {
+                                //search in subgroup
+                                result = DeleteFeedElementByHash(subGroup.FeedGroups[i], hash);
+
+                                if (result == true)
+                                {
+                                    break;
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+
+
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Context-Menu-GUI-functions
+        //expensive-finder-function:
+                /*
+                object tmpResult = GetFeedElementFromHash(mainModel, tagObject.GetHashCode());
+
+                if(tmpResult != null)
+                {
+                    if (tmpResult.GetType() == typeof(FeedGroup))
+                    {
+                        FeedGroup selFeedGroup = (FeedGroup)tmpResult;
+
+                        Console.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
+
+                        selFeedGroup.Title = newName;
+                        UpdateTreeview();
+                    }
+                    else if (tmpResult.GetType() == typeof(Feed))
+                    {
+                        Feed selFeed = (Feed)tmpResult;
+
+                        Console.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
+
+                        selFeed.Title = newName;
+                        UpdateTreeview();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
+                }
+
+                */
+        /// <summary>
+        /// rename a Node (Group or Feed)
+        /// </summary>
+        /// <param name="tagObject"></param>
+        /// <param name="newName"></param>
+        public void RenameNode(object tagObject, string newName)
+        {
+            if(tagObject != null)
+            {
+                if (tagObject.GetType() == typeof(FeedGroup))
+                {
+                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
+
+                    selFeedGroup.Title = newName;
+                    UpdateTreeview();
+                }
+                else if (tagObject.GetType() == typeof(Feed))
+                {
+                    Feed selFeed = (Feed)tagObject;
+
+                    selFeed.Title = newName;
+                    UpdateTreeview();
+                }
+                else
+                {
+                    Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+        /// <summary>
+        /// delete a feed or feedgroup by it's hashcode
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void DeleteNode(object tagObject)
+        {
+            if (tagObject != null)
+            {
+                bool result = DeleteFeedElementByHash(mainModel, tagObject.GetHashCode());
+
+                if (result == true)
+                {
+                    UpdateTreeview();
+                }
+                else
+                {
+                    Console.WriteLine("DeleteNode: couldn't find element of selected Treenode is null.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("DeleteNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+        /// <summary>
+        /// update a selected feed or feedgroup
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void UpdateNode(object tagObject)
+        {
+            //check if update is even possible
+            if (CheckInternetConnectivity())
+            {
+
+                if (tagObject != null)
+                {
+                    if (tagObject.GetType() == typeof(FeedGroup))
+                    {
+                        FeedGroup selFeedGroup = (FeedGroup)tagObject;
+
+                        //start the update-thread
+                        mainForm.EnableFeedFunctionalities(false);
+
+                        Thread t2 = new Thread(delegate ()
+                        {
+                            mainForm.SetStatusText("updating feeds of '" + selFeedGroup.Title + "' ...", -1);
+
+                            UpdateFeedList(selFeedGroup, !Properties.Settings.Default.updateNSFW);
+
+                            mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
+                            mainForm.SetStatusText("feeds of '" + selFeedGroup.Title + "' updated.", 2000);
+                        });
+                        t2.Start();
+                    
+                    }
+                    else if (tagObject.GetType() == typeof(Feed))
+                    {
+                        Feed selFeed = (Feed)tagObject;
+
+                        mainForm.SetStatusText("Updating '" + selFeed.Title + "' ...", 1000);
+
+                        UpdateFeed(selFeed);
+
+                        UpdateTreeview();
+
+                        mainForm.SetStatusText("Feed '" + selFeed.Title + "' updated.", 2000);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+                }
+            }
+            else
+            {
+                mainForm.SetStatusText("no connection to internet detected ...", 5000);
+            }
+        }
+
+        /// <summary>
+        /// mark feed or feedgroup as read
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void MarkNodeAsRead(object tagObject)
+        {
+            if (tagObject != null)
+            {
+                if (tagObject.GetType() == typeof(FeedGroup))
+                {
+                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
+
+                    MarkGroupAsRead(selFeedGroup);
+
+                    UpdateTreeview();
+                }
+                else if (tagObject.GetType() == typeof(Feed))
+                {
+                    Feed selFeed = (Feed)tagObject;
+
+                    MarkFeedAsRead(selFeed, true);
+
+                    UpdateTreeview();
+                }
+                else
+                {
+                    Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+
+        
         #endregion
 
 
 
         #region Feed-related functions
-        //get List of all the group-names
+
+        /// <summary>
+        /// get List of all the group-names
+        /// </summary>
+        /// <returns></returns>
         private List<string> GetGroupNames()
         {
             List<string> result = null;
@@ -534,6 +882,10 @@ namespace FeedRead.Control
             return result;
         }
 
+        /// <summary>
+        /// load current model from the given xml-file
+        /// </summary>
+        /// <param name="filename"></param>
         private void OpenListFromXML(string filename)
         {
             try
@@ -602,6 +954,12 @@ namespace FeedRead.Control
             }
         }
 
+        /// <summary>
+        /// add each line in a text-file to the specified group
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="groupAdded"></param>
+        /// <param name="groupName"></param>
         private void ImportFromTxtSubFunction(string filename, ref bool groupAdded, string groupName)
         {
             var feedFile = File.ReadAllLines(filename);
@@ -664,6 +1022,10 @@ namespace FeedRead.Control
             }
         }
 
+        /// <summary>
+        /// save current Feedgroup as xml-file
+        /// </summary>
+        /// <param name="filename"></param>
         private void SaveListAsXML(string filename)
         {
             try
@@ -704,66 +1066,6 @@ namespace FeedRead.Control
         }
 
         
-        
-        /// <summary>
-        /// checks a url for feeds. returns null if none could be found
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public List<string> CheckUrlForFeeds(string url)
-        {
-            List<string> result = null;
-
-            Uri uriResult;
-            bool validURL = Uri.TryCreate(url, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-
-            if (!string.IsNullOrEmpty(url) && !string.IsNullOrWhiteSpace(url) && validURL)
-            {
-                if(url.ToLower().Contains("mangarock"))
-                {
-                    result = new List<string>();
-                    result.Add(url);
-                }
-                else
-                {
-                    var urls = FeedReader.GetFeedUrlsFromUrl(url);
-
-                    if (urls.Count() < 1) // no url - probably the url is already the right feed url
-                    {
-
-                        //try to get the actual Feed-Items from the url
-                        try
-                        {
-                            var feed = FeedReader.Read(url);
-
-                            //if successful: add to list
-                            result = new List<string>();
-                            result.Add(url);
-
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        result = new List<string>();
-
-                        //add each found feed to list
-                        foreach (HtmlFeedLink feedLink in urls)
-                        {
-                            result.Add(feedLink.Url);
-                        }
-                    }
-                }
-            }
-
-
-            return result;
-        }
-
-        
 
         /// <summary>
         /// update each feed of the main model
@@ -778,7 +1080,7 @@ namespace FeedRead.Control
         }
 
         /// <summary>
-        /// get update for a specific feed
+        /// get updates for a specific feedgroup
         /// </summary>
         /// <param name="group"></param>
         /// <param name="atWork"></param>
@@ -808,8 +1110,6 @@ namespace FeedRead.Control
                     }
 
 
-                    
-
                     if(group.FeedList.Count > 0 && checkNSFW)
                     {
                         //create a list of threads
@@ -830,7 +1130,7 @@ namespace FeedRead.Control
                         }
 
                         int numberOfThreads = tList.Count();
-                        Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
+                        //Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
 
                         //start every thread at once
                         foreach (Thread th in tList)
@@ -1005,20 +1305,30 @@ namespace FeedRead.Control
                     {
                         foreach(Feed feed in group.FeedList)
                         {
-                            if(feed.Items != null)
-                            {
-                                if(feed.Items.Count() > 0)
-                                {
-                                    foreach(FeedItem item in feed.Items)
-                                    {
-                                        item.Read = true;
-                                    }
-                                }
-                            }
+                            MarkFeedAsRead(feed, true);
                         }
                     }
                 }
                 Console.WriteLine("All feeditems marked as read.");
+            }
+        }
+
+        /// <summary>
+        /// mark a single feed as read
+        /// </summary>
+        /// <param name="feed">the feed that has to get marked</param>
+        /// <param name="read">true = feed-items are read, false = feed-items are unread</param>
+        private void MarkFeedAsRead(Feed feed, bool read)
+        {
+            if (feed.Items != null)
+            {
+                if (feed.Items.Count() > 0)
+                {
+                    foreach (FeedItem item in feed.Items)
+                    {
+                        item.Read = read;
+                    }
+                }
             }
         }
 
@@ -1142,6 +1452,65 @@ namespace FeedRead.Control
 
             return internetCheck.ConnectedToInternet();
         }
+
+        /// <summary>
+        /// checks a url for feeds. returns null if none could be found
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public List<string> CheckUrlForFeeds(string url)
+        {
+            List<string> result = null;
+
+            Uri uriResult;
+            bool validURL = Uri.TryCreate(url, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+            if (!string.IsNullOrEmpty(url) && !string.IsNullOrWhiteSpace(url) && validURL)
+            {
+                if (url.ToLower().Contains("mangarock"))
+                {
+                    result = new List<string>();
+                    result.Add(url);
+                }
+                else
+                {
+                    var urls = FeedReader.GetFeedUrlsFromUrl(url);
+
+                    if (urls.Count() < 1) // no url - probably the url is already the right feed url
+                    {
+
+                        //try to get the actual Feed-Items from the url
+                        try
+                        {
+                            var feed = FeedReader.Read(url);
+
+                            //if successful: add to list
+                            result = new List<string>();
+                            result.Add(url);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        result = new List<string>();
+
+                        //add each found feed to list
+                        foreach (HtmlFeedLink feedLink in urls)
+                        {
+                            result.Add(feedLink.Url);
+                        }
+                    }
+                }
+            }
+
+
+            return result;
+        }
+
         #endregion
 
     }

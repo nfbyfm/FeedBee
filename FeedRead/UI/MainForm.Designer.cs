@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tVMain = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -63,6 +63,14 @@
             this.lL_Url = new System.Windows.Forms.LinkLabel();
             this.b_DownloadVideo = new System.Windows.Forms.Button();
             this.browser = new System.Windows.Forms.WebBrowser();
+            this.cMS_Treeview = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cMS_Rename = new System.Windows.Forms.ToolStripMenuItem();
+            this.cMS_Update = new System.Windows.Forms.ToolStripMenuItem();
+            this.cMS_MarkAsRead = new System.Windows.Forms.ToolStripMenuItem();
+            this.cMS_Delete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -78,6 +86,7 @@
             this.sCMainBrowse.Panel2.SuspendLayout();
             this.sCMainBrowse.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.cMS_Treeview.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -263,12 +272,6 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(11, 17);
-            this.statusLabel.Text = "...";
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -288,6 +291,7 @@
             // 
             // tVMain
             // 
+            this.tVMain.ContextMenuStrip = this.cMS_Treeview;
             this.tVMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tVMain.Location = new System.Drawing.Point(0, 0);
             this.tVMain.Name = "tVMain";
@@ -410,6 +414,62 @@
             this.browser.TabIndex = 0;
             this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
             // 
+            // cMS_Treeview
+            // 
+            this.cMS_Treeview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cMS_MarkAsRead,
+            this.cMS_Update,
+            this.toolStripSeparator6,
+            this.cMS_Rename,
+            this.toolStripSeparator7,
+            this.cMS_Delete});
+            this.cMS_Treeview.Name = "cMS_Treeview";
+            this.cMS_Treeview.Size = new System.Drawing.Size(127, 104);
+            // 
+            // cMS_Rename
+            // 
+            this.cMS_Rename.Name = "cMS_Rename";
+            this.cMS_Rename.Size = new System.Drawing.Size(126, 22);
+            this.cMS_Rename.Text = "rename";
+            this.cMS_Rename.Click += new System.EventHandler(this.cMS_Rename_Click);
+            // 
+            // cMS_Update
+            // 
+            this.cMS_Update.Name = "cMS_Update";
+            this.cMS_Update.Size = new System.Drawing.Size(126, 22);
+            this.cMS_Update.Text = "update";
+            this.cMS_Update.Click += new System.EventHandler(this.cMS_Update_Click);
+            // 
+            // cMS_MarkAsRead
+            // 
+            this.cMS_MarkAsRead.Name = "cMS_MarkAsRead";
+            this.cMS_MarkAsRead.Size = new System.Drawing.Size(126, 22);
+            this.cMS_MarkAsRead.Text = "mark as read";
+            this.cMS_MarkAsRead.Click += new System.EventHandler(this.cMS_MarkAsRead_Click);
+            // 
+            // cMS_Delete
+            // 
+            this.cMS_Delete.Name = "cMS_Delete";
+            this.cMS_Delete.Size = new System.Drawing.Size(126, 22);
+            this.cMS_Delete.Text = "delete";
+            this.cMS_Delete.Click += new System.EventHandler(this.cMS_Delete_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(123, 6);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(123, 6);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(11, 12);
+            this.statusLabel.Text = "...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -441,6 +501,7 @@
             this.sCMainBrowse.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.cMS_Treeview.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -482,6 +543,13 @@
         private System.Windows.Forms.ToolStripMenuItem openExternallyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenAllUnreadToolStripMenuItem;
         private TimedStatusLabel statusLabel;
+        private System.Windows.Forms.ContextMenuStrip cMS_Treeview;
+        private System.Windows.Forms.ToolStripMenuItem cMS_MarkAsRead;
+        private System.Windows.Forms.ToolStripMenuItem cMS_Update;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem cMS_Rename;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem cMS_Delete;
     }
 }
 

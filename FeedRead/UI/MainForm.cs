@@ -138,6 +138,13 @@ namespace FeedRead.UI
             openListToolStripMenuItem.Enabled = enable;
             saveListToolStripMenuItem.Enabled = enable;
             settingsToolStripMenuItem.Enabled = enable;
+
+            //context-menu for tVMain
+            cMS_Treeview.Enabled = enable;
+            cMS_Update.Enabled = enable;
+            cMS_Rename.Enabled = enable;
+            cMS_Delete.Enabled = enable;
+            cMS_MarkAsRead.Enabled = enable;
         }
 
         /// <summary>
@@ -241,6 +248,13 @@ namespace FeedRead.UI
                 groupNode = new TreeNode(group.GetNodeText());
                 groupNode.Tag = group;
 
+
+                //change node-color depending upon porperty(-ies) of the FeedGroup
+                if(group.GetNoOfUnreadFeedItems() > 0)
+                {
+                    groupNode.ForeColor = Color.Blue;
+                }
+
                 //check for sub-Feedgroups and add them to this group's node
                 if(group.FeedGroups != null)
                 {
@@ -285,6 +299,18 @@ namespace FeedRead.UI
         {
             TreeNode feedNode = new TreeNode(feed.GetNodeText());
             feedNode.Tag = feed;
+
+            //change text-color depending on various properties of the feed
+            if (!feed.Updated)
+            {
+                feedNode.ForeColor = Color.Red;
+            }
+            else if (feed.GetNoOfUnreadItems() > 0)
+            {
+                feedNode.ForeColor = Color.Blue;
+            }
+            
+
 
             //if wanted, try to get image
             if (getIcon)
@@ -609,8 +635,99 @@ namespace FeedRead.UI
 
 
 
+
         #endregion
 
-        
+        #region context-menu-functions
+
+        /// <summary>
+        /// rename a treeview-node
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cMS_Rename_Click(object sender, EventArgs e)
+        {
+            if(tVMain.SelectedNode != null)
+            {
+                object ob = tVMain.SelectedNode.Tag;
+                if(ob != null)
+                {
+                    RenameDialog rd = new RenameDialog();
+                    rd.SetOldName(tVMain.SelectedNode.Text);
+
+                    if (rd.ShowDialog() == DialogResult.OK)
+                    {
+                        string newNodeName = rd.newName;
+                        rd.Dispose();
+                        Console.WriteLine("new Node-name = " + newNodeName);
+
+                        if (!string.IsNullOrEmpty(newNodeName) && !string.IsNullOrWhiteSpace(newNodeName))
+                        {
+                            controller.RenameNode(ob, newNodeName);
+                        }
+                    }
+                    else
+                    {
+                        rd.Dispose();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// delete  a treeview-node
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cMS_Delete_Click(object sender, EventArgs e)
+        {
+            if (tVMain.SelectedNode != null)
+            {
+                object ob = tVMain.SelectedNode.Tag;
+                if (ob != null)
+                {
+                    if(MessageBox.Show("Do you really want to delete the selected item?","Delete item",MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        controller.DeleteNode(ob);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// mark a treeview-node as read
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cMS_MarkAsRead_Click(object sender, EventArgs e)
+        {
+            if (tVMain.SelectedNode != null)
+            {
+                object ob = tVMain.SelectedNode.Tag;
+                if (ob != null)
+                {
+                    controller.MarkNodeAsRead(ob);
+                }
+            }
+        }
+
+        /// <summary>
+        /// update a treeview-node
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cMS_Update_Click(object sender, EventArgs e)
+        {
+            if (tVMain.SelectedNode != null)
+            {
+                object ob = tVMain.SelectedNode.Tag;
+                if (ob != null)
+                {
+                    controller.UpdateNode(ob);
+                }
+            }
+        }
+
+        #endregion
     }
 }
