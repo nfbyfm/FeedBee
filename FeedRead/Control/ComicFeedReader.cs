@@ -1,4 +1,4 @@
-﻿using CodeHollow.FeedReader;
+﻿using FeedSubs.FeedReader;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;

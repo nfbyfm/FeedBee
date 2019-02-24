@@ -1,5 +1,4 @@
-﻿using CodeHollow.FeedReader;
-using FeedRead.Model;
+﻿using FeedSubs.FeedReader;
 using FeedRead.UI;
 using FeedRead.Utilities;
 using FeedRead.Utilities.OPML;
@@ -19,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Utilities.FeedSubs;
 
 namespace FeedRead.Control
 {

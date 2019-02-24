@@ -1,6 +1,5 @@
-﻿using CodeHollow.FeedReader;
+﻿using FeedSubs.FeedReader;
 using FeedRead.Control;
-using FeedRead.Model;
 using FeedRead.Utilities;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Utilities.FeedSubs;
 
 namespace FeedRead.UI
 {
