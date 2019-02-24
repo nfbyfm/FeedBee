@@ -34,6 +34,7 @@ namespace FeedRead.UI
 
             controller = new Controller(this, internetCheck);
 
+            UpdateTreeView();
             ClearPropertyDisplays();            
         }
 
@@ -150,235 +151,60 @@ namespace FeedRead.UI
         /// <summary>
         /// method for updating treeview after update of feeds
         /// </summary>
-        /// <param name="mainModel"></param>
-        public void UpdateTreeViewUnlock(FeedGroup mainModel)
+        public void UpdateTreeViewUnlock()
         {
-            UpdateTreeView(mainModel);
+            UpdateTreeView();
             EnableFeedFunctionalities(true);
         }
 
         /// <summary>
         /// triggers redraw of the treeview (feeds and feed-groups)
         /// </summary>
-        /// <param name="mainModel"></param>
-        public void UpdateTreeView(FeedGroup mainModel)
+        public void UpdateTreeView()
         {
             ClearPropertyDisplays();
             lVFeedItems.Items.Clear();
 
             tVMain.Nodes.Clear();
 
-            //to display icons the setting has to be true and a internet-connection has to be available
-            bool displayIcons = Properties.Settings.Default.displayFeedIcons && internetCheck.ConnectedToInternet();
+            List<TreeNode> treeNodes = new List<TreeNode>();
+            ImageList iList = new ImageList();
 
-                       
-            
-            if(mainModel != null)
+            controller.GetTreeNodes(ref treeNodes, ref iList);
+
+            if(treeNodes != null)
             {
-                //list of icons for the feed-nodes
-                ImageList icons = null;
-                if(displayIcons)
-                {
-                    icons = new ImageList();
-                    icons.Images.Add(Properties.Resources.defaultTreeNodeIcon);
-
-                }
-
-                //list of all the primary nodes of the treeview
-                List<TreeNode> mainNodes = new List<TreeNode>();
-
-                //add feedgroup-Nodes to the list
-                if (mainModel.FeedGroups != null)
-                {
-                    if (mainModel.FeedGroups.Count() > 0)
-                    {
-                        for (int i = 0; i < mainModel.FeedGroups.Count(); i++)
-                        {
-                            TreeNode tmpNode = GetNode(mainModel.FeedGroups[i], ref icons, displayIcons);
-                            if (tmpNode != null)
-                            {
-                                mainNodes.Add(tmpNode);
-                            }
-                        }
-                    }
-                }
-
-                //add feeds
-                if (mainModel.FeedList != null)
-                {
-                    if (mainModel.FeedList.Count > 0)
-                    {
-                        for (int i = 0; i < mainModel.FeedList.Count(); i++)
-                        {
-                            mainNodes.Add(GetFeedNode(mainModel.FeedList[i], ref icons, displayIcons));
-                        }
-                    }
-                }
-
-
                 //add Nodes to the control
-                if (mainNodes.Count() > 0)
+                if (treeNodes.Count() > 0)
                 {
-                    for(int i = 0; i < mainNodes.Count(); i++)
+                    for (int i = 0; i < treeNodes.Count(); i++)
                     {
-                        tVMain.Nodes.Add(mainNodes[i]);
+                        tVMain.Nodes.Add(treeNodes[i]);
                     }
                 }
-
-
-                tVMain.ImageList = icons;
-
-                if(Properties.Settings.Default.expandNodes)
+                else
                 {
-                    tVMain.ExpandAll();
+                    Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
                 }
-                
-                //Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
+            }
+            else
+            {
+                Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
+            }
+
+            tVMain.ImageList = iList;
+
+            if (iList == null)
+                Console.WriteLine("List of Icons for treeview is null");
+
+            if (Properties.Settings.Default.expandNodes)
+            {
+                tVMain.ExpandAll();
             }
         }
 
-        
-
-        /// <summary>
-        /// method for (recursively) getting the TreeNode (and subnodes) of a feedgroup
-        /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        private TreeNode GetNode(FeedGroup group, ref ImageList icons, bool getIcons)
-        {
-            TreeNode groupNode = null;
-
-            if(group != null)
-            {
-                groupNode = new TreeNode(group.GetNodeText());
-                groupNode.Tag = group;
 
 
-                //change node-color depending upon porperty(-ies) of the FeedGroup
-                if(group.GetNoOfUnreadFeedItems() > 0)
-                {
-                    groupNode.ForeColor = Color.Blue;
-                }
-
-                //check for sub-Feedgroups and add them to this group's node
-                if(group.FeedGroups != null)
-                {
-                    if(group.FeedGroups.Count > 0)
-                    {
-                        for(int i=0; i< group.FeedGroups.Count(); i++)
-                        {
-                            TreeNode subNode = GetNode(group.FeedGroups[i], ref icons, getIcons);
-                            if(subNode != null)
-                            {
-                                groupNode.Nodes.Add(subNode);
-                            }
-                        }
-                    }
-                }
-
-                //check if there are feeds in this group
-                if(group.FeedList != null)
-                {
-                    if(group.FeedList.Count() > 0)
-                    {
-                        //add feeds to this group's node
-                        for(int i = 0; i< group.FeedList.Count(); i++)
-                        {
-                            groupNode.Nodes.Add(GetFeedNode(group.FeedList[i], ref icons, getIcons));
-                        }
-                        
-                    }
-                }
-            }
-
-            return groupNode;
-        }
-
-        /// <summary>
-        /// get TreeNode out of feed
-        /// </summary>
-        /// <param name="feed"></param>
-        /// <param name="icons"></param>
-        /// <returns></returns>
-        private TreeNode GetFeedNode(Feed feed, ref ImageList icons, bool getIcon)
-        {
-            TreeNode feedNode = new TreeNode(feed.GetNodeText());
-            feedNode.Tag = feed;
-
-            //change text-color depending on various properties of the feed
-            if (!feed.Updated)
-            {
-                feedNode.ForeColor = Color.Red;
-            }
-            else if (feed.GetNoOfUnreadItems() > 0)
-            {
-                feedNode.ForeColor = Color.Blue;
-            }
-            
-
-
-            //if wanted, try to get image
-            if (getIcon)
-            {
-                string imageUrl = feed.ImageUrl;
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(imageUrl) && !string.IsNullOrWhiteSpace(imageUrl))
-                    {
-
-                        Image feedIcon = null;
-
-                        GetImageFromURL(imageUrl, ref feedIcon);
-                    
-
-                        if (feedIcon != null)
-                        {
-                            icons.Images.Add(feedIcon);
-
-                            feedNode.ImageIndex = icons.Images.Count - 1;
-                            feedNode.SelectedImageIndex = icons.Images.Count - 1;
-                        }
-                        else
-                        {
-                            if (getIcon)
-                            {
-                                Console.WriteLine("Image for " + feed.Title + "'. Image-URL = " + imageUrl + " is null.");
-                            }
-
-                        }
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
-                }
-            }
-            return feedNode;
-        }
-
-        /// <summary>
-        /// Gets the image from URL.
-        /// </summary>
-        /// <param name="url">the url of the image</param>
-        /// <param name="resultImage">image which gets loaded</param>
-        public void GetImageFromURL(string url, ref Image resultImage)
-        {
-            try
-            {
-                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
-                HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                Stream stream = httpWebReponse.GetResponseStream();
-                resultImage = Image.FromStream(stream);
-                stream.Close();
-                httpWebReponse.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("There was a problem downloading the image from '" + url + "': " + ex.Message);
-            }
-        }
 
         /// <summary>
         /// clears and hides controls which show information about a feed-item

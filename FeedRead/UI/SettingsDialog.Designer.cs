@@ -47,6 +47,9 @@
             this.tC_Main = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tB_IconFolder = new System.Windows.Forms.TextBox();
+            this.b_SelectIconFolder = new System.Windows.Forms.Button();
             this.tC_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -177,7 +180,7 @@
             // cB_DisplayFeedIcons
             // 
             this.cB_DisplayFeedIcons.AutoSize = true;
-            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(6, 6);
+            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(6, 52);
             this.cB_DisplayFeedIcons.Name = "cB_DisplayFeedIcons";
             this.cB_DisplayFeedIcons.Size = new System.Drawing.Size(183, 17);
             this.cB_DisplayFeedIcons.TabIndex = 12;
@@ -187,7 +190,7 @@
             // cB_FilterIFrames
             // 
             this.cB_FilterIFrames.AutoSize = true;
-            this.cB_FilterIFrames.Location = new System.Drawing.Point(6, 52);
+            this.cB_FilterIFrames.Location = new System.Drawing.Point(6, 29);
             this.cB_FilterIFrames.Name = "cB_FilterIFrames";
             this.cB_FilterIFrames.Size = new System.Drawing.Size(168, 17);
             this.cB_FilterIFrames.TabIndex = 13;
@@ -197,7 +200,7 @@
             // cB_ExpandNodes
             // 
             this.cB_ExpandNodes.AutoSize = true;
-            this.cB_ExpandNodes.Location = new System.Drawing.Point(6, 29);
+            this.cB_ExpandNodes.Location = new System.Drawing.Point(6, 6);
             this.cB_ExpandNodes.Name = "cB_ExpandNodes";
             this.cB_ExpandNodes.Size = new System.Drawing.Size(108, 17);
             this.cB_ExpandNodes.TabIndex = 14;
@@ -238,16 +241,48 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.b_SelectIconFolder);
+            this.tabPage2.Controls.Add(this.tB_IconFolder);
+            this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.cB_DisplayFeedIcons);
             this.tabPage2.Controls.Add(this.cB_ExpandNodes);
             this.tabPage2.Controls.Add(this.cB_FilterIFrames);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(613, 227);
+            this.tabPage2.Size = new System.Drawing.Size(540, 220);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "View";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(23, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(106, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Fodler for feed-icons:";
+            // 
+            // tB_IconFolder
+            // 
+            this.tB_IconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_IconFolder.Location = new System.Drawing.Point(135, 69);
+            this.tB_IconFolder.Name = "tB_IconFolder";
+            this.tB_IconFolder.Size = new System.Drawing.Size(319, 20);
+            this.tB_IconFolder.TabIndex = 16;
+            // 
+            // b_SelectIconFolder
+            // 
+            this.b_SelectIconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.b_SelectIconFolder.Location = new System.Drawing.Point(460, 67);
+            this.b_SelectIconFolder.Name = "b_SelectIconFolder";
+            this.b_SelectIconFolder.Size = new System.Drawing.Size(75, 23);
+            this.b_SelectIconFolder.TabIndex = 17;
+            this.b_SelectIconFolder.Text = "select ...";
+            this.b_SelectIconFolder.UseVisualStyleBackColor = true;
+            this.b_SelectIconFolder.Click += new System.EventHandler(this.b_SelectIconFolder_Click);
             // 
             // SettingsDialog
             // 
@@ -291,5 +326,8 @@
         private System.Windows.Forms.TabControl tC_Main;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button b_SelectIconFolder;
+        private System.Windows.Forms.TextBox tB_IconFolder;
+        private System.Windows.Forms.Label label3;
     }
 }

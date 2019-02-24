@@ -125,6 +125,24 @@ namespace FeedRead.UI
                 tB_FeedListPath.Text = odi.FileName;
             }
         }
+
+        /// <summary>
+        /// set the default-folder for treeview-icons
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_SelectIconFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fdia = new FolderBrowserDialog();
+            fdia.ShowNewFolderButton = true;
+            fdia.SelectedPath = tB_IconFolder.Text;
+
+            if (fdia.ShowDialog() == DialogResult.OK)
+            {
+                tB_IconFolder.Text = fdia.SelectedPath;
+            }
+        }
+
         #endregion
 
 
@@ -146,6 +164,8 @@ namespace FeedRead.UI
             cB_UpdateUponLoad.Checked = Properties.Settings.Default.updateUponLoad;
 
             cB_ExpandNodes.Checked = Properties.Settings.Default.expandNodes;
+
+            tB_IconFolder.Text = Properties.Settings.Default.iconFolderPath;
         }
 
         /// <summary>
@@ -163,7 +183,10 @@ namespace FeedRead.UI
             Properties.Settings.Default.filterIFrames = cB_FilterIFrames.Checked;
             Properties.Settings.Default.updateUponLoad = cB_UpdateUponLoad.Checked;
             Properties.Settings.Default.expandNodes = cB_ExpandNodes.Checked;
+
+            Properties.Settings.Default.iconFolderPath = tB_IconFolder.Text;
         }
+
 
 
         #endregion

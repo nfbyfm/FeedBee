@@ -63,7 +63,7 @@
         /// </summary>
         /// <param name="url">the url of the page</param>
         /// <returns>a list of links including the type and title, an empty list if no links are found</returns>
-        [Obsolete("Use GetFeedUrlsFromUrlAsync method")]
+        //[Obsolete("Use GetFeedUrlsFromUrlAsync method")]
         public static IEnumerable<HtmlFeedLink> GetFeedUrlsFromUrl(string url)
         {
             var task = GetFeedUrlsFromUrlAsync(url);
@@ -90,7 +90,7 @@
         /// </summary>
         /// <param name="url">the url of the page</param>
         /// <returns>a list of links, an empty list if no links are found</returns>
-        [Obsolete("Use the ParseFeedUrlsAsStringAsync method")]
+        //[Obsolete("Use the ParseFeedUrlsAsStringAsync method")]
         public static string[] ParseFeedUrlsAsString(string url)
         {
             var task = ParseFeedUrlsAsStringAsync(url);

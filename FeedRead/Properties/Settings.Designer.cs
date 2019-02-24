@@ -118,5 +118,17 @@ namespace FeedRead.Properties {
                 this["expandNodes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\User\\Default\\FeedIconFolder")]
+        public string iconFolderPath {
+            get {
+                return ((string)(this["iconFolderPath"]));
+            }
+            set {
+                this["iconFolderPath"] = value;
+            }
+        }
     }
 }
