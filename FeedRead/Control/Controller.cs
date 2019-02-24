@@ -1049,12 +1049,36 @@ namespace FeedRead.Control
                     Console.WriteLine("Error while getting feed from '" + url + "' to list.");
                     return;
                 }
+                
             }
             else
             {
                 newFeed = FeedReader.Read(url);
                 newFeed.FeedURL = url;
                 newFeed.Updated = true;
+
+            }
+
+            //get icon for treeview
+            if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons)
+            {
+                //try to get the image-path from the main webpage first
+                string tmpImageUrl = GetFaviconOfWebpage(newFeed.Link);
+
+                if (string.IsNullOrEmpty(tmpImageUrl) || string.IsNullOrWhiteSpace(tmpImageUrl))
+                {
+                    //try to get image-path from one of the feed-item-pages
+                    if (newFeed.Items.Count > 0)
+                    {
+                        newFeed.ImageUrl = GetFaviconOfWebpage(newFeed.Items[0].Link);
+                    }
+                }
+                else
+                {
+                    newFeed.ImageUrl = tmpImageUrl;
+                }
+
+
             }
         }
 
@@ -1242,7 +1266,8 @@ namespace FeedRead.Control
                         {
                             List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-
+                            //update the image-url
+                            origFeed.ImageUrl = tmpFeed.ImageUrl;
 
                             origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
@@ -1494,6 +1519,13 @@ namespace FeedRead.Control
             return internetCheck.ConnectedToInternet();
         }
 
+        public bool IsValidURL(string url)
+        {
+            Uri uriResult;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return result;
+        }
+
         /// <summary>
         /// checks a url for feeds. returns null if none could be found
         /// </summary>
@@ -1552,6 +1584,100 @@ namespace FeedRead.Control
             return result;
         }
 
+
+        public string GetFaviconOfWebpage(string url)
+        {
+            string result = "";
+
+            bool loadSuccess = false;
+
+            string content = "";
+
+            try
+            {
+                //try to download the main page
+                content = new System.Net.WebClient().DownloadString(url);
+                loadSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
+            }
+
+            if (loadSuccess)
+            {
+                result = GetFaviconUrl(content,url);
+            }
+
+            return result;
+        }
+
+        public string GetFaviconUrl(string htmlText, string url)
+        {
+            string result = "";
+            bool imageFound = false;
+
+            List<string> regexList = new List<string>();
+
+            regexList.Add("<link.*?href=\"(.*?.ico)\"");
+            regexList.Add("href=\"(.*?.ico)\"");
+            regexList.Add("icon\".*?href=\"(.*?.pnj)\"");    //tumblr
+            regexList.Add("icon\".*?href=\"(.*?.png)\"");
+            regexList.Add("<link.*?href='(.*?.ico)'");      //blogger
+
+            foreach (string regEx in regexList)
+            {
+                MatchCollection mCollection = Regex.Matches(htmlText, regEx);
+
+                if (mCollection != null)
+                {
+                    //Console.WriteLine("Find favicon: " + mCollection.Count.ToString() + " matches found.");
+
+                    if (mCollection.Count > 0)
+                    {
+                        result = mCollection[0].Groups[1].Value;
+
+                        if(result.ToLower().Contains("href="))
+                        {
+                            result = result.Remove(0, result.LastIndexOf("href=\"") + 5);
+                        }
+                        if(result.Contains("\""))
+                        {
+                            result = result.Replace("\"", "");
+                        }
+                        
+                        
+                        if (!result.Contains("http:") && !result.Contains("https:"))
+                        {
+                            if(result.ToLower().Contains(".com"))
+                            {
+                                result = "http:" + result;
+
+                            }
+                            else
+                            {
+                                Uri uriAddress = new Uri(url);
+
+                                result = uriAddress.GetLeftPart(UriPartial.Path) + result;
+                            }
+                        }
+
+                        //Console.WriteLine("Found favicon: " + result);
+                        imageFound = true;
+                        break;
+                    }
+                }
+            }
+
+            if(imageFound == false)
+            {
+                Console.WriteLine("No image found for: " + url);
+            }
+
+            
+
+            return result;
+        }
         #endregion
 
     }

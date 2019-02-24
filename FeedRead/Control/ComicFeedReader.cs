@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -51,7 +52,7 @@ namespace FeedRead.Control
                 {
                     feed = new Feed();
                     feed.FeedURL = pageUrl;
-
+                    
                     //get title (if not properly loaded already)
                     HtmlNode titleNode = htmlDoc.DocumentNode.Descendants("title").FirstOrDefault();
                     if (titleNode != null)
@@ -188,6 +189,9 @@ namespace FeedRead.Control
 
             return dateTime;
         }
+
+
+        
     }
 
     

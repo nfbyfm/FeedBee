@@ -21,8 +21,14 @@ namespace FeedRead.UI
 
             timer.Enabled = true;
             timer.Start();
-
-            base.Text = text;
+            try
+            {
+                base.Text = text;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void CallBack(object source, ElapsedEventArgs e, TimedStatusLabel stLabel)
