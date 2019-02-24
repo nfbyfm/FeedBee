@@ -43,12 +43,19 @@
             this.cB_UpdateUponLoad = new System.Windows.Forms.CheckBox();
             this.cB_DisplayFeedIcons = new System.Windows.Forms.CheckBox();
             this.cB_FilterIFrames = new System.Windows.Forms.CheckBox();
+            this.cB_ExpandNodes = new System.Windows.Forms.CheckBox();
+            this.tC_Main = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tC_Main.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(6, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 13);
             this.label1.TabIndex = 0;
@@ -57,7 +64,7 @@
             // b_SelectYTdl
             // 
             this.b_SelectYTdl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_SelectYTdl.Location = new System.Drawing.Point(352, 4);
+            this.b_SelectYTdl.Location = new System.Drawing.Point(459, 7);
             this.b_SelectYTdl.Name = "b_SelectYTdl";
             this.b_SelectYTdl.Size = new System.Drawing.Size(75, 23);
             this.b_SelectYTdl.TabIndex = 1;
@@ -69,15 +76,15 @@
             // 
             this.tB_youtubedlFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_youtubedlFolder.Location = new System.Drawing.Point(138, 6);
+            this.tB_youtubedlFolder.Location = new System.Drawing.Point(132, 9);
             this.tB_youtubedlFolder.Name = "tB_youtubedlFolder";
-            this.tB_youtubedlFolder.Size = new System.Drawing.Size(208, 20);
+            this.tB_youtubedlFolder.Size = new System.Drawing.Size(321, 20);
             this.tB_youtubedlFolder.TabIndex = 2;
             // 
             // b_Reset
             // 
             this.b_Reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.b_Reset.Location = new System.Drawing.Point(12, 183);
+            this.b_Reset.Location = new System.Drawing.Point(12, 264);
             this.b_Reset.Name = "b_Reset";
             this.b_Reset.Size = new System.Drawing.Size(75, 23);
             this.b_Reset.TabIndex = 3;
@@ -88,7 +95,7 @@
             // b_Save
             // 
             this.b_Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Save.Location = new System.Drawing.Point(271, 183);
+            this.b_Save.Location = new System.Drawing.Point(404, 264);
             this.b_Save.Name = "b_Save";
             this.b_Save.Size = new System.Drawing.Size(75, 23);
             this.b_Save.TabIndex = 4;
@@ -99,7 +106,7 @@
             // b_Cancel
             // 
             this.b_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Cancel.Location = new System.Drawing.Point(352, 183);
+            this.b_Cancel.Location = new System.Drawing.Point(485, 264);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
             this.b_Cancel.TabIndex = 5;
@@ -110,7 +117,7 @@
             // cB_LoadUponStartup
             // 
             this.cB_LoadUponStartup.AutoSize = true;
-            this.cB_LoadUponStartup.Location = new System.Drawing.Point(15, 32);
+            this.cB_LoadUponStartup.Location = new System.Drawing.Point(9, 48);
             this.cB_LoadUponStartup.Name = "cB_LoadUponStartup";
             this.cB_LoadUponStartup.Size = new System.Drawing.Size(214, 17);
             this.cB_LoadUponStartup.TabIndex = 6;
@@ -121,7 +128,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(58, 52);
+            this.label2.Location = new System.Drawing.Point(52, 74);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 7;
@@ -130,7 +137,7 @@
             // bSelectFeedList
             // 
             this.bSelectFeedList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSelectFeedList.Location = new System.Drawing.Point(352, 47);
+            this.bSelectFeedList.Location = new System.Drawing.Point(459, 69);
             this.bSelectFeedList.Name = "bSelectFeedList";
             this.bSelectFeedList.Size = new System.Drawing.Size(75, 23);
             this.bSelectFeedList.TabIndex = 8;
@@ -142,15 +149,15 @@
             // 
             this.tB_FeedListPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_FeedListPath.Location = new System.Drawing.Point(138, 49);
+            this.tB_FeedListPath.Location = new System.Drawing.Point(132, 71);
             this.tB_FeedListPath.Name = "tB_FeedListPath";
-            this.tB_FeedListPath.Size = new System.Drawing.Size(208, 20);
+            this.tB_FeedListPath.Size = new System.Drawing.Size(321, 20);
             this.tB_FeedListPath.TabIndex = 9;
             // 
             // cB_UpdateNSFW
             // 
             this.cB_UpdateNSFW.AutoSize = true;
-            this.cB_UpdateNSFW.Location = new System.Drawing.Point(15, 78);
+            this.cB_UpdateNSFW.Location = new System.Drawing.Point(9, 111);
             this.cB_UpdateNSFW.Name = "cB_UpdateNSFW";
             this.cB_UpdateNSFW.Size = new System.Drawing.Size(113, 17);
             this.cB_UpdateNSFW.TabIndex = 10;
@@ -160,7 +167,7 @@
             // cB_UpdateUponLoad
             // 
             this.cB_UpdateUponLoad.AutoSize = true;
-            this.cB_UpdateUponLoad.Location = new System.Drawing.Point(15, 101);
+            this.cB_UpdateUponLoad.Location = new System.Drawing.Point(9, 134);
             this.cB_UpdateUponLoad.Name = "cB_UpdateUponLoad";
             this.cB_UpdateUponLoad.Size = new System.Drawing.Size(138, 17);
             this.cB_UpdateUponLoad.TabIndex = 11;
@@ -170,7 +177,7 @@
             // cB_DisplayFeedIcons
             // 
             this.cB_DisplayFeedIcons.AutoSize = true;
-            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(15, 124);
+            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(6, 6);
             this.cB_DisplayFeedIcons.Name = "cB_DisplayFeedIcons";
             this.cB_DisplayFeedIcons.Size = new System.Drawing.Size(183, 17);
             this.cB_DisplayFeedIcons.TabIndex = 12;
@@ -180,38 +187,87 @@
             // cB_FilterIFrames
             // 
             this.cB_FilterIFrames.AutoSize = true;
-            this.cB_FilterIFrames.Location = new System.Drawing.Point(15, 147);
+            this.cB_FilterIFrames.Location = new System.Drawing.Point(6, 52);
             this.cB_FilterIFrames.Name = "cB_FilterIFrames";
             this.cB_FilterIFrames.Size = new System.Drawing.Size(168, 17);
             this.cB_FilterIFrames.TabIndex = 13;
             this.cB_FilterIFrames.Text = "Browser: don\'t display IFrames";
             this.cB_FilterIFrames.UseVisualStyleBackColor = true;
             // 
+            // cB_ExpandNodes
+            // 
+            this.cB_ExpandNodes.AutoSize = true;
+            this.cB_ExpandNodes.Location = new System.Drawing.Point(6, 29);
+            this.cB_ExpandNodes.Name = "cB_ExpandNodes";
+            this.cB_ExpandNodes.Size = new System.Drawing.Size(108, 17);
+            this.cB_ExpandNodes.TabIndex = 14;
+            this.cB_ExpandNodes.Text = "expand Treeview";
+            this.cB_ExpandNodes.UseVisualStyleBackColor = true;
+            // 
+            // tC_Main
+            // 
+            this.tC_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tC_Main.Controls.Add(this.tabPage1);
+            this.tC_Main.Controls.Add(this.tabPage2);
+            this.tC_Main.Location = new System.Drawing.Point(12, 12);
+            this.tC_Main.Name = "tC_Main";
+            this.tC_Main.SelectedIndex = 0;
+            this.tC_Main.Size = new System.Drawing.Size(548, 246);
+            this.tC_Main.TabIndex = 15;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.tB_youtubedlFolder);
+            this.tabPage1.Controls.Add(this.b_SelectYTdl);
+            this.tabPage1.Controls.Add(this.cB_LoadUponStartup);
+            this.tabPage1.Controls.Add(this.cB_UpdateUponLoad);
+            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.cB_UpdateNSFW);
+            this.tabPage1.Controls.Add(this.tB_FeedListPath);
+            this.tabPage1.Controls.Add(this.bSelectFeedList);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(540, 220);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Feeds";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.cB_DisplayFeedIcons);
+            this.tabPage2.Controls.Add(this.cB_ExpandNodes);
+            this.tabPage2.Controls.Add(this.cB_FilterIFrames);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(613, 227);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "View";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(439, 218);
-            this.Controls.Add(this.cB_FilterIFrames);
-            this.Controls.Add(this.cB_DisplayFeedIcons);
-            this.Controls.Add(this.cB_UpdateUponLoad);
-            this.Controls.Add(this.cB_UpdateNSFW);
-            this.Controls.Add(this.tB_FeedListPath);
-            this.Controls.Add(this.bSelectFeedList);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.cB_LoadUponStartup);
+            this.ClientSize = new System.Drawing.Size(572, 299);
+            this.Controls.Add(this.tC_Main);
             this.Controls.Add(this.b_Cancel);
             this.Controls.Add(this.b_Save);
             this.Controls.Add(this.b_Reset);
-            this.Controls.Add(this.tB_youtubedlFolder);
-            this.Controls.Add(this.b_SelectYTdl);
-            this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsDialog";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
+            this.tC_Main.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -231,5 +287,9 @@
         private System.Windows.Forms.CheckBox cB_UpdateUponLoad;
         private System.Windows.Forms.CheckBox cB_DisplayFeedIcons;
         private System.Windows.Forms.CheckBox cB_FilterIFrames;
+        private System.Windows.Forms.CheckBox cB_ExpandNodes;
+        private System.Windows.Forms.TabControl tC_Main;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 }

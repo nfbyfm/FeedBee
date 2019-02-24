@@ -36,6 +36,7 @@
             this.b_AddToNewGroup = new System.Windows.Forms.Button();
             this.tB_NewGroupName = new System.Windows.Forms.TextBox();
             this.b_Cancel = new System.Windows.Forms.Button();
+            this.cB_GroupIsNSFW = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // rB_addToGroup
@@ -108,11 +109,22 @@
             this.b_Cancel.UseVisualStyleBackColor = true;
             this.b_Cancel.Click += new System.EventHandler(this.b_Cancel_Click);
             // 
+            // cB_GroupIsNSFW
+            // 
+            this.cB_GroupIsNSFW.AutoSize = true;
+            this.cB_GroupIsNSFW.Location = new System.Drawing.Point(144, 70);
+            this.cB_GroupIsNSFW.Name = "cB_GroupIsNSFW";
+            this.cB_GroupIsNSFW.Size = new System.Drawing.Size(90, 17);
+            this.cB_GroupIsNSFW.TabIndex = 7;
+            this.cB_GroupIsNSFW.Text = "Group is nsfw";
+            this.cB_GroupIsNSFW.UseVisualStyleBackColor = true;
+            // 
             // SelectGroupDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(416, 103);
+            this.Controls.Add(this.cB_GroupIsNSFW);
             this.Controls.Add(this.b_Cancel);
             this.Controls.Add(this.tB_NewGroupName);
             this.Controls.Add(this.b_AddToNewGroup);
@@ -138,5 +150,6 @@
         private System.Windows.Forms.Button b_AddToNewGroup;
         private System.Windows.Forms.TextBox tB_NewGroupName;
         private System.Windows.Forms.Button b_Cancel;
+        private System.Windows.Forms.CheckBox cB_GroupIsNSFW;
     }
 }

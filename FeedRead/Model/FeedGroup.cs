@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace FeedRead.Model
 {
     /// <summary>
-    /// Class 
+    /// Class for Collections of Feeds and (sub-) Feedgroups
     /// </summary>
     public class FeedGroup
     {
@@ -28,6 +28,12 @@ namespace FeedRead.Model
         public string Url { get; set; }
 
         /// <summary>
+        /// tells if group contains nsfw feeds / feedgroups or not
+        /// </summary>
+        [XmlElement("IsNSFWGroup")]
+        public bool IsNSFWGroup { get; set; }
+
+        /// <summary>
         /// List of ancillary FeedGroups
         /// </summary>
         [XmlArray("GroupList"), XmlArrayItem("Group")]
@@ -40,7 +46,6 @@ namespace FeedRead.Model
         [XmlArray("FeedList"), XmlArrayItem("Feed")]
         public List<Feed> FeedList { get; set; }
         
-                
 
         #endregion
 
@@ -54,10 +59,12 @@ namespace FeedRead.Model
         /// Constructor (needed for xml-serialization)
         /// </summary>
         /// /// <param name="title">Name / shown title of the group.</param>
-        public FeedGroup(string title, string url ="")
+        public FeedGroup(string title, bool isNSFW, string url ="")
         {
             this.Title = title;
             this.Url = url;
+            this.IsNSFWGroup = isNSFW;
+
             FeedGroups = new List<FeedGroup>();
             FeedList = new List<Feed>();
         }
@@ -126,12 +133,12 @@ namespace FeedRead.Model
         /// </summary>
         /// <param name="name">name of the new feed</param>
         /// <param name="url">url of the group (optional)</param>
-        public void AddGroup(string name, string url="")
+        public void AddGroup(string name, bool isNSFW, string url="")
         {
             if (FeedGroups == null)
                 FeedGroups = new List<FeedGroup>();
 
-            FeedGroups.Add(new FeedGroup(name, url));
+            FeedGroups.Add(new FeedGroup(name, isNSFW, url));
         }
 
         /// <summary>
@@ -140,7 +147,7 @@ namespace FeedRead.Model
         /// <param name="newFeed">the feed to be added to the group</param>
         /// <param name="groupName">name of the new group</param>
         /// <param name="groupurl">URL of the new group (optional)</param>
-        public void AddFeedAndGroup(Feed newFeed, string groupName, string groupUrl = "")
+        public void AddFeedAndGroup(Feed newFeed, string groupName, bool isNSFW, string groupUrl = "")
         {
             if (FeedList == null)
                 FeedList = new List<Feed>();
@@ -148,7 +155,7 @@ namespace FeedRead.Model
             if (FeedGroups == null)
                 FeedGroups = new List<FeedGroup>();
 
-            FeedGroup newGroup = new FeedGroup(groupName, groupUrl);
+            FeedGroup newGroup = new FeedGroup(groupName, isNSFW, groupUrl);
             newGroup.AddFeed(newFeed);
 
             FeedGroups.Add(newGroup);

@@ -14,6 +14,7 @@ namespace FeedRead.UI
     {
         public string groupName;
         public bool addNewGroupName;
+        public bool newGroupIsNSFW;
 
         private List<string> groupNames;
 
@@ -70,6 +71,7 @@ namespace FeedRead.UI
         {
             groupName = tB_NewGroupName.Text;
             addNewGroupName = true;
+            newGroupIsNSFW = cB_GroupIsNSFW.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -103,6 +105,7 @@ namespace FeedRead.UI
 
             tB_NewGroupName.Enabled = rB_CreateNewGroup.Checked;
             b_AddToNewGroup.Enabled = rB_CreateNewGroup.Checked;
+            cB_GroupIsNSFW.Enabled = rB_CreateNewGroup.Checked;
         }
     }
 }

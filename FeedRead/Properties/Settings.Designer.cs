@@ -106,5 +106,17 @@ namespace FeedRead.Properties {
                 this["displayFeedIcons"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool expandNodes {
+            get {
+                return ((bool)(this["expandNodes"]));
+            }
+            set {
+                this["expandNodes"] = value;
+            }
+        }
     }
 }

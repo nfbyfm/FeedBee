@@ -85,6 +85,13 @@ namespace CodeHollow.FeedReader
         public string FeedURL { get; set; }
 
         /// <summary>
+        /// when an item gets displayed, either load the description (value = false) or the webURL (value = true)
+        /// </summary>
+        [XmlElement("DirectlyLoadWebpage")]
+        public bool DirectlyLoadWebpage { get; set; }
+
+
+        /// <summary>
         /// List of items
         /// </summary>
         [XmlArray("FeedItems"), XmlArrayItem("Item")]

@@ -39,7 +39,7 @@ namespace FeedRead.Control
         public Controller(MainForm mainForm, InternetCheck iCheck)
         {
             this.mainForm = mainForm;
-            this.mainModel = new FeedGroup(mainModelID, "");
+            this.mainModel = new FeedGroup(mainModelID, false, "");
             this.internetCheck = iCheck;
 
 
@@ -304,6 +304,7 @@ namespace FeedRead.Control
                     {
                         //get group-name
                         string groupName = sGD.groupName;
+                        bool groupIsNSFW = sGD.newGroupIsNSFW;
 
                         Feed newFeed = null;
 
@@ -317,7 +318,7 @@ namespace FeedRead.Control
                                 //create a new group and add the feed to it
                                 //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
 
-                                mainModel.AddFeedAndGroup(newFeed, groupName, "");
+                                mainModel.AddFeedAndGroup(newFeed, groupName, groupIsNSFW, "");
 
                                 UpdateTreeview();
                             }
@@ -692,7 +693,7 @@ namespace FeedRead.Control
         /// </summary>
         /// <param name="tagObject"></param>
         /// <param name="newName"></param>
-        public void RenameNode(object tagObject, string newName)
+        public void RenameNode(object tagObject)
         {
             if(tagObject != null)
             {
@@ -700,15 +701,46 @@ namespace FeedRead.Control
                 {
                     FeedGroup selFeedGroup = (FeedGroup)tagObject;
 
-                    selFeedGroup.Title = newName;
-                    UpdateTreeview();
+                    //get new name
+                    EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup);
+
+                    if (rd.ShowDialog() == DialogResult.OK)
+                    {
+                        string newNodeName = rd.newName;
+                        
+                        if (!string.IsNullOrEmpty(newNodeName) && !string.IsNullOrWhiteSpace(newNodeName))
+                        {
+                            //set feedgroup-properties
+                            selFeedGroup.Title = newNodeName;
+                            selFeedGroup.IsNSFWGroup = rd.IsNSFW;
+                            UpdateTreeview();
+                        }
+                    }
+
+                    rd.Dispose();
+
                 }
                 else if (tagObject.GetType() == typeof(Feed))
                 {
                     Feed selFeed = (Feed)tagObject;
 
-                    selFeed.Title = newName;
-                    UpdateTreeview();
+                    //get new name
+                    EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage);
+                    
+                    if (fd.ShowDialog() == DialogResult.OK)
+                    {
+                        string newFeedName = fd.feedTitle;
+
+                        
+                        if (!string.IsNullOrEmpty(newFeedName) && !string.IsNullOrWhiteSpace(newFeedName))
+                        {
+                            //set the feed-properties
+                            selFeed.Title = fd.feedTitle;
+                            selFeed.DirectlyLoadWebpage = fd.directlyLoadWebURL;
+                            UpdateTreeview();
+                        }
+                    }
+                    fd.Dispose();
                 }
                 else
                 {
@@ -721,6 +753,8 @@ namespace FeedRead.Control
                 Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
             }
         }
+
+        
 
         /// <summary>
         /// delete a feed or feedgroup by it's hashcode
@@ -924,6 +958,7 @@ namespace FeedRead.Control
 
                     //check if group has to get added first
                     bool groupAdded = false;
+                    bool groupIsNSFW = sGD.newGroupIsNSFW;
 
                     if (!sGD.addNewGroupName)
                     {
@@ -937,7 +972,7 @@ namespace FeedRead.Control
                     {
                         mainForm.SetStatusText("importing feeds ...", -1);
 
-                        ImportFromTxtSubFunction(filename, ref groupAdded, groupName);
+                        ImportFromTxtSubFunction(filename, ref groupAdded, groupName, groupIsNSFW);
 
                         mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
                         mainForm.SetStatusText("import done", 2000);
@@ -960,7 +995,7 @@ namespace FeedRead.Control
         /// <param name="filename"></param>
         /// <param name="groupAdded"></param>
         /// <param name="groupName"></param>
-        private void ImportFromTxtSubFunction(string filename, ref bool groupAdded, string groupName)
+        private void ImportFromTxtSubFunction(string filename, ref bool groupAdded, string groupName, bool groupIsNSFW)
         {
             var feedFile = File.ReadAllLines(filename);
             List<string> lines = new List<string>(feedFile);
@@ -980,7 +1015,7 @@ namespace FeedRead.Control
                             if (groupAdded == false)
                             {
                                 //add new group and the the feed to it
-                                mainModel.AddFeedAndGroup(newFeed, groupName, "");
+                                mainModel.AddFeedAndGroup(newFeed, groupName, groupIsNSFW, "");
                                 groupAdded = true;
                             }
                             else
@@ -1019,6 +1054,7 @@ namespace FeedRead.Control
             {
                 newFeed = FeedReader.Read(url);
                 newFeed.FeedURL = url;
+                newFeed.Updated = true;
             }
         }
 
@@ -1103,10 +1139,10 @@ namespace FeedRead.Control
                 {
                     bool checkNSFW = true;
 
-                    //if "atWork" = true -> check if group has nsfw in the title -> ignore / don't update if so
+                    //if "atWork" = true -> check if group has nsfw-flag -> ignore / don't update if so
                     if(atWork)
                     {
-                        checkNSFW = !group.Title.ToLower().Contains("nsfw");
+                        checkNSFW = !group.IsNSFWGroup;//.Title.ToLower().Contains("nsfw");
                     }
 
 
@@ -1183,100 +1219,105 @@ namespace FeedRead.Control
         /// <param name="origFeed"></param>
         private void UpdateFeed(Feed origFeed)
         {
-
-            //Console.WriteLine("Starting update on '" + origFeed.Title + "' ...");
-
-            //get Feeditems
-            Feed tmpFeed = null;
-
-            bool updateSuccess = false;
-
-            string url = origFeed.FeedURL;
-
-
-            //try to get current feed
-            GetFeed(url, ref tmpFeed);
-
-            if (tmpFeed != null)
+            try
             {
-                if (tmpFeed.Items != null)
+                //Console.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+
+                //get Feeditems
+                Feed tmpFeed = null;
+
+                bool updateSuccess = false;
+
+                string url = origFeed.FeedURL;
+
+
+                //try to get current feed
+                GetFeed(url, ref tmpFeed);
+
+                if (tmpFeed != null)
                 {
-                    if (tmpFeed.Items.Count() > 0)
+                    if (tmpFeed.Items != null)
                     {
-                        List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-
-
-                        origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-                        int itemCountNew = updateList.Count();
-                        int itemCountOld = origFeed.Items.Count();
-
-                        if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
+                        if (tmpFeed.Items.Count() > 0)
                         {
-                            //Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
+                            List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-                            List<FeedItem> tmpSwapList = new List<FeedItem>();
 
-                            //compare both lists
-                            foreach (FeedItem newItem in updateList)
+
+                            origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                            int itemCountNew = updateList.Count();
+                            int itemCountOld = origFeed.Items.Count();
+
+                            if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
                             {
-                                newItem.Read = false;
+                                //Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
 
+                                List<FeedItem> tmpSwapList = new List<FeedItem>();
 
-                                bool found = false;
-
-                                //compare new item with all the old items
-                                foreach (FeedItem oldItem in origFeed.Items)
+                                //compare both lists
+                                foreach (FeedItem newItem in updateList)
                                 {
-                                    //compare id's
-                                    if (newItem.Id == oldItem.Id)
+                                    newItem.Read = false;
+
+
+                                    bool found = false;
+
+                                    //compare new item with all the old items
+                                    foreach (FeedItem oldItem in origFeed.Items)
                                     {
-                                        found = true;
-                                        break;
+                                        //compare id's
+                                        if (newItem.Id == oldItem.Id)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    //if item couldn't be found in list -> add to temp. List
+                                    if (found == false)
+                                    {
+                                        tmpSwapList.Add(newItem);
                                     }
                                 }
 
-                                //if item couldn't be found in list -> add to temp. List
-                                if (found == false)
+                                if (tmpSwapList.Count > 0)
                                 {
-                                    tmpSwapList.Add(newItem);
+                                    //append old List
+                                    origFeed.Items.AddRange(tmpSwapList);
+
+                                    //Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+
+                                    //order list again
+                                    origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                                }
+
+                                updateSuccess = true;
+
+                            }
+                            else
+                            {
+                                if (itemCountNew == itemCountOld)
+                                {
+                                    updateSuccess = true;
+                                    Console.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
                                 }
                             }
 
-                            if (tmpSwapList.Count > 0)
-                            {
-                                //append old List
-                                origFeed.Items.AddRange(tmpSwapList);
-
-                                //Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
-
-                                //order list again
-                                origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-                            }
-
-                            updateSuccess = true;
 
                         }
-                        else
-                        {
-                            if (itemCountNew == itemCountOld)
-                            {
-                                updateSuccess = true;
-                                Console.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
-                            }
-                        }
-
-
                     }
+
                 }
 
+                //mark Feed as updated or not
+                origFeed.Updated = updateSuccess;
+
+             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error when getting update for feed '" + origFeed + "': " + ex.Message);
             }
-
-            //mark Feed as updated or not
-            origFeed.Updated = updateSuccess;
-
-            //Console.WriteLine("Update of '" + origFeed.Title + "' is done.");
         }
 
         

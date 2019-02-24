@@ -10,29 +10,37 @@ using System.Windows.Forms;
 
 namespace FeedRead.UI
 {
-    public partial class RenameDialog : Form
+    public partial class EditGroupDialog : Form
     {
         public string newName;
+        public bool IsNSFW;
 
-        public RenameDialog()
+        /// <summary>
+        /// Constructor for Rename-Dialog
+        /// </summary>
+        /// <param name="oldName">name/title of current element</param>
+        /// <param name="isNSFW">if current element is nsfw set to true</param>
+        public EditGroupDialog(string oldName, bool isNSFW)
         {
             InitializeComponent();
 
 
-            this.ActiveControl = tB_NewName;
-            newName = "";
-        }
-
-
-        public void SetOldName(string oldName)
-        {
             tB_NewName.Text = oldName;
-        }
+            cB_MarkNSFW.Checked = IsNSFW;
 
+            this.IsNSFW = isNSFW;
+            this.newName = oldName;
+
+            this.ActiveControl = tB_NewName;
+
+        }
+        
 
         private void bOK_Click(object sender, EventArgs e)
         {
             newName = tB_NewName.Text;
+            IsNSFW = cB_MarkNSFW.Checked;
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

@@ -142,7 +142,7 @@ namespace FeedRead.UI
             //context-menu for tVMain
             cMS_Treeview.Enabled = enable;
             cMS_Update.Enabled = enable;
-            cMS_Rename.Enabled = enable;
+            cMS_Edit.Enabled = enable;
             cMS_Delete.Enabled = enable;
             cMS_MarkAsRead.Enabled = enable;
         }
@@ -227,6 +227,11 @@ namespace FeedRead.UI
 
 
                 tVMain.ImageList = icons;
+
+                if(Properties.Settings.Default.expandNodes)
+                {
+                    tVMain.ExpandAll();
+                }
                 
                 //Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
             }
@@ -491,7 +496,14 @@ namespace FeedRead.UI
             }
             else
             {
-                statusLabel.Text = text;
+                try
+                {
+                    statusLabel.Text = text;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error setting statuslabel-text: " + ex.Message);
+                }
             }
         }
         #endregion
@@ -577,20 +589,42 @@ namespace FeedRead.UI
                                 b_DownloadVideo.Visible = true;
                                 b_DownloadVideo.Enabled = true;
                             }
-                            //else
-                            //{
-                                //try to display the description of the feed -> if not possible: load webpage
-                            bool loadWebpage = true;
+                            
+                            //try to display the description of the feed -> if not possible: load webpage
+                            bool loadWebpage = false;
 
-                            if(item.Description != null)
+                            //find out if webpage should get loaded directly (by getting the propertiy of the parent-feed)
+                            if(tVMain.SelectedNode != null)
+                            {
+                                object fob = tVMain.SelectedNode.Tag;
+                                if(fob != null)
+                                {
+                                    if(fob.GetType() == typeof(Feed))
+                                    {
+                                        Feed parentFeed = (Feed)fob;
+                                        if(parentFeed != null)
+                                        {
+                                            loadWebpage = parentFeed.DirectlyLoadWebpage;
+                                        }
+                                    }
+                                }
+                            }
+
+                            //try to load the description
+                            if(item.Description != null && (loadWebpage == false))
                             {
                                 if(!string.IsNullOrEmpty(item.Description) && !string.IsNullOrWhiteSpace(item.Description))
                                 {
                                     browser.DocumentText = item.Description;
                                     loadWebpage = false;
                                 }
+                                else
+                                {
+                                    loadWebpage = true;
+                                }
                             }
 
+                            //if description couldn't or shouldn't get loaded, show the webpage
                             if(loadWebpage)
                             {
                                 browser.Navigate(item.Link);
@@ -652,24 +686,7 @@ namespace FeedRead.UI
                 object ob = tVMain.SelectedNode.Tag;
                 if(ob != null)
                 {
-                    RenameDialog rd = new RenameDialog();
-                    rd.SetOldName(tVMain.SelectedNode.Text);
-
-                    if (rd.ShowDialog() == DialogResult.OK)
-                    {
-                        string newNodeName = rd.newName;
-                        rd.Dispose();
-                        Console.WriteLine("new Node-name = " + newNodeName);
-
-                        if (!string.IsNullOrEmpty(newNodeName) && !string.IsNullOrWhiteSpace(newNodeName))
-                        {
-                            controller.RenameNode(ob, newNodeName);
-                        }
-                    }
-                    else
-                    {
-                        rd.Dispose();
-                    }
+                    controller.RenameNode(ob);
                 }
             }
         }

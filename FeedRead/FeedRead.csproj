@@ -60,11 +60,17 @@
     <Compile Include="UI\AboutBoxFeedRead.Designer.cs">
       <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RenameDialog.cs">
+    <Compile Include="UI\EditFeedDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\RenameDialog.Designer.cs">
-      <DependentUpon>RenameDialog.cs</DependentUpon>
+    <Compile Include="UI\EditFeedDialog.Designer.cs">
+      <DependentUpon>EditFeedDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EditGroupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EditGroupDialog.Designer.cs">
+      <DependentUpon>EditGroupDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SettingsDialog.cs">
       <SubType>Form</SubType>
@@ -168,8 +174,11 @@
     <EmbeddedResource Include="UI\AboutBoxFeedRead.resx">
       <DependentUpon>AboutBoxFeedRead.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RenameDialog.resx">
-      <DependentUpon>RenameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="UI\EditFeedDialog.resx">
+      <DependentUpon>EditFeedDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EditGroupDialog.resx">
+      <DependentUpon>EditGroupDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SelectGroupDialog.resx">
       <DependentUpon>SelectGroupDialog.cs</DependentUpon>
