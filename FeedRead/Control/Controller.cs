@@ -1254,8 +1254,12 @@ namespace FeedRead.Control
                         {
                             List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-                            //update the image-url
-                            origFeed.ImageUrl = tmpFeed.ImageUrl;
+                            //update the image-url (if not saved to file already)
+                            if(!File.Exists(origFeed.ImageUrl))
+                            {
+                                origFeed.ImageUrl = tmpFeed.ImageUrl;
+                            }
+                            
 
                             origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
