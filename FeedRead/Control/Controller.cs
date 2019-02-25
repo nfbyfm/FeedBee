@@ -295,7 +295,7 @@ namespace FeedRead.Control
 
                         Feed newFeed = null;
 
-                        GetFeed(newFeedUrl, ref newFeed);
+                        GetFeed(newFeedUrl, ref newFeed, true);
 
                         if (newFeed != null)
                         {
@@ -996,7 +996,7 @@ namespace FeedRead.Control
                     {
                         Feed newFeed = new Feed();
 
-                        GetFeed(line, ref newFeed);
+                        GetFeed(line, ref newFeed, true);
 
                         if (newFeed != null)
                         {
@@ -1023,7 +1023,7 @@ namespace FeedRead.Control
         /// </summary>
         /// <param name="url"></param>
         /// <param name="newFeed"></param>
-        private void GetFeed(string url, ref Feed newFeed)
+        private void GetFeed(string url, ref Feed newFeed, bool getImage)
         {
             
             if (url.ToLower().Contains("mangarock"))
@@ -1044,11 +1044,10 @@ namespace FeedRead.Control
                 newFeed = FeedReader.Read(url);
                 newFeed.FeedURL = url;
                 newFeed.Updated = true;
-
             }
 
             //get icon for treeview
-            if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons)
+            if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons && getImage)
             {
                 //try to get the image-path from the main webpage first
                 string tmpImageUrl = GetFaviconOfWebpage(newFeed.Link);
@@ -1136,13 +1135,16 @@ namespace FeedRead.Control
         {
             if(group != null)
             {
-                if(group.FeedGroups != null)
+                //create a list of threads
+                List<Thread> tList = new List<Thread>();
+
+                if (group.FeedGroups != null)
                 {
                     if(group.FeedGroups.Count() > 0 )
                     {
-                        foreach(FeedGroup subGroup in group.FeedGroups)
+                        for (int i = 0; i < group.FeedGroups.Count(); i++)
                         {
-                            UpdateFeedList(subGroup, atWork);
+                            tList.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
                         }
                     }
                 }
@@ -1157,72 +1159,124 @@ namespace FeedRead.Control
                         checkNSFW = !group.IsNSFWGroup;//.Title.ToLower().Contains("nsfw");
                     }
 
-
                     if(group.FeedList.Count > 0 && checkNSFW)
                     {
-                        //create a list of threads
-                        List<Thread> tList = new List<Thread>();
-
                         for (int i =0; i< group.FeedList.Count(); i++)
                         {
                             Feed fed = group.FeedList[i];
-                            //start own new thread for importing
+                            //define own new thread for importing
                             Thread t1 = new Thread(delegate ()
                             {
-                                
                                 UpdateFeed(fed);
                             });
                             
                             //add thread to list
                             tList.Add(t1);
+                        } 
+                    }
+                }
+
+
+                //actually run all the threads
+
+                if(tList.Count > 0)
+                {
+                    int numberOfThreads = tList.Count();
+                    //Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
+
+                    //start every thread at once
+                    foreach (Thread th in tList)
+                    {
+                        th.Start();
+                    }
+
+                    bool updateFinished = false;
+                    int counter_before = 0;
+
+                    //wait until each thread ist finished
+                    while (!updateFinished)
+                    {
+                        int counter = 0;
+
+                        foreach (Thread thr in tList)
+                        {
+                            if (thr.IsAlive == false)
+                            {
+                                counter++;
+                            }
                         }
 
-                        int numberOfThreads = tList.Count();
-                        //Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
-
-                        //start every thread at once
-                        foreach (Thread th in tList)
+                        if (counter != counter_before)
                         {
-                            th.Start();
+                            mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                            //Console.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
+                            counter_before = counter;
                         }
 
-                        bool updateFinished = false;
-                        int counter_before = 0;
-
-                        //wait until each thread ist finished
-                        while (!updateFinished)
+                        if (counter == numberOfThreads)
                         {
-                            int counter = 0;
-
-                            foreach (Thread thr in tList)
-                            {
-                                if (thr.IsAlive == false)
-                                {
-                                    counter++;
-                                }
-                            }
-
-                            if (counter != counter_before)
-                            {
-                                mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
-                                //Console.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
-                                counter_before = counter;
-                            }
-
-                            if (counter == numberOfThreads)
-                            {
-                                updateFinished = true;
-                            }
+                            updateFinished = true;
                         }
                     }
-                    
-
-                    //Console.WriteLine("update finished");
-                    //MessageBox.Show("Update finished");
                 }
+                
             }
         }
 
+        /// <summary>
+        /// get update-threads from a feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="atWork"></param>
+        /// <returns></returns>
+        private List<Thread> GetThreadsFromGroup(FeedGroup group, bool atWork)
+        {
+            List<Thread> result = new List<Thread>();
+
+            if(group != null)
+            {
+                if(atWork && group.IsNSFWGroup)
+                {
+                    //do nothing / don't update group
+                }
+                else
+                {
+                    if (group.FeedGroups != null)
+                    {
+                        if (group.FeedGroups.Count() > 0)
+                        {
+                            for(int i = 0; i < group.FeedGroups.Count(); i++)
+                            {
+                                result.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
+                            }
+                        }
+                    }
+
+                    if (group.FeedList != null)
+                    {
+                        if (group.FeedList.Count() > 0)
+                        {
+                            for (int i = 0; i < group.FeedList.Count(); i++)
+                            {
+                                Feed fed = group.FeedList[i];
+                                //define own new thread for importing
+                                Thread t1 = new Thread(delegate ()
+                                {
+                                    UpdateFeed(fed);
+                                });
+
+                                //add thread to list
+                                result.Add(t1);
+                            }
+                        }
+                    }
+                }
+                
+
+            }
+
+            return result;
+        }
         
 
         /// <summary>
@@ -1242,9 +1296,10 @@ namespace FeedRead.Control
 
                 string url = origFeed.FeedURL;
 
+                bool updateImage = !File.Exists(origFeed.ImageUrl);
 
                 //try to get current feed
-                GetFeed(url, ref tmpFeed);
+                GetFeed(url, ref tmpFeed, updateImage);
 
                 if (tmpFeed != null)
                 {
@@ -1255,7 +1310,7 @@ namespace FeedRead.Control
                             List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
                             //update the image-url (if not saved to file already)
-                            if(!File.Exists(origFeed.ImageUrl))
+                            if(updateImage)
                             {
                                 origFeed.ImageUrl = tmpFeed.ImageUrl;
                             }
@@ -1272,6 +1327,10 @@ namespace FeedRead.Control
 
                                 List<FeedItem> tmpSwapList = new List<FeedItem>();
 
+                                //count number of matches
+                                int matchCounter = 0;
+                                int maxMatches = 5;
+
                                 //compare both lists
                                 foreach (FeedItem newItem in updateList)
                                 {
@@ -1287,6 +1346,7 @@ namespace FeedRead.Control
                                         if (newItem.Id == oldItem.Id)
                                         {
                                             found = true;
+                                            matchCounter++;
                                             break;
                                         }
                                     }
@@ -1295,6 +1355,12 @@ namespace FeedRead.Control
                                     if (found == false)
                                     {
                                         tmpSwapList.Add(newItem);
+                                        matchCounter = 0;
+                                    }
+
+                                    if(matchCounter > maxMatches)
+                                    {
+                                        break;
                                     }
                                 }
 
