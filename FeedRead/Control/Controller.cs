@@ -295,30 +295,47 @@ namespace FeedRead.Control
 
                         Feed newFeed = null;
 
-                        GetFeed(newFeedUrl, ref newFeed, true);
+                        
 
-                        if (newFeed != null)
+                        
+                        //check if it's a new group
+                        if (sGD.addNewGroupName)
                         {
-                            //check if it's anew group
-                            if (sGD.addNewGroupName)
-                            {
-                                //create a new group and add the feed to it
-                                //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                            //create a new group and add the feed to it
+                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                            GetFeed(newFeedUrl, ref newFeed, true);
 
+                            if (newFeed != null)
+                            {
                                 mainModel.AddFeedAndGroup(newFeed, groupName, groupIsNSFW, "");
 
                                 UpdateTreeview();
                             }
+                        }
+                        else
+                        {
+                            //find selected group
+                            //check if feed already exists and if not, add the new feed to it
+                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                            FeedGroup parentGroup = GetGroupByName(mainModel, groupName);
+
+                            if(IsFeedInGroup(parentGroup,newFeedUrl))
+                            {
+                                MessageBox.Show("Feed already exists in this Feedgroup!", "Add Feed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
                             else
                             {
-                                //find selected group
-                                //check if feed already exists and if not, add the new feed to it
-                                //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
-                                mainModel.AddFeed(newFeed, groupName);
+                                GetFeed(newFeedUrl, ref newFeed, true);
+                                if (newFeed != null)
+                                {
+                                    mainModel.AddFeed(newFeed, groupName);
 
-                                UpdateTreeview();
+                                    UpdateTreeview();
+                                }
                             }
+                                
                         }
+                 
 
 
                     }
@@ -330,6 +347,98 @@ namespace FeedRead.Control
             }
         }
 
+        
+
+        /// <summary>
+        /// recursively search for group with given name
+        /// </summary>
+        /// <param name="parentGroup"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        private FeedGroup GetGroupByName(FeedGroup parentGroup, string groupName)
+        {
+            FeedGroup result = null;
+
+            if (parentGroup != null)
+            {
+                if(parentGroup.Title.ToLower() == groupName.ToLower())
+                {
+                    result = parentGroup;
+                }
+                else
+                {
+                    if(parentGroup.FeedGroups != null)
+                    {
+                        if(parentGroup.FeedGroups.Count > 0)
+                        {
+                            for(int i = 0; i< parentGroup.FeedGroups.Count(); i++)
+                            {
+                                result = GetGroupByName(parentGroup.FeedGroups[i], groupName);
+                                if(result != null)
+                                {
+                                    //Console.WriteLine("Group with name '" + groupName + "' as been found.");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// checks if a feed is already in the given feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="feedurl"></param>
+        /// <returns></returns>
+        private bool IsFeedInGroup(FeedGroup group, string feedurl)
+        {
+            bool result = false;
+
+            string cleanFeedURL = feedurl.ToLower().Replace(" ", "").Replace("https","").Replace("http","");
+
+            //bool continueSearch = true;
+
+            if (group!=null)
+            {
+                //check FeedList first
+                if(group.FeedList != null)
+                {
+                    if(group.FeedList.Count > 0 )
+                    {
+                        for(int i = 0; i <group.FeedList.Count; i++)
+                        {
+                            string groupUrl = group.FeedList[i].FeedURL.ToLower().Replace(" ", "").Replace("https", "").Replace("http", "");
+
+                            if (groupUrl == cleanFeedURL)
+                            {
+                                //continueSearch = false;
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                /*
+                if(group.FeedGroups != null && continueSearch)
+                {
+                    //search in sub-groups
+                    if(group.FeedGroups.Count > 0)
+                    {
+                        for(int i = 0; i<group.FeedGroups.Count; i++)
+                        {
+                            
+                        }
+                    }
+                }
+                */
+            }
+
+            return result;
+        }
 
         public delegate void UpdateTreeViewCallback();
 
