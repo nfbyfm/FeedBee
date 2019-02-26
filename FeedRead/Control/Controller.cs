@@ -580,6 +580,8 @@ namespace FeedRead.Control
             }
         }
 
+        
+
         /// <summary>
         /// download a (youtube-) video 
         /// </summary>
@@ -975,8 +977,16 @@ namespace FeedRead.Control
             }
         }
 
+        /// <summary>
+        /// open unread feeds of a specific feedgroup
+        /// </summary>
+        /// <param name="subGroup"></param>
+        public void OpenUnreadFeeds(FeedGroup subGroup)
+        {
+            OpenUnreadFeeds(subGroup, false);
+        }
 
-        
+
         #endregion
 
 

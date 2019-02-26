@@ -571,6 +571,26 @@ namespace FeedRead.UI
             }
         }
 
+        private void openAllUnreadToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (tVMain.SelectedNode != null)
+            {
+                object ob = tVMain.SelectedNode.Tag;
+                if (ob != null)
+                {
+                    if(ob.GetType() == typeof(FeedGroup))
+                    {
+                        FeedGroup subGroup = (FeedGroup)ob;
+                        controller.OpenUnreadFeeds(subGroup);
+                    }
+
+                }
+            }
+        }
+
+
         #endregion
+
+        
     }
 }
