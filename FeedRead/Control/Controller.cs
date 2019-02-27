@@ -115,14 +115,20 @@ namespace FeedRead.Control
             odi.Title = "Import opml-file";
             odi.RestoreDirectory = true;
             odi.Multiselect = false;
-            odi.Filter = "ompl-file|*.opml";
+            //odi.Filter = "ompl-file|*.opml";
 
             //only import from txt-file if internet-connectivity is guaranteed
             if (CheckInternetConnectivity())
             {
-                odi.Filter += "|txt-file|*.txt";
+                // odi.Filter += "|txt-file|*.txt";
+                odi.Filter = "txt-file|*.txt";
             }
-            
+            else
+            {
+                MessageBox.Show("No internet-connection found in order to execute an import. Please make sure you are connected to the internet.", "Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
 
             if(odi.ShowDialog() == DialogResult.OK)
             {
@@ -238,7 +244,7 @@ namespace FeedRead.Control
             SaveFileDialog sadi = new SaveFileDialog();
             sadi.Title = "Export feeds";
             sadi.RestoreDirectory = true;
-            sadi.Filter = "txt-File|*.txt|ompl-File|*.opml";
+            sadi.Filter = "txt-File|*.txt";//|ompl-File|*.opml";
 
             if (sadi.ShowDialog() == DialogResult.OK)
             {
