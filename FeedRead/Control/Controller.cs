@@ -1337,6 +1337,8 @@ namespace FeedRead.Control
                             updateFinished = true;
                         }
                     }
+
+                    tList.Clear();
                 }
                 
             }
