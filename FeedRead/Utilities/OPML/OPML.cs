@@ -18,6 +18,7 @@ namespace FeedRead.Utilities.OPML
         public OPML()
         {
         }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -83,10 +84,12 @@ namespace FeedRead.Utilities.OPML
         public override string ToString()
         {
             StringBuilder OPMLString = new StringBuilder();
-            OPMLString.Append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\">");
-            OPMLString.Append(Head.ToString());
-            OPMLString.Append(Body.ToString());
+
+            OPMLString.Append("<opml version=\"1.0\" xmlns: fz = \"urn:forumzilla:\" > " + Environment.NewLine);// "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\">");
+            OPMLString.Append(Head.GetOPMLString(1));
+            OPMLString.Append(Body.GetOPMLString(1) + Environment.NewLine);
             OPMLString.Append("</opml>");
+
             return OPMLString.ToString();
         }
         #endregion

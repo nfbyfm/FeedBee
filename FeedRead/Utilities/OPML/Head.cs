@@ -90,18 +90,56 @@
         /// </summary>
         public string Docs { get; set; }
         #endregion
+
+        #region OPML-Export
+
+        /// <summary>
+        /// get the string for the opml-export
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public string GetOPMLString(int level)
+        {
+            //used for tabs
+            string prefix = "";
+
+            if (level > 0)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    prefix += "\t";
+                }
+            }
+
+            StringBuilder HeadString = new StringBuilder();
+
+            HeadString.Append(prefix + "<head>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<title>" + Title + "</title>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<dateCreated>" + DateCreated.ToString("R") + "</dateCreated>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<dateModified>" + DateModified.ToString("R") + "</dateModified>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<ownerName>" + OwnerName + "</ownerName>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<ownerEmail>" + OwnerEmail + "</ownerEmail>" + Environment.NewLine);
+            HeadString.Append(prefix + "\t<docs>" + Docs + "</docs>" + Environment.NewLine);
+            HeadString.Append(prefix + "</head>" + Environment.NewLine);
+
+            return HeadString.ToString();
+        }
+
+
+        #endregion
+
         #region Overridden Functions
         public override string ToString()
         {
             StringBuilder HeadString = new StringBuilder();
-            HeadString.Append("<head>");
-            HeadString.Append("<title>" + Title + "</title>\r\n");
-            HeadString.Append("<dateCreated>" + DateCreated.ToString("R") + "</dateCreated>\r\n");
-            HeadString.Append("<dateModified>" + DateModified.ToString("R") + "</dateModified>\r\n");
-            HeadString.Append("<ownerName>" + OwnerName + "</ownerName>\r\n");
-            HeadString.Append("<ownerEmail>" + OwnerEmail + "</ownerEmail>\r\n");
-            HeadString.Append("<docs>" + Docs + "</docs>\r\n");
-            HeadString.Append("</head>\r\n");
+            HeadString.Append("<head>" + Environment.NewLine);
+            HeadString.Append("\t<title>" + Title + "</title>" + Environment.NewLine);
+            HeadString.Append("\t<dateCreated>" + DateCreated.ToString("R") + "</dateCreated>" + Environment.NewLine);
+            HeadString.Append("\t<dateModified>" + DateModified.ToString("R") + "</dateModified>" + Environment.NewLine);
+            HeadString.Append("\t<ownerName>" + OwnerName + "</ownerName>" + Environment.NewLine);
+            HeadString.Append("\t<ownerEmail>" + OwnerEmail + "</ownerEmail>" + Environment.NewLine);
+            HeadString.Append("\t<docs>" + Docs + "</docs>" + Environment.NewLine);
+            HeadString.Append("</head>" + Environment.NewLine);
             return HeadString.ToString();
         }
         #endregion

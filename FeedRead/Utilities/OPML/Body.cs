@@ -49,14 +49,49 @@ namespace FeedRead.Utilities.OPML
         /// </summary>
         public List<Outline> Outlines { get; set; }
         #endregion
+
+        #region OPML-Export
+
+        /// <summary>
+        /// get the string for the opml-export
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public string GetOPMLString(int level)
+        {
+            //used for tabs
+            string prefix = "";
+
+            if (level > 0)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    prefix += "\t";
+                }
+            }
+
+            StringBuilder BodyString = new StringBuilder();
+
+            BodyString.Append(prefix + "<body>" + Environment.NewLine);
+            foreach (Outline Outline in Outlines)
+            {
+                BodyString.Append(Outline.GetOPMLString(level+1));
+            }
+            BodyString.Append(prefix + "</body>");
+
+            return BodyString.ToString();
+        }
+
+        #endregion
+
         #region Overridden Functions
         public override string ToString()
         {
             StringBuilder BodyString = new StringBuilder();
-            BodyString.Append("<body>");
+            BodyString.Append("<body>" + Environment.NewLine);
             foreach (Outline Outline in Outlines)
             {
-                BodyString.Append(Outline.ToString());
+                BodyString.Append("\t" + Outline.ToString());
             }
             BodyString.Append("</body>");
             return BodyString.ToString();

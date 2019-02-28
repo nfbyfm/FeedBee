@@ -74,6 +74,7 @@ namespace FeedRead.Utilities.OPML
             }
         }
         #endregion
+
         #region Properties
         /// <summary>
         /// Outline list
@@ -112,6 +113,92 @@ namespace FeedRead.Utilities.OPML
         /// </summary>
         public string Description { get; set; }
         #endregion
+
+        #region OPML-Export
+
+        /// <summary>
+        /// get the string for the opml-export
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public string GetOPMLString(int level)
+        {
+            //used for tabs
+            string prefix = "";
+
+            if(level > 0)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    prefix += "\t";
+                }
+            }
+
+            StringBuilder OutlineString = new StringBuilder();
+
+            OutlineString.Append(prefix + "<outline text=\"" + Text + "\"");
+            if (!string.IsNullOrEmpty(XMLUrl))
+            {
+                OutlineString.Append(" xmlUrl=\"" + XMLUrl + "\"");
+            }
+            if (!string.IsNullOrEmpty(Version))
+            {
+                OutlineString.Append(" version=\"" + Version + "\"");
+            }
+            if (!string.IsNullOrEmpty(Title))
+            {
+                OutlineString.Append(" title=\"" + Title + "\"");
+            }
+            if (!string.IsNullOrEmpty(Language))
+            {
+                OutlineString.Append(" language=\"" + Language + "\"");
+            }
+            if (!string.IsNullOrEmpty(Type))
+            {
+                OutlineString.Append(" type=\"" + Type + "\"");
+            }
+            if (!string.IsNullOrEmpty(HTMLUrl))
+            {
+                OutlineString.Append(" htmlUrl=\"" + HTMLUrl + "\"");
+            }
+            if (!string.IsNullOrEmpty(Text))
+            {
+                OutlineString.Append(" text=\"" + Text + "\"");
+            }
+            if (!string.IsNullOrEmpty(Description))
+            {
+                OutlineString.Append(" description=\"" + Description + "\"");
+            }
+
+            if (Outlines != null)
+            {
+                if (Outlines.Count > 0)
+                {
+                    OutlineString.Append(">\r");
+                    foreach (Outline Outline in Outlines)
+                    {
+                        OutlineString.Append(Outline.GetOPMLString(level +1));// + Environment.NewLine);
+                    }
+                    OutlineString.Append(prefix + "</outline>" + Environment.NewLine);
+                }
+                else
+                {
+                    OutlineString.Append("/></outline>" + Environment.NewLine);
+                }
+            }
+            else
+            {
+                OutlineString.Append("/></outline>" + Environment.NewLine);
+            }
+
+
+            return OutlineString.ToString();
+
+
+        }
+
+        #endregion
+
         #region Overridden Functions
         public override string ToString()
         {
@@ -149,21 +236,26 @@ namespace FeedRead.Utilities.OPML
             {
                 OutlineString.Append(" description=\"" + Description + "\"");
             }
+
             if (Outlines!=null)
             {
                 if (Outlines.Count > 0)
                 {
-                    OutlineString.Append(">\r\n");
+                    OutlineString.Append(">\r" );
                     foreach (Outline Outline in Outlines)
                     {
-                        OutlineString.Append(Outline.ToString());
+                        OutlineString.Append("\t\t" + Outline.ToString());// + Environment.NewLine);
                     }
-                    OutlineString.Append("</outline>\r\n");
+                    OutlineString.Append("\t</outline>" + Environment.NewLine);
+                }
+                else
+                {
+                    OutlineString.Append("/></outline>" + Environment.NewLine);
                 }
             }
             else
             {
-                OutlineString.Append(" />\r\n");
+                OutlineString.Append("/></outline>" + Environment.NewLine);
             }
             return OutlineString.ToString();
         }

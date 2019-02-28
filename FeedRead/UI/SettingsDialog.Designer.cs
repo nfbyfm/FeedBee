@@ -47,9 +47,9 @@
             this.tC_Main = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tB_IconFolder = new System.Windows.Forms.TextBox();
             this.b_SelectIconFolder = new System.Windows.Forms.Button();
+            this.tB_IconFolder = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.tC_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -186,6 +186,7 @@
             this.cB_DisplayFeedIcons.TabIndex = 12;
             this.cB_DisplayFeedIcons.Text = "display feed-icons where possible";
             this.cB_DisplayFeedIcons.UseVisualStyleBackColor = true;
+            this.cB_DisplayFeedIcons.CheckedChanged += new System.EventHandler(this.cB_DisplayFeedIcons_CheckedChanged);
             // 
             // cB_FilterIFrames
             // 
@@ -255,24 +256,6 @@
             this.tabPage2.Text = "View";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 72);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(106, 13);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Fodler for feed-icons:";
-            // 
-            // tB_IconFolder
-            // 
-            this.tB_IconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_IconFolder.Location = new System.Drawing.Point(135, 69);
-            this.tB_IconFolder.Name = "tB_IconFolder";
-            this.tB_IconFolder.Size = new System.Drawing.Size(319, 20);
-            this.tB_IconFolder.TabIndex = 16;
-            // 
             // b_SelectIconFolder
             // 
             this.b_SelectIconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -283,6 +266,24 @@
             this.b_SelectIconFolder.Text = "select ...";
             this.b_SelectIconFolder.UseVisualStyleBackColor = true;
             this.b_SelectIconFolder.Click += new System.EventHandler(this.b_SelectIconFolder_Click);
+            // 
+            // tB_IconFolder
+            // 
+            this.tB_IconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_IconFolder.Location = new System.Drawing.Point(135, 69);
+            this.tB_IconFolder.Name = "tB_IconFolder";
+            this.tB_IconFolder.Size = new System.Drawing.Size(319, 20);
+            this.tB_IconFolder.TabIndex = 16;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(23, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(106, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Fodler for feed-icons:";
             // 
             // SettingsDialog
             // 

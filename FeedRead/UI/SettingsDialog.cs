@@ -108,6 +108,20 @@ namespace FeedRead.UI
         }
 
         /// <summary>
+        /// set enable-properties of FeedIcon-Folder-Controls
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cB_DisplayFeedIcons_CheckedChanged(object sender, EventArgs e)
+        {
+            bool enabled = cB_DisplayFeedIcons.Checked;
+
+            label3.Enabled = enabled;
+            tB_IconFolder.Enabled = enabled;
+            b_SelectIconFolder.Enabled = enabled;
+        }
+
+        /// <summary>
         /// select feed-list file
         /// </summary>
         /// <param name="sender"></param>
@@ -166,6 +180,8 @@ namespace FeedRead.UI
             cB_ExpandNodes.Checked = Properties.Settings.Default.expandNodes;
 
             tB_IconFolder.Text = Properties.Settings.Default.iconFolderPath;
+
+            cB_DisplayFeedIcons_CheckedChanged(null, null);
         }
 
         /// <summary>
@@ -186,6 +202,7 @@ namespace FeedRead.UI
 
             Properties.Settings.Default.iconFolderPath = tB_IconFolder.Text;
         }
+
 
 
 

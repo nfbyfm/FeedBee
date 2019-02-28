@@ -27,7 +27,7 @@ namespace FeedRead.Control
     /// </summary>
     public class Controller
     {
-        private OPML opmlDoc;       //only for testing (import / export)
+        
         private MainForm mainForm;
         private FeedGroup mainModel;
 
@@ -141,7 +141,7 @@ namespace FeedRead.Control
 
                         try
                         {
-                            opmlDoc = new OPML(odi.FileName);
+                            OPML opmlDoc = new OPML(odi.FileName);
 
                             if (opmlDoc != null)
                             {
@@ -244,7 +244,7 @@ namespace FeedRead.Control
             SaveFileDialog sadi = new SaveFileDialog();
             sadi.Title = "Export feeds";
             sadi.RestoreDirectory = true;
-            sadi.Filter = "txt-File|*.txt";//|ompl-File|*.opml";
+            sadi.Filter = "txt-File|*.txt|ompl-File|*.opml";
 
             if (sadi.ShowDialog() == DialogResult.OK)
             {
@@ -256,15 +256,7 @@ namespace FeedRead.Control
                         break;
                     case 2:
                         //export as opml-file
-                        if (opmlDoc != null)
-                        {
-                            StreamWriter writer = new StreamWriter(sadi.FileName);
-                            writer.Write(opmlDoc.ToString());
-                            writer.Close();
-                            writer.Dispose();
-
-                            MessageBox.Show("Successfully exported opml-file to: " + sadi.FileName);
-                        }
+                        SaveListAsOPML(sadi.FileName);
                         break;
                     default:
                         break;
@@ -1235,9 +1227,27 @@ namespace FeedRead.Control
             writer.Write(result);
             writer.Close();
             writer.Dispose();
+
+            mainForm.SetStatusText("Successfully exported txt-file to: " + filename, 2000);
         }
 
-        
+        /// <summary>
+        /// save current Model as an opml-file
+        /// </summary>
+        /// <param name="filename"></param>
+        private void SaveListAsOPML(string filename)
+        {
+            OPML opmlDoc = GetOPMLFromModel();
+            if (opmlDoc != null)
+            {
+                StreamWriter writer = new StreamWriter(filename);
+                writer.Write(opmlDoc.ToString());
+                writer.Close();
+                writer.Dispose();
+
+                mainForm.SetStatusText("Successfully exported opml-file to: " + filename, 2000);
+            }
+        }
 
         /// <summary>
         /// update each feed of the main model
@@ -1869,7 +1879,159 @@ namespace FeedRead.Control
         #endregion
 
 
+        #region opml import and export
 
+
+        /// <summary>
+        /// generates OPML-Document from mainModel
+        /// </summary>
+        /// <returns></returns>
+        private OPML GetOPMLFromModel()
+        {
+            OPML result = new OPML();
+
+            Head newHead = new Head();
+            newHead.DateCreated = DateTime.Now;
+            newHead.DateModified = DateTime.Now;
+            newHead.Docs = "";
+            newHead.OwnerEmail = "";
+            newHead.OwnerName = "FeedRead";
+            newHead.Title = "FeedRead Subscription-List";
+
+            Body newBody = new Body();
+            newBody.Outlines = GetOutLinesFromModel();
+
+            result.Body = newBody;
+
+            result.Head = newHead;
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// generate list of outlines from mainModel
+        /// </summary>
+        /// <returns></returns>
+        private List<Outline> GetOutLinesFromModel()
+        {
+            List<Outline> outlines = new List<Outline>();
+
+            if (mainModel != null)
+            {
+                //create outline for current group
+
+                if (mainModel.FeedGroups != null)
+                {
+                    if (mainModel.FeedGroups.Count > 0)
+                    {
+                        foreach (FeedGroup subgroup in mainModel.FeedGroups)
+                        {
+                            outlines.AddRange(GetOutLinesFromFeedGroup(subgroup));
+                        }
+                    }
+                }
+
+                if (mainModel.FeedList != null)
+                {
+                    if (mainModel.FeedList.Count > 0)
+                    {
+                        foreach (Feed feed in mainModel.FeedList)
+                        {
+                            Outline feedOutline = GetOutLinesFromFeed(feed);
+                            if (feedOutline != null)
+                            {
+                                outlines.Add(feedOutline);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return outlines;
+        }
+
+        /// <summary>
+        /// generate List of outlines from a specific feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        private List<Outline> GetOutLinesFromFeedGroup(FeedGroup group)
+        {
+            List<Outline> outlines = new List<Outline>();
+
+            if (group != null)
+            {
+                //create outline for current group
+                Outline groupOutline = new Outline();
+
+                groupOutline.HTMLUrl = group.Url;
+                groupOutline.Text = group.Title;
+                groupOutline.Title = group.Title;
+
+                groupOutline.Outlines = new List<Outline>();
+
+                if (group.FeedGroups != null)
+                {
+                    if (group.FeedGroups.Count > 0)
+                    {
+                        foreach (FeedGroup subgroup in group.FeedGroups)
+                        {
+                            groupOutline.Outlines.AddRange(GetOutLinesFromFeedGroup(subgroup));
+                        }
+                    }
+                }
+
+                if (group.FeedList != null)
+                {
+                    if (group.FeedList.Count > 0)
+                    {
+                        foreach (Feed feed in group.FeedList)
+                        {
+                            Outline feedOutline = GetOutLinesFromFeed(feed);
+                            if (feedOutline != null)
+                            {
+                                groupOutline.Outlines.Add(feedOutline);
+                            }
+                        }
+                    }
+                }
+
+                outlines.Add(groupOutline);
+            }
+
+            return outlines;
+        }
+
+        /// <summary>
+        /// generate Outline for a specific feed
+        /// </summary>
+        /// <param name="feed"></param>
+        /// <returns></returns>
+        private Outline GetOutLinesFromFeed(Feed feed)
+        {
+            Outline fOutline = null;
+
+            if (feed != null)
+            {
+                fOutline = new Outline();
+                fOutline.Description = feed.Description;
+                fOutline.HTMLUrl = feed.FeedURL;
+                fOutline.Language = feed.Language;
+                fOutline.Outlines = new List<Outline>();
+                fOutline.Text = feed.Title;
+                fOutline.Title = feed.Title;
+                fOutline.Type = feed.Type.ToString();
+                fOutline.Version = feed.Type.ToString();
+                fOutline.XMLUrl = feed.Link;
+            }
+
+            return fOutline;
+        }
+
+
+        #endregion
 
 
 

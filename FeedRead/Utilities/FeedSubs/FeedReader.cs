@@ -155,7 +155,6 @@
         /// </summary>
         /// <param name="url">the url to a feed</param>
         /// <returns>parsed feed</returns>
-        [Obsolete("Use ReadAsync method")]
         public static Feed Read(string url)
         {
             var task = ReadAsync(url);
