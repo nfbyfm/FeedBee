@@ -141,11 +141,6 @@
     <Compile Include="Utilities\FeedSubs\Parser\Rss20Parser.cs" />
     <Compile Include="Utilities\FeedSubs\UrlNotFoundException.cs" />
     <Compile Include="Utilities\InternetCheck.cs" />
-    <Compile Include="Utilities\OMPL2\Body.cs" />
-    <Compile Include="Utilities\OMPL2\Head.cs" />
-    <Compile Include="Utilities\OMPL2\OpmlDocument.cs" />
-    <Compile Include="Utilities\OMPL2\OpmlElement.cs" />
-    <Compile Include="Utilities\OMPL2\Outline.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
     <Compile Include="Utilities\OPML\OPML.cs" />

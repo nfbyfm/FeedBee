@@ -2,6 +2,7 @@
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,7 +36,7 @@ namespace FeedRead.Control
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
+                Debug.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
             }
 
             if(loadSuccess)
@@ -63,7 +64,7 @@ namespace FeedRead.Control
                     }
                     else
                     {
-                        Console.WriteLine("titlenode is null!");
+                        Debug.WriteLine("titlenode is null!");
                     }
 
                     //get chapters
@@ -99,7 +100,7 @@ namespace FeedRead.Control
                                         url += suburl.Remove(suburl.IndexOf("\""));
                                     }
 
-                                    //Console.WriteLine("suburl = " + suburl + "   url = " + url);
+                                    //Debug.WriteLine("suburl = " + suburl + "   url = " + url);
 
                                     
                                     string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();
@@ -120,12 +121,12 @@ namespace FeedRead.Control
                         }
                         else
                         {
-                            Console.WriteLine(feed.Title + ": no Chapter-Nodes detected.");
+                            Debug.WriteLine(feed.Title + ": no Chapter-Nodes detected.");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Innerexception 1: " + ex.Message);
+                        Debug.WriteLine("Innerexception 1: " + ex.Message);
                     }
                     /*
                     var links = htmlDoc.DocumentNode?.SelectNodes("//link");
@@ -173,18 +174,18 @@ namespace FeedRead.Control
                     int days = Convert.ToInt32(splits[0]);
                     dateTime = DateTime.Today.AddDays(-1 * days);
 
-                    //Console.WriteLine("'ago'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
+                    //Debug.WriteLine("'ago'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
                 }
                 else
                 {
                     dateTime = DateTime.Parse(innerHtml);
-                    //Console.WriteLine("'normal'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
+                    //Debug.WriteLine("'normal'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
                 }
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
 
             return dateTime;

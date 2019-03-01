@@ -42,9 +42,8 @@ namespace FeedRead.Control
             this.mainModel = new FeedGroup(mainModelID, false, "");
             this.internetCheck = iCheck;
 
-
             //load default-List upon startup
-            if(Properties.Settings.Default.bLoadUponStartup)
+            if (Properties.Settings.Default.bLoadUponStartup)
             {
                 try
                 {
@@ -52,7 +51,7 @@ namespace FeedRead.Control
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("Error while loading list: " + ex.Message);
+                    Debug.WriteLine("Error while loading list: " + ex.Message);
                 }
 
             }
@@ -112,23 +111,16 @@ namespace FeedRead.Control
         public void ImportFeedList()
         {
             OpenFileDialog odi = new OpenFileDialog();
-            odi.Title = "Import opml-file";
+            odi.Title = "Import feeds-file";
             odi.RestoreDirectory = true;
             odi.Multiselect = false;
-            //odi.Filter = "ompl-file|*.opml";
+            odi.Filter = "ompl-file|*.opml";
 
             //only import from txt-file if internet-connectivity is guaranteed
             if (CheckInternetConnectivity())
             {
-                // odi.Filter += "|txt-file|*.txt";
-                odi.Filter = "txt-file|*.txt";
+                odi.Filter += "|txt-file|*.txt";
             }
-            else
-            {
-                MessageBox.Show("No internet-connection found in order to execute an import. Please make sure you are connected to the internet.", "Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
 
             if(odi.ShowDialog() == DialogResult.OK)
             {
@@ -136,56 +128,7 @@ namespace FeedRead.Control
                 {
                     case 1:
                         //open opml-file
-                        //Code from http://www.gutgames.com/post/OPML-in-CASPNet.aspx
-                        //doesn't seem to be able to handle nestes outlines well
-
-                        try
-                        {
-                            OPML opmlDoc = new OPML(odi.FileName);
-
-                            if (opmlDoc != null)
-                            {
-                                if (opmlDoc.Body != null)
-                                {
-                                    List<Outline> outlineList = opmlDoc.Body.Outlines;
-                                    if (outlineList != null)
-                                    {
-                                        foreach (Outline oline in outlineList)
-                                        {
-                                            if (oline.IsFinalNode())
-                                            {
-                                                Console.WriteLine(oline.ToString());
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
-                                                foreach (Outline o2line in oline.Outlines)
-                                                {
-                                                    Console.WriteLine(oline.Title + " -> " + o2line.ToString());
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Outline-List is null.");
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Body of ompl-File is null.");
-                                }
-
-                            }
-                            else
-                            {
-                                Console.WriteLine("OPML-File is null.");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
-                        }
+                        ImportFromOPML(odi.FileName);
                         break;
                     case 2:
                         //open txt-file
@@ -195,42 +138,6 @@ namespace FeedRead.Control
                         //do nothing
                         break;
                 }
-                /*
-                try
-                {
-                    var opmlData = XDocument.Load(odi.FileName, LoadOptions.SetLineInfo);
-
-                    OpmlDocument opmlDocument = OpmlDocument.Create(opmlData, false);
-
-                    
-                    if (opmlDocument != null)
-                    {
-                        foreach (Outline oline in opmlDocument.Body.Outlines)
-                        {
-                            if(oline.IsBreakPoint)
-                            {
-                                Console.WriteLine(oline.Title);
-                            }
-                            else
-                            {
-                                foreach(Outline o2line in oline.Outlines)
-                                {
-                                    Console.WriteLine(oline.Title + " -> " + o2line.Title);
-                                }
-                            }
-
-                        }
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
-                }
-                */
-
-                
-                
-
             }
         }
 
@@ -280,7 +187,7 @@ namespace FeedRead.Control
                     //show next dialog (add Feed to a Group)
                     string newFeedUrl = addFeedDialog.feedUrl;
 
-                    //Console.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
+                    //Debug.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
 
                     //show group-Dialog
                     SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
@@ -300,7 +207,7 @@ namespace FeedRead.Control
                         if (sGD.addNewGroupName)
                         {
                             //create a new group and add the feed to it
-                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
+                            //Debug.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
                             GetFeed(newFeedUrl, ref newFeed, true);
 
                             if (newFeed != null)
@@ -314,7 +221,7 @@ namespace FeedRead.Control
                         {
                             //find selected group
                             //check if feed already exists and if not, add the new feed to it
-                            //Console.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                            //Debug.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
                             FeedGroup parentGroup = GetGroupByName(mainModel, groupName);
 
                             if(IsFeedInGroup(parentGroup,newFeedUrl))
@@ -345,7 +252,53 @@ namespace FeedRead.Control
             }
         }
 
-        
+        /// <summary>
+        /// get list of unread feeditems of a specific feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public List<FeedItem> GetUnreadFeedItems(FeedGroup group)
+        {
+            List<FeedItem> result = new List<FeedItem>();
+
+            if(group!=null)
+            {
+                if(group.FeedGroups!=null)
+                {
+                    if(group.FeedGroups.Count > 0)
+                    {
+                        foreach(FeedGroup subgroup in group.FeedGroups)
+                        {
+                            result.AddRange(GetUnreadFeedItems(subgroup));
+                        }
+                    }
+                }
+
+                if(group.FeedList!=null)
+                {
+                    if(group.FeedList.Count > 0)
+                    {
+                        foreach(Feed feed in group.FeedList)
+                        {
+                            if(feed.GetNoOfUnreadItems() > 0)
+                            {
+                                foreach(FeedItem item in feed.Items)
+                                {
+                                    if(item.Read == false)
+                                    {
+                                        result.Add(item);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
 
         /// <summary>
         /// recursively search for group with given name
@@ -374,7 +327,7 @@ namespace FeedRead.Control
                                 result = GetGroupByName(parentGroup.FeedGroups[i], groupName);
                                 if(result != null)
                                 {
-                                    //Console.WriteLine("Group with name '" + groupName + "' as been found.");
+                                    //Debug.WriteLine("Group with name '" + groupName + "' as been found.");
                                     break;
                                 }
                             }
@@ -759,7 +712,7 @@ namespace FeedRead.Control
                     {
                         FeedGroup selFeedGroup = (FeedGroup)tmpResult;
 
-                        Console.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
+                        Debug.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
 
                         selFeedGroup.Title = newName;
                         UpdateTreeview();
@@ -768,19 +721,19 @@ namespace FeedRead.Control
                     {
                         Feed selFeed = (Feed)tmpResult;
 
-                        Console.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
+                        Debug.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
 
                         selFeed.Title = newName;
                         UpdateTreeview();
                     }
                     else
                     {
-                        Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                        Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
+                    Debug.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
                 }
 
                 */
@@ -841,13 +794,13 @@ namespace FeedRead.Control
                 }
                 else
                 {
-                    Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
                 }
 
             }
             else
             {
-                Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
             }
         }
 
@@ -869,12 +822,12 @@ namespace FeedRead.Control
                 }
                 else
                 {
-                    Console.WriteLine("DeleteNode: couldn't find element of selected Treenode is null.");
+                    Debug.WriteLine("DeleteNode: couldn't find element of selected Treenode is null.");
                 }
             }
             else
             {
-                Console.WriteLine("DeleteNode: tagObject of selected Treenode is null.");
+                Debug.WriteLine("DeleteNode: tagObject of selected Treenode is null.");
             }
         }
 
@@ -924,13 +877,13 @@ namespace FeedRead.Control
                     }
                     else
                     {
-                        Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                        Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
                     }
 
                 }
                 else
                 {
-                    Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+                    Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
                 }
             }
             else
@@ -965,13 +918,13 @@ namespace FeedRead.Control
                 }
                 else
                 {
-                    Console.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
                 }
 
             }
             else
             {
-                Console.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
             }
         }
 
@@ -1037,11 +990,69 @@ namespace FeedRead.Control
                 reader.Close();
                 reader.Dispose();
 
-                Console.WriteLine("List of feed groups opened. Filename: " + filename);
+                Debug.WriteLine("List of feed groups opened. Filename: " + filename);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error while loading FeedList:" + Environment.NewLine + ex.Message);
+            }
+        }
+
+
+        private void ImportFromOPML(string filename)
+        {
+            Console.WriteLine("import opml-file");
+
+            try
+            {
+                OPML opmlDoc = new OPML(filename);
+                
+
+                if (opmlDoc != null)
+                {
+                    if (opmlDoc.Body != null)
+                    {
+                        Console.WriteLine(opmlDoc.Body.ToString());
+                        /*
+                        List<Outline> outlineList = opmlDoc.Body.Outlines;
+                        if (outlineList != null)
+                        {
+                            foreach (Outline oline in outlineList)
+                            {
+                                if (oline.IsFinalNode())
+                                {
+                                    Console.WriteLine(oline.ToString());
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
+                                    foreach (Outline o2line in oline.Outlines)
+                                    {
+                                        Console.WriteLine(oline.Title + " -> " + o2line.ToString());
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Outline-List is null.");
+                        }
+                        */
+                    }
+                    else
+                    {
+                        Console.WriteLine("Body of ompl-File is null.");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("OPML-File is null.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
             }
         }
 
@@ -1151,7 +1162,7 @@ namespace FeedRead.Control
 
                 if (newFeed == null)
                 {
-                    Console.WriteLine("Error while getting feed from '" + url + "' to list.");
+                    Debug.WriteLine("Error while getting feed from '" + url + "' to list.");
                     return;
                 }
                 
@@ -1201,11 +1212,11 @@ namespace FeedRead.Control
                     ser.Serialize(writer, mainModel);
                     writer.Close();
 
-                    Console.WriteLine("Saved current list of feed-groups to: " + filename);
+                    Debug.WriteLine("Saved current list of feed-groups to: " + filename);
                 }
                 else
                 {
-                    Console.WriteLine("Controller.SaveList: main Model is null. Can't save.");
+                    Debug.WriteLine("Controller.SaveList: main Model is null. Can't save.");
                 }
             }
             catch (Exception ex)
@@ -1317,7 +1328,7 @@ namespace FeedRead.Control
                 if(tList.Count > 0)
                 {
                     int numberOfThreads = tList.Count();
-                    //Console.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
+                    //Debug.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
 
                     //start every thread at once
                     foreach (Thread th in tList)
@@ -1344,7 +1355,7 @@ namespace FeedRead.Control
                         if (counter != counter_before)
                         {
                             mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
-                            //Console.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
+                            //Debug.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
                             counter_before = counter;
                         }
 
@@ -1424,7 +1435,7 @@ namespace FeedRead.Control
         {
             try
             {
-                //Console.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+                //Debug.WriteLine("Starting update on '" + origFeed.Title + "' ...");
 
                 //get Feeditems
                 Feed tmpFeed = null;
@@ -1460,7 +1471,7 @@ namespace FeedRead.Control
 
                             if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
                             {
-                                //Console.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
+                                //Debug.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
 
                                 List<FeedItem> tmpSwapList = new List<FeedItem>();
 
@@ -1506,7 +1517,7 @@ namespace FeedRead.Control
                                     //append old List
                                     origFeed.Items.AddRange(tmpSwapList);
 
-                                    //Console.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+                                    //Debug.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
 
                                     //order list again
                                     origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
@@ -1520,7 +1531,7 @@ namespace FeedRead.Control
                                 if (itemCountNew == itemCountOld)
                                 {
                                     updateSuccess = true;
-                                    Console.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+                                    Debug.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
                                 }
                             }
 
@@ -1536,7 +1547,7 @@ namespace FeedRead.Control
              }
             catch (Exception ex)
             {
-                Console.WriteLine("Error when getting update for feed '" + origFeed + "': " + ex.Message);
+                Debug.WriteLine("Error when getting update for feed '" + origFeed + "': " + ex.Message);
             }
         }
 
@@ -1570,7 +1581,7 @@ namespace FeedRead.Control
                         }
                     }
                 }
-                Console.WriteLine("All feeditems marked as read.");
+                Debug.WriteLine("All feeditems marked as read.");
             }
         }
 
@@ -1739,7 +1750,7 @@ namespace FeedRead.Control
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
+                            Debug.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
                         }
                     }
                     else
@@ -1776,7 +1787,7 @@ namespace FeedRead.Control
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
+                Debug.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
             }
 
             if (loadSuccess)
@@ -1806,7 +1817,7 @@ namespace FeedRead.Control
 
                 if (mCollection != null)
                 {
-                    //Console.WriteLine("Find favicon: " + mCollection.Count.ToString() + " matches found.");
+                    //Debug.WriteLine("Find favicon: " + mCollection.Count.ToString() + " matches found.");
 
                     if (mCollection.Count > 0)
                     {
@@ -1837,7 +1848,7 @@ namespace FeedRead.Control
                             }
                         }
 
-                        //Console.WriteLine("Found favicon: " + result);
+                        //Debug.WriteLine("Found favicon: " + result);
                         imageFound = true;
                         break;
                     }
@@ -1846,7 +1857,7 @@ namespace FeedRead.Control
 
             if(imageFound == false)
             {
-                Console.WriteLine("No image found for: " + url);
+                Debug.WriteLine("No image found for: " + url);
             }
 
             
@@ -1873,7 +1884,7 @@ namespace FeedRead.Control
             }
             catch (Exception ex)
             {
-                Console.WriteLine("There was a problem downloading the image from '" + url + "': " + ex.Message);
+                Debug.WriteLine("There was a problem downloading the image from '" + url + "': " + ex.Message);
             }
         }
         #endregion
@@ -2098,11 +2109,11 @@ namespace FeedRead.Control
 
                 
 
-                //Console.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
+                //Debug.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
             }
             else
             {
-                Console.WriteLine("get-TreeNodes: mainModel is null");
+                Debug.WriteLine("get-TreeNodes: mainModel is null");
             }
 
         }
@@ -2232,7 +2243,7 @@ namespace FeedRead.Control
                         {
                             if (getIcon)
                             {
-                                Console.WriteLine("Image for " + feed.Title + "'. Image-URL = " + imageUrl + " is null.");
+                                Debug.WriteLine("Image for " + feed.Title + "'. Image-URL = " + imageUrl + " is null.");
                             }
 
                         }
@@ -2241,7 +2252,7 @@ namespace FeedRead.Control
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
+                    Debug.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
                 }
             }
             return feedNode;

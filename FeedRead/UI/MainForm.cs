@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Utilities.FeedSubs;
+using System.Diagnostics;
 
 namespace FeedRead.UI
 {
@@ -117,7 +118,7 @@ namespace FeedRead.UI
                     //if (x.OuterHtml.ToLower().Contains("zeus"))
                     {
                         x.OuterHtml = String.Empty;
-                        //Console.WriteLine(x.OuterHtml);
+                        //Debug.WriteLine(x.OuterHtml);
                     }
                 }
             }
@@ -184,18 +185,18 @@ namespace FeedRead.UI
                 }
                 else
                 {
-                    Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
+                    Debug.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
                 }
             }
             else
             {
-                Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
+                Debug.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
             }
 
             tVMain.ImageList = iList;
 
             if (iList == null)
-                Console.WriteLine("List of Icons for treeview is null");
+                Debug.WriteLine("List of Icons for treeview is null");
 
             if (Properties.Settings.Default.expandNodes)
             {
@@ -230,9 +231,41 @@ namespace FeedRead.UI
         /// lists feeditems in listview
         /// </summary>
         /// <param name="currentFeed"></param>
-        private void ShowFeedList(ref Feed currentFeed)
+        private void ShowFeedList(Feed currentFeed)
         {
             if (currentFeed != null)
+            {
+                UpdateListView(currentFeed.Items);
+            }
+            else
+            {
+                Debug.WriteLine("selected Feed equals null");
+            }
+        }
+
+        /// <summary>
+        /// show unread feeditems of a whole group in the listview 
+        /// </summary>
+        /// <param name="currentGroup"></param>
+        private void ShowFeedList(FeedGroup currentGroup)
+        {
+            if(currentGroup != null)
+            {
+                List<FeedItem> items = controller.GetUnreadFeedItems(currentGroup);
+
+                UpdateListView(items);
+
+            }
+        }
+
+
+        /// <summary>
+        /// show list of specific feeditems
+        /// </summary>
+        /// <param name="feedItems"></param>
+        private void UpdateListView(List<FeedItem> feedItems)
+        {
+            if(feedItems != null)
             {
                 lVFeedItems.Clear();
 
@@ -250,64 +283,57 @@ namespace FeedRead.UI
 
                 lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4 });
 
-                if (currentFeed.Items != null)
+
+                foreach (FeedItem feedItem in feedItems)
                 {
-                    foreach (FeedItem feedItem in currentFeed.Items)
+                    if (feedItem != null)
                     {
-                        if(feedItem != null)
+                        string update = "";
+
+                        if (feedItem.PublishingDate != null)
                         {
-                            //try
-                            //{
-                            string update = "";
-
-                            if (feedItem.PublishingDate != null)
+                            if (feedItem.PublishingDate.Value != null)
                             {
-                                if (feedItem.PublishingDate.Value != null)
-                                {
-                                    update = feedItem.PublishingDate.Value.ToShortDateString();
-                                }
+                                update = feedItem.PublishingDate.Value.ToShortDateString();
                             }
+                        }
 
-                            string read = "no";
+                        string read = "no";
 
-                            if(feedItem.Read)
-                            {
-                                read = "yes";
-                            }
-                            
+                        if (feedItem.Read)
+                        {
+                            read = "yes";
+                        }
 
-                            string[] itemProperties = new string[] {    feedItem.Title,
+
+                        string[] itemProperties = new string[] {    feedItem.Title,
                                                                         update,
                                                                         feedItem.Author,
                                                                         read
                                                                     };
 
-                            ListViewItem item = new ListViewItem(itemProperties);
-                            item.Tag = feedItem;
+                        ListViewItem item = new ListViewItem(itemProperties);
+                        item.Tag = feedItem;
 
-                            if (!feedItem.Read)
-                            {
-                                item.BackColor = Color.DarkOrange;
-                            }
-
-                            lVFeedItems.Items.Add(item);
+                        if (!feedItem.Read)
+                        {
+                            item.BackColor = Color.DarkOrange;
                         }
+
+                        lVFeedItems.Items.Add(item);
                     }
                 }
-                else
-                {
-                    Console.WriteLine("selected feed has no items");
-                }
+
+
                 lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
                 lVFeedItems.View = View.Details;
-
             }
-            else
-            {
-                Console.WriteLine("selected Feed equals null");
-            }
+    
         }
+
+
+
 
         /// <summary>
         /// set text (timed) of the statusStripLabel
@@ -328,7 +354,7 @@ namespace FeedRead.UI
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error setting statuslabel-text: " + ex.Message);
+                    Debug.WriteLine("Error setting statuslabel-text: " + ex.Message);
                 }
             }
         }
@@ -355,7 +381,14 @@ namespace FeedRead.UI
                     {
                         Feed selFeed = (Feed)tagObj;
 
-                        ShowFeedList(ref selFeed);
+                        ShowFeedList(selFeed);
+                    }
+
+                    if(tagObj.GetType() == typeof(FeedGroup))
+                    {
+                        FeedGroup selGroup = (FeedGroup)tagObj;
+
+                        ShowFeedList(selGroup);
                     }
                 }
             }
@@ -375,7 +408,7 @@ namespace FeedRead.UI
 
             if (lVFeedItems.SelectedItems.Count > 0)
             {
-                //Console.WriteLine("number of selected items: " + listView1.SelectedItems.Count);
+                //Debug.WriteLine("number of selected items: " + listView1.SelectedItems.Count);
 
                 ListViewItem ob = lVFeedItems.SelectedItems[0];
                 if (ob != null && ob.Tag != null)

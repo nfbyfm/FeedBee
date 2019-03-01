@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -47,7 +48,7 @@ namespace FeedRead.UI
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("Error setting default-path for youtube-dl.exe-path: " + ex.Message);
+                    Debug.WriteLine("Error setting default-path for youtube-dl.exe-path: " + ex.Message);
                 }
             }
 
