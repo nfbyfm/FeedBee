@@ -29,5 +29,8 @@
     <Setting Name="iconFolderPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\User\Default\FeedIconFolder</Value>
     </Setting>
+    <Setting Name="WebpageFeedDefPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\User\Default\WebPageFeedDefinitionList.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

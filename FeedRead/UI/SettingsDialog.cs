@@ -142,6 +142,25 @@ namespace FeedRead.UI
         }
 
         /// <summary>
+        /// select path of the webpagefeed-definition-list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bSelectFeedDefFilePath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog odi = new OpenFileDialog();
+            odi.Multiselect = false;
+            odi.RestoreDirectory = true;
+            odi.Filter = "xml-file|*.xml";
+            odi.Title = "select feed-list";
+
+            if (odi.ShowDialog() == DialogResult.OK)
+            {
+                tB_FeedDefFilePath.Text = odi.FileName;
+            }
+        }
+
+        /// <summary>
         /// set the default-folder for treeview-icons
         /// </summary>
         /// <param name="sender"></param>
@@ -171,8 +190,11 @@ namespace FeedRead.UI
             tB_FeedListPath.Text = Properties.Settings.Default.loadListPath;
             cB_LoadUponStartup.Checked = Properties.Settings.Default.bLoadUponStartup;
             cB_LoadUponStartup_CheckedChanged(null,null);
-
+            tB_FeedDefFilePath.Text = Properties.Settings.Default.WebpageFeedDefPath;
             cB_UpdateNSFW.Checked = Properties.Settings.Default.updateNSFW;
+
+
+
 
             cB_DisplayFeedIcons.Checked = Properties.Settings.Default.displayFeedIcons;
             cB_FilterIFrames.Checked = Properties.Settings.Default.filterIFrames;
@@ -194,8 +216,8 @@ namespace FeedRead.UI
             Properties.Settings.Default.loadListPath = tB_FeedListPath.Text;
             Properties.Settings.Default.bLoadUponStartup = cB_LoadUponStartup.Checked;
             Properties.Settings.Default.updateNSFW = cB_UpdateNSFW.Checked;
-
-
+            Properties.Settings.Default.WebpageFeedDefPath = tB_FeedDefFilePath.Text;
+            
             Properties.Settings.Default.displayFeedIcons = cB_DisplayFeedIcons.Checked;
             Properties.Settings.Default.filterIFrames = cB_FilterIFrames.Checked;
             Properties.Settings.Default.updateUponLoad = cB_UpdateUponLoad.Checked;
@@ -203,6 +225,7 @@ namespace FeedRead.UI
 
             Properties.Settings.Default.iconFolderPath = tB_IconFolder.Text;
         }
+
 
 
 

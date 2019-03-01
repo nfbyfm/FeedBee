@@ -50,6 +50,9 @@
             this.b_SelectIconFolder = new System.Windows.Forms.Button();
             this.tB_IconFolder = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tB_FeedDefFilePath = new System.Windows.Forms.TextBox();
+            this.bSelectFeedDefFilePath = new System.Windows.Forms.Button();
             this.tC_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -223,6 +226,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.bSelectFeedDefFilePath);
+            this.tabPage1.Controls.Add(this.tB_FeedDefFilePath);
+            this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.tB_youtubedlFolder);
             this.tabPage1.Controls.Add(this.b_SelectYTdl);
@@ -285,6 +291,35 @@
             this.label3.TabIndex = 15;
             this.label3.Text = "Fodler for feed-icons:";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 154);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(100, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Feed-Definition-File:";
+            // 
+            // tB_FeedDefFilePath
+            // 
+            this.tB_FeedDefFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_FeedDefFilePath.Location = new System.Drawing.Point(112, 151);
+            this.tB_FeedDefFilePath.Name = "tB_FeedDefFilePath";
+            this.tB_FeedDefFilePath.Size = new System.Drawing.Size(341, 20);
+            this.tB_FeedDefFilePath.TabIndex = 13;
+            // 
+            // bSelectFeedDefFilePath
+            // 
+            this.bSelectFeedDefFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bSelectFeedDefFilePath.Location = new System.Drawing.Point(459, 149);
+            this.bSelectFeedDefFilePath.Name = "bSelectFeedDefFilePath";
+            this.bSelectFeedDefFilePath.Size = new System.Drawing.Size(75, 23);
+            this.bSelectFeedDefFilePath.TabIndex = 14;
+            this.bSelectFeedDefFilePath.Text = "select ...";
+            this.bSelectFeedDefFilePath.UseVisualStyleBackColor = true;
+            this.bSelectFeedDefFilePath.Click += new System.EventHandler(this.bSelectFeedDefFilePath_Click);
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -330,5 +365,8 @@
         private System.Windows.Forms.Button b_SelectIconFolder;
         private System.Windows.Forms.TextBox tB_IconFolder;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button bSelectFeedDefFilePath;
+        private System.Windows.Forms.TextBox tB_FeedDefFilePath;
+        private System.Windows.Forms.Label label4;
     }
 }

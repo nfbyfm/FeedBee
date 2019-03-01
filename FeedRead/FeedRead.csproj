@@ -53,6 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\ComicFeedReader.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\FeedSubs\FeedGroup.cs" />
     <Compile Include="UI\AboutBoxFeedRead.cs">
       <SubType>Form</SubType>
@@ -141,6 +146,7 @@
     <Compile Include="Utilities\FeedSubs\Parser\Rss20Parser.cs" />
     <Compile Include="Utilities\FeedSubs\UrlNotFoundException.cs" />
     <Compile Include="Utilities\FeedSubs\WebPageFeedDef.cs" />
+    <Compile Include="Utilities\FeedSubs\WebPageFeedDefList.cs" />
     <Compile Include="Utilities\InternetCheck.cs" />
     <Compile Include="Utilities\OPML\Body.cs" />
     <Compile Include="Utilities\OPML\Head.cs" />
@@ -187,14 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="UI\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -227,6 +228,5 @@
   <ItemGroup>
     <None Include="Resources\defaultTreeNodeIcon.jpg" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

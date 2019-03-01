@@ -60,6 +60,7 @@ namespace FeedRead.UI
         {
             OpenFileDialog odi = new OpenFileDialog();
             odi.Multiselect = false;
+            odi.Filter = String.Format("All Files|*.*|");
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
             string sep = "";
             
@@ -70,7 +71,7 @@ namespace FeedRead.UI
                 odi.Filter = String.Format("{0}{1}{2} ({3})|{3}", odi.Filter, sep, codecName.ToLower(), c.FilenameExtension.ToLower());
                 sep = "|";
             }
-            odi.Filter = String.Format("{0}{1}{2} ({3})|{3}", odi.Filter, sep, "All Files", "*.*");
+            //odi.Filter = String.Format("{0}{1}{2} ({3})|{3}", odi.Filter, sep, "All Files", "*.*");
             
 
             odi.RestoreDirectory = true;

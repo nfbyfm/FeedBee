@@ -32,7 +32,7 @@ namespace FeedRead.Control
         private MainForm mainForm;
         private FeedGroup mainModel;
 
-        private List<WebPageFeedDef> WebPageFeedDefs;
+        private WebPageFeedDefList webPageFeedDefList;
 
         public const string mainModelID = "mainModel";
         private const string youtubeID = "Youtube";
@@ -46,11 +46,9 @@ namespace FeedRead.Control
             this.internetCheck = iCheck;
 
             //load list of webpageFeed-definitions
-            WebPageFeedDefs = new List<WebPageFeedDef>();
+            LoadWebPageFeedList();
 
-            WebPageFeedDef mangarockDef = new WebPageFeedDef("Mangarock", "mangarock", "https://mangarock.com", "//*[@class='_2dU-m _1qbNn']", "//*[@class='_1D0de col-4 col-md-3']");
-            //<a href="/watch/disenchantment-episode-2-for-whom-the-pig-oinks/" title="Disenchantment Episode 2 – For Whom the Pig Oinks"><h2>Disenchantment Episode 2 – For Whom the Pig Oinks</h2></a>
-            WebPageFeedDefs.Add(mangarockDef);
+            
 
             //load default-List upon startup
             if (Properties.Settings.Default.bLoadUponStartup)
@@ -183,6 +181,7 @@ namespace FeedRead.Control
             }
         }
 
+       
 
         /// <summary>
         /// add a new feed to the current mainModel / FeedGroup
@@ -470,6 +469,9 @@ namespace FeedRead.Control
         /// </summary>
         public void CloseApplication()
         {
+            //try to save the webpagedefinition-list
+            SaveWebPageFeedDefs();
+
             //check if Model has any changes that should get saved
             //opmlDoc = null;
             //mainModel = null;
@@ -952,7 +954,79 @@ namespace FeedRead.Control
 
         #endregion
 
+        #region webpagefeed-definitonlist functions
+        /// <summary>
+        /// tries to load defintions from file
+        /// </summary>
+        private void LoadWebPageFeedList()
+        {
+            bool loadSuccess = false;
 
+            webPageFeedDefList = new WebPageFeedDefList();
+            webPageFeedDefList.Definitions = new List<WebPageFeedDef>();
+
+            if(File.Exists(Properties.Settings.Default.WebpageFeedDefPath))
+            {
+                try
+                {
+                    StreamReader reader = new StreamReader(Properties.Settings.Default.WebpageFeedDefPath);
+
+                    XmlSerializer ser = new XmlSerializer(typeof(WebPageFeedDefList));
+                    webPageFeedDefList = (WebPageFeedDefList)ser.Deserialize(reader);
+
+                    reader.Close();
+                    reader.Dispose();
+                    loadSuccess = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while loading FeedList:" + Environment.NewLine + ex.Message);
+                }
+            }
+
+            if(loadSuccess == false)
+            {
+                //couldn't load the definitions -> define at least the default-entries
+
+                //mangarock:
+                WebPageFeedDef mangarockDef = new WebPageFeedDef("Mangarock", "mangarock", "https://mangarock.com", "//*[@class='_2dU-m _1qbNn']", "//*[@class='_1D0de col-4 col-md-3']");
+                
+
+                webPageFeedDefList = new WebPageFeedDefList(mangarockDef);
+
+                Console.WriteLine("Couldn't load webpageDefinitions from Settings-file -> set default entries");
+            }
+        }
+
+        /// <summary>
+        /// try to save webpagefeeddefinitions
+        /// </summary>
+        private void SaveWebPageFeedDefs()
+        {
+            try
+            {
+                if (webPageFeedDefList != null)
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(WebPageFeedDefList));
+                    TextWriter writer = new StreamWriter(Properties.Settings.Default.WebpageFeedDefPath);
+                    ser.Serialize(writer, webPageFeedDefList);
+                    writer.Close();
+
+                    Console.WriteLine("Saved current list of webpagefeed-definitions to: " + Properties.Settings.Default.WebpageFeedDefPath);
+                }
+                else
+                {
+                    Console.WriteLine("Controller.SaveList: webpagefeedList is null. Can't save.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while saving to xml-file: " + Environment.NewLine + ex.Message);
+            }
+
+        }
+        
+        #endregion
 
         #region Feed-related functions
 
@@ -961,30 +1035,30 @@ namespace FeedRead.Control
         /// </summary>
         /// <returns></returns>
         private List<string> GetGroupNames()
-        {
-            List<string> result = null;
-
-            if(mainModel != null)
-            {
-                if(mainModel.FeedGroups != null)
                 {
-                    if(mainModel.FeedGroups.Count >0)
+                    List<string> result = null;
+
+                    if(mainModel != null)
                     {
-                        result = new List<string>();
-
-                        //go through list recursively (?)
-
-                        //simple version:
-                        foreach(FeedGroup group in mainModel.FeedGroups)
+                        if(mainModel.FeedGroups != null)
                         {
-                            result.Add(group.Title);
+                            if(mainModel.FeedGroups.Count >0)
+                            {
+                                result = new List<string>();
+
+                                //go through list recursively (?)
+
+                                //simple version:
+                                foreach(FeedGroup group in mainModel.FeedGroups)
+                                {
+                                    result.Add(group.Title);
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-            return result;
-        }
+                    return result;
+                }
 
         /// <summary>
         /// load current model from the given xml-file
@@ -1166,7 +1240,7 @@ namespace FeedRead.Control
         private void GetFeed(string url, ref Feed newFeed, bool getImage)
         {
             bool foundInWebPageDef = false;
-            foreach(WebPageFeedDef webdef in WebPageFeedDefs)
+            foreach(WebPageFeedDef webdef in webPageFeedDefList.Definitions)
             {
                 if(url.ToLower().Contains(webdef.KeyID))
                 {
@@ -1744,7 +1818,7 @@ namespace FeedRead.Control
             {
                 bool foundInWebDefs = false;
 
-                foreach(WebPageFeedDef webPageDef in WebPageFeedDefs)
+                foreach(WebPageFeedDef webPageDef in webPageFeedDefList.Definitions)
                 {
                     if(url.ToLower().Contains(webPageDef.KeyID))
                     {

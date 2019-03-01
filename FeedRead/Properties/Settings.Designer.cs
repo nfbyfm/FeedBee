@@ -130,5 +130,17 @@ namespace FeedRead.Properties {
                 this["iconFolderPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\User\\Default\\WebPageFeedDefinitionList.xml")]
+        public string WebpageFeedDefPath {
+            get {
+                return ((string)(this["WebpageFeedDefPath"]));
+            }
+            set {
+                this["WebpageFeedDefPath"] = value;
+            }
+        }
     }
 }
