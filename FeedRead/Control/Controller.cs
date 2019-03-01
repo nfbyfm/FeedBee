@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Utilities.FeedSubs;
+using FeedRead.Utilities.FeedSubs;
 
 namespace FeedRead.Control
 {
@@ -31,6 +32,8 @@ namespace FeedRead.Control
         private MainForm mainForm;
         private FeedGroup mainModel;
 
+        private List<WebPageFeedDef> WebPageFeedDefs;
+
         public const string mainModelID = "mainModel";
         private const string youtubeID = "Youtube";
 
@@ -41,6 +44,13 @@ namespace FeedRead.Control
             this.mainForm = mainForm;
             this.mainModel = new FeedGroup(mainModelID, false, "");
             this.internetCheck = iCheck;
+
+            //load list of webpageFeed-definitions
+            WebPageFeedDefs = new List<WebPageFeedDef>();
+
+            WebPageFeedDef mangarockDef = new WebPageFeedDef("Mangarock", "mangarock", "https://mangarock.com", "//*[@class='_2dU-m _1qbNn']", "//*[@class='_1D0de col-4 col-md-3']");
+            //<a href="/watch/disenchantment-episode-2-for-whom-the-pig-oinks/" title="Disenchantment Episode 2 – For Whom the Pig Oinks"><h2>Disenchantment Episode 2 – For Whom the Pig Oinks</h2></a>
+            WebPageFeedDefs.Add(mangarockDef);
 
             //load default-List upon startup
             if (Properties.Settings.Default.bLoadUponStartup)
@@ -751,7 +761,7 @@ namespace FeedRead.Control
                     FeedGroup selFeedGroup = (FeedGroup)tagObject;
 
                     //get new name
-                    EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup);
+                    EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup, selFeedGroup.ImagePath);
 
                     if (rd.ShowDialog() == DialogResult.OK)
                     {
@@ -762,6 +772,8 @@ namespace FeedRead.Control
                             //set feedgroup-properties
                             selFeedGroup.Title = newNodeName;
                             selFeedGroup.IsNSFWGroup = rd.IsNSFW;
+                            selFeedGroup.ImagePath = rd.iconPath;
+
                             UpdateTreeview();
                         }
                     }
@@ -1153,26 +1165,30 @@ namespace FeedRead.Control
         /// <param name="newFeed"></param>
         private void GetFeed(string url, ref Feed newFeed, bool getImage)
         {
-            
-            if (url.ToLower().Contains("mangarock"))
+            bool foundInWebPageDef = false;
+            foreach(WebPageFeedDef webdef in WebPageFeedDefs)
             {
-                newFeed = new Feed();
-                ComicFeedReader reader = new ComicFeedReader();
-                reader.Read(url, ref newFeed);
-
-                if (newFeed == null)
+                if(url.ToLower().Contains(webdef.KeyID))
                 {
-                    Debug.WriteLine("Error while getting feed from '" + url + "' to list.");
-                    return;
+                    newFeed = new Feed();
+                    ComicFeedReader reader = new ComicFeedReader();
+                    reader.Read(url, ref newFeed, webdef);
+
+                    if (newFeed != null)
+                    {
+                        foundInWebPageDef = true;
+                        break;
+                    }
                 }
-                
             }
-            else
+
+            if(!foundInWebPageDef)
             {
                 newFeed = FeedReader.Read(url);
                 newFeed.FeedURL = url;
                 newFeed.Updated = true;
             }
+            
 
             //get icon for treeview
             if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons && getImage)
@@ -1726,12 +1742,19 @@ namespace FeedRead.Control
 
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrWhiteSpace(url) && validURL)
             {
-                if (url.ToLower().Contains("mangarock"))
+                bool foundInWebDefs = false;
+
+                foreach(WebPageFeedDef webPageDef in WebPageFeedDefs)
                 {
-                    result = new List<string>();
-                    result.Add(url);
+                    if(url.ToLower().Contains(webPageDef.KeyID))
+                    {
+                        result = new List<string>();
+                        result.Add(url);
+                        foundInWebDefs = true;
+                    }
                 }
-                else
+
+                if (!foundInWebDefs)
                 {
                     var urls = FeedReader.GetFeedUrlsFromUrl(url);
 
@@ -1764,6 +1787,7 @@ namespace FeedRead.Control
                         }
                     }
                 }
+                
             }
 
 
@@ -2133,6 +2157,39 @@ namespace FeedRead.Control
                 groupNode = new TreeNode(group.GetNodeText());
                 groupNode.Tag = group;
 
+                //if wanted, try to get image
+                if (getIcons)
+                {
+                    string imagePath = group.ImagePath;
+
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(imagePath) && !string.IsNullOrWhiteSpace(imagePath))
+                        {
+
+                            Image groupIcon = null;
+
+                            if (File.Exists(imagePath))
+                            {
+                                //load image from file
+                                groupIcon = Image.FromFile(imagePath);
+                            }
+                            
+                            if (groupIcon != null)
+                            {
+                                icons.Images.Add(groupIcon);
+
+                                groupNode.ImageIndex = icons.Images.Count - 1;
+                                groupNode.SelectedImageIndex = icons.Images.Count - 1;
+                            }
+                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error while trying to get the image for feed '" + group.Title + "'. Image-URL = " + imagePath + "   Error: " + ex.Message);
+                    }
+                }
 
                 //change node-color depending upon porperty(-ies) of the FeedGroup
                 if (group.GetNoOfUnreadFeedItems() > 0)

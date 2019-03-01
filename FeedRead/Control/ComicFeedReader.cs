@@ -1,4 +1,5 @@
-﻿using FeedSubs.FeedReader;
+﻿using FeedRead.Utilities.FeedSubs;
+using FeedSubs.FeedReader;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,21 @@ namespace FeedRead.Control
 
         public ComicFeedReader() { }
 
-        public void Read(string pageUrl, ref Feed feed)
+        public void Read(string pageUrl, ref Feed feed, WebPageFeedDef webPageFeedDef)
         {
             feed = null;
+
+            if(webPageFeedDef != null)
+            {
+                if(!pageUrl.ToLower().Contains(webPageFeedDef.BaseURL.ToLower()))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
 
             bool loadSuccess = false;
 
@@ -68,11 +81,11 @@ namespace FeedRead.Control
                     }
 
                     //get chapters
-                    string classID_Title = "_2dU-m _1qbNn";
-                    string classID_UpdateTime = "_1D0de col-4 col-md-3";
+                    string classID_Title = webPageFeedDef.ClassID_Title;//"_2dU-m _1qbNn";
+                    string classID_UpdateTime = webPageFeedDef.ClassID_UpdateTime;//"_1D0de col-4 col-md-3";
 
-                    HtmlNodeCollection titleNodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='" + classID_Title + "']");
-                    HtmlNodeCollection timeNodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='" + classID_UpdateTime + "']");
+                    HtmlNodeCollection titleNodes = htmlDoc.DocumentNode.SelectNodes(classID_Title);// "//*[@class='" + classID_Title + "']");
+                    HtmlNodeCollection timeNodes = htmlDoc.DocumentNode.SelectNodes(classID_UpdateTime);//"//*[@class='" + classID_UpdateTime + "']");
                     try
                     {
                         if (titleNodes != null && timeNodes != null)
@@ -93,7 +106,7 @@ namespace FeedRead.Control
                                     }
 
 
-                                    string url = "https://mangarock.com";
+                                    string url = webPageFeedDef.BaseURL;//"https://mangarock.com";
 
                                     if (suburl.Contains("\""))
                                     {

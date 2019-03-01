@@ -33,6 +33,13 @@ namespace Utilities.FeedSubs
         [XmlElement("IsNSFWGroup")]
         public bool IsNSFWGroup { get; set; }
 
+
+        /// <summary>
+        /// image-path for the icon in the treeview-control
+        /// </summary>
+        [XmlElement("Imagepath")]
+        public string ImagePath { get; set; }
+
         /// <summary>
         /// List of ancillary FeedGroups
         /// </summary>

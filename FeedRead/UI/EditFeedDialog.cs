@@ -54,17 +54,20 @@ namespace FeedRead.UI
             odi.Multiselect = false;
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
             string sep = "";
-            foreach(ImageCodecInfo c in codecs)
+
+
+            foreach (ImageCodecInfo c in codecs)
             {
                 string codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
                 odi.Filter = String.Format("{0}{1}{2} ({3})|{3}", odi.Filter, sep, codecName.ToLower(), c.FilenameExtension.ToLower());
                 sep = "|";
             }
-
             odi.Filter = String.Format("{0}{1}{2} ({3})|{3}", odi.Filter, sep, "All Files", "*.*");
+
+
             odi.RestoreDirectory = true;
 
-            if(odi.ShowDialog() == DialogResult.OK)
+            if (odi.ShowDialog() == DialogResult.OK)
             {
                 tB_IconPath.Text = odi.FileName;
             }
