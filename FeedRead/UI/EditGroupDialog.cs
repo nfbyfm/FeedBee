@@ -60,9 +60,9 @@ namespace FeedRead.UI
         {
             OpenFileDialog odi = new OpenFileDialog();
             odi.Multiselect = false;
-            odi.Filter = String.Format("All Files|*.*|");
+            odi.Filter = String.Format("All Files|*.*");
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-            string sep = "";
+            string sep = "|";
             
 
             foreach (ImageCodecInfo c in codecs)
