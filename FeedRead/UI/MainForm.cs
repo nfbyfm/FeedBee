@@ -97,6 +97,12 @@ namespace FeedRead.UI
         {
             controller.OpenUnreadFeeds();
         }
+
+        private void webpageFeedDefinitionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.EditWebPageFeedDefinitions();
+        }
+
         #endregion
 
         #region draw-functions
@@ -620,6 +626,8 @@ namespace FeedRead.UI
                 }
             }
         }
+
+
 
 
         #endregion

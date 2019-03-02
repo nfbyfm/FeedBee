@@ -1025,7 +1025,31 @@ namespace FeedRead.Control
             }
 
         }
-        
+
+        /// <summary>
+        /// show edit-window to edit the webpagefeed-definitions
+        /// </summary>
+        public void EditWebPageFeedDefinitions()
+        {
+            WebFeedDialog webFeedDialog = new WebFeedDialog(this.webPageFeedDefList, this);
+            webFeedDialog.webPageFeedDefinitionList = this.webPageFeedDefList;
+
+            if(webFeedDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.webPageFeedDefList = webFeedDialog.webPageFeedDefinitionList;
+            }
+        }
+
+
+        public string GetDefTestResults(WebPageFeedDef definition, string testpageURL)
+        {
+            ComicFeedReader reader = new ComicFeedReader();
+
+            string result = reader.TestRead(testpageURL, definition);
+
+            return result;
+        }
+
         #endregion
 
         #region Feed-related functions

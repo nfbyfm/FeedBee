@@ -51,11 +51,15 @@
             this.extrasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.webpageFeedDefinitionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tVMain = new System.Windows.Forms.TreeView();
             this.cMS_Treeview = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openAllUnreadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cMS_MarkAsRead = new System.Windows.Forms.ToolStripMenuItem();
             this.cMS_Update = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -70,8 +74,6 @@
             this.lL_Url = new System.Windows.Forms.LinkLabel();
             this.b_DownloadVideo = new System.Windows.Forms.Button();
             this.browser = new System.Windows.Forms.WebBrowser();
-            this.openAllUnreadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -241,6 +243,8 @@
             this.extrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem,
             this.toolStripSeparator2,
+            this.webpageFeedDefinitionsToolStripMenuItem,
+            this.toolStripSeparator8,
             this.settingsToolStripMenuItem});
             this.extrasToolStripMenuItem.Name = "extrasToolStripMenuItem";
             this.extrasToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
@@ -249,21 +253,33 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(101, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(184, 6);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(184, 6);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.settingsToolStripMenuItem.Text = "&Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // webpageFeedDefinitionsToolStripMenuItem
+            // 
+            this.webpageFeedDefinitionsToolStripMenuItem.Name = "webpageFeedDefinitionsToolStripMenuItem";
+            this.webpageFeedDefinitionsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.webpageFeedDefinitionsToolStripMenuItem.Text = "Webpage-Feed-Definitions";
+            this.webpageFeedDefinitionsToolStripMenuItem.Click += new System.EventHandler(this.webpageFeedDefinitionsToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -274,6 +290,12 @@
             this.statusStrip1.Size = new System.Drawing.Size(800, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(11, 17);
+            this.statusLabel.Text = "...";
             // 
             // splitContainer1
             // 
@@ -313,43 +335,50 @@
             this.toolStripSeparator7,
             this.cMS_Delete});
             this.cMS_Treeview.Name = "cMS_Treeview";
-            this.cMS_Treeview.Size = new System.Drawing.Size(181, 148);
+            this.cMS_Treeview.Size = new System.Drawing.Size(140, 126);
+            // 
+            // openAllUnreadToolStripMenuItem1
+            // 
+            this.openAllUnreadToolStripMenuItem1.Name = "openAllUnreadToolStripMenuItem1";
+            this.openAllUnreadToolStripMenuItem1.Size = new System.Drawing.Size(139, 22);
+            this.openAllUnreadToolStripMenuItem1.Text = "open all unread";
+            this.openAllUnreadToolStripMenuItem1.Click += new System.EventHandler(this.openAllUnreadToolStripMenuItem1_Click);
             // 
             // cMS_MarkAsRead
             // 
             this.cMS_MarkAsRead.Name = "cMS_MarkAsRead";
-            this.cMS_MarkAsRead.Size = new System.Drawing.Size(180, 22);
+            this.cMS_MarkAsRead.Size = new System.Drawing.Size(139, 22);
             this.cMS_MarkAsRead.Text = "mark as read";
             this.cMS_MarkAsRead.Click += new System.EventHandler(this.cMS_MarkAsRead_Click);
             // 
             // cMS_Update
             // 
             this.cMS_Update.Name = "cMS_Update";
-            this.cMS_Update.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Update.Size = new System.Drawing.Size(139, 22);
             this.cMS_Update.Text = "update";
             this.cMS_Update.Click += new System.EventHandler(this.cMS_Update_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(136, 6);
             // 
             // cMS_Edit
             // 
             this.cMS_Edit.Name = "cMS_Edit";
-            this.cMS_Edit.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Edit.Size = new System.Drawing.Size(139, 22);
             this.cMS_Edit.Text = "edit";
             this.cMS_Edit.Click += new System.EventHandler(this.cMS_Rename_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(136, 6);
             // 
             // cMS_Delete
             // 
             this.cMS_Delete.Name = "cMS_Delete";
-            this.cMS_Delete.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Delete.Size = new System.Drawing.Size(139, 22);
             this.cMS_Delete.Text = "delete";
             this.cMS_Delete.Click += new System.EventHandler(this.cMS_Delete_Click);
             // 
@@ -468,19 +497,6 @@
             this.browser.TabIndex = 0;
             this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
             // 
-            // openAllUnreadToolStripMenuItem1
-            // 
-            this.openAllUnreadToolStripMenuItem1.Name = "openAllUnreadToolStripMenuItem1";
-            this.openAllUnreadToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.openAllUnreadToolStripMenuItem1.Text = "open all unread";
-            this.openAllUnreadToolStripMenuItem1.Click += new System.EventHandler(this.openAllUnreadToolStripMenuItem1_Click);
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(11, 12);
-            this.statusLabel.Text = "...";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -562,6 +578,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem cMS_Delete;
         private System.Windows.Forms.ToolStripMenuItem openAllUnreadToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem webpageFeedDefinitionsToolStripMenuItem;
     }
 }
 
