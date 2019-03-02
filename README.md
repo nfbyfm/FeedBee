@@ -5,7 +5,7 @@ This program is a simple RSS-Reader in Development. This software has been writt
 ![Screenshot ReedRead](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/MainApp.jpg)
 
 This program lets you create various groups of feeds for web-comics, tumblr-pages, youtube-channels (without a google-account), rss-feeds in general and mangarock-pages per default. 
-In the future this software should also be able to give the user the possibilty to get a pseudo-feed from webpages that don't have any direct rss-functionalities.
+In the future, this software should also be able to give the user the possibilty to generate feeds from webpages, that don't have any direct rss-functionalities.
 
 
 ## used icon(s)
