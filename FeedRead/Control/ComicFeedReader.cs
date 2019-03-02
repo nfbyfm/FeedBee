@@ -13,14 +13,34 @@ using System.Web;
 
 namespace FeedRead.Control
 {
+    
+
     /// <summary>
     /// class for creating a pseudo-feed from a webpage without a rss-feed
     /// </summary>
     public class ComicFeedReader
     {
+        /// <summary>
+        /// List of possible markers which indicate the title of a possible feeditem
+        /// </summary>
+        private List<string> titleMarkers;
 
-        public ComicFeedReader() { }
 
+
+        public ComicFeedReader()
+        {
+            titleMarkers = new List<string>();
+            titleMarkers.Add("alt=\"");
+            titleMarkers.Add("title=\"");
+        }
+
+
+        /// <summary>
+        /// try to get a feed form a url using the given definition
+        /// </summary>
+        /// <param name="pageUrl"></param>
+        /// <param name="feed"></param>
+        /// <param name="webPageFeedDef"></param>
         public void Read(string pageUrl, ref Feed feed, WebPageFeedDef webPageFeedDef)
         {
             feed = null;
@@ -86,6 +106,9 @@ namespace FeedRead.Control
 
                     HtmlNodeCollection titleNodes = htmlDoc.DocumentNode.SelectNodes(classID_Title);
                     HtmlNodeCollection timeNodes = htmlDoc.DocumentNode.SelectNodes(classID_UpdateTime);
+
+                    
+
                     try
                     {
                         if (titleNodes != null && timeNodes != null)
@@ -116,11 +139,16 @@ namespace FeedRead.Control
                                     
                                     string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();
 
-                                    if (title.ToLower().Contains("alt=\""))
+                                    //search for title in the innerHtml
+                                    foreach(string titleMarker in titleMarkers)
                                     {
-                                        title = title.Remove(0, title.ToLower().LastIndexOf("alt=\"") + 5);
-                                        title = title.Remove(title.IndexOf("\""));
+                                        if (title.ToLower().Contains(titleMarker))
+                                        {
+                                            title = title.Remove(0, title.ToLower().LastIndexOf(titleMarker) + titleMarker.Length);
+                                            title = title.Remove(title.IndexOf("\""));
+                                        }
                                     }
+                                    
 
                                     DateTime updateTime = getDateTime(timeNodes[i].InnerHtml);
 
@@ -254,11 +282,17 @@ namespace FeedRead.Control
 
 
                                     string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();
-                                    if(title.ToLower().Contains("alt=\""))
+
+                                    //search for title in the innerHtml
+                                    foreach (string titleMarker in titleMarkers)
                                     {
-                                        title = title.Remove(0, title.ToLower().LastIndexOf("alt=\"")+5);
-                                        title = title.Remove(title.IndexOf("\""));
+                                        if (title.ToLower().Contains(titleMarker))
+                                        {
+                                            title = title.Remove(0, title.ToLower().LastIndexOf(titleMarker) + titleMarker.Length);
+                                            title = title.Remove(title.IndexOf("\""));
+                                        }
                                     }
+
                                     DateTime updateTime = getDateTime(timeNodes[i].InnerHtml);
 
                                     result += "Feeditem: Title: '" + title + "' Link: '" + url + "' publishing-Date: '" + updateTime.ToString("dd.MM.yyyy hh:mm") + "' " + Environment.NewLine;
