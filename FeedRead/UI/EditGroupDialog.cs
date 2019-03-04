@@ -26,14 +26,14 @@ namespace FeedRead.UI
         {
             InitializeComponent();
 
-
-            tB_NewName.Text = oldName;
-            cB_MarkNSFW.Checked = IsNSFW;
-            tB_IconPath.Text = IconPath;
-
             this.IsNSFW = isNSFW;
             this.newName = oldName;
             this.iconPath = IconPath;
+
+            tB_NewName.Text = oldName;
+            cB_MarkNSFW.Checked = isNSFW;
+            tB_IconPath.Text = IconPath;
+
 
             this.ActiveControl = tB_NewName;
 

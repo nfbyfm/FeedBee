@@ -14,15 +14,15 @@ namespace FeedRead.UI
 {
     public partial class WebFeedDialog : Form
     {
-        public WebPageFeedDefList webPageFeedDefinitionList;
+        public List<WebPageFeedDef> webPageFeedDefinitionList;
 
         private Controller parentController;
 
-        public WebFeedDialog(WebPageFeedDefList webPageFeedDefinitionList, Controller parentController)
+        public WebFeedDialog(List<WebPageFeedDef> webPageFeedDefList, Controller parentController)
         {
             InitializeComponent();
 
-            this.webPageFeedDefinitionList = webPageFeedDefinitionList;
+            this.webPageFeedDefinitionList = webPageFeedDefList;
 
             this.parentController = parentController;
         }
@@ -38,7 +38,7 @@ namespace FeedRead.UI
             {
                 lV_Definitions.Items.Clear();
                 ColumnHeader columnHeader1 = new ColumnHeader();
-                columnHeader1.Text = "Title";
+                columnHeader1.Text = "Name";
                 /*
                 ColumnHeader columnHeader2 = new ColumnHeader();
                 columnHeader2.Text = "publishing date";
@@ -52,7 +52,7 @@ namespace FeedRead.UI
 
                 lV_Definitions.Columns.AddRange(new ColumnHeader[] { columnHeader1 });//, columnHeader2, columnHeader3, columnHeader4 });
 
-                foreach (WebPageFeedDef definition in webPageFeedDefinitionList.Definitions)
+                foreach (WebPageFeedDef definition in webPageFeedDefinitionList)
                 {
                     ListViewItem listViewItem = new ListViewItem(definition.Name);
                     listViewItem.Tag = definition;
@@ -103,7 +103,7 @@ namespace FeedRead.UI
                 }
                 
             }
-            propertyGridDefiniton.SelectedObject = ob;
+            
             rTB_Testresults.Text = "";
         }
 
@@ -168,10 +168,10 @@ namespace FeedRead.UI
             {
                 if(webPageFeedDefinitionList == null)
                 {
-                    webPageFeedDefinitionList = new WebPageFeedDefList();
+                    webPageFeedDefinitionList = new List<WebPageFeedDef>();
                 }
 
-                webPageFeedDefinitionList.Definitions.Add(newDef);
+                webPageFeedDefinitionList.Add(newDef);
                 UpdateDefListview();
             }
             else
@@ -179,6 +179,31 @@ namespace FeedRead.UI
                 MessageBox.Show("No valid input for definition and/or testpage given.","Add new Definition",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
             }
 
+        }
+
+        private void lV_Definitions_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete && lV_Definitions.SelectedItems != null)
+            {
+                if(lV_Definitions.SelectedItems.Count > 0)
+                {
+                    if (lV_Definitions.SelectedItems[0] != null)
+                    {
+                        if(MessageBox.Show("Do you really want to remove the selected definition?","delete definition", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                this.webPageFeedDefinitionList.RemoveAt(lV_Definitions.SelectedIndices[0]);
+                                UpdateDefListview();
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine("Error while trying to remove the selected webpagefeed-Definition: " + ex.Message);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

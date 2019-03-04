@@ -1031,12 +1031,17 @@ namespace FeedRead.Control
         /// </summary>
         public void EditWebPageFeedDefinitions()
         {
-            WebFeedDialog webFeedDialog = new WebFeedDialog(this.webPageFeedDefList, this);
-            webFeedDialog.webPageFeedDefinitionList = this.webPageFeedDefList;
+            //make a temporary copy of the current list
+            List<WebPageFeedDef> tmpList = new List<WebPageFeedDef>(this.webPageFeedDefList.Definitions);
 
-            if(webFeedDialog.ShowDialog() == DialogResult.OK)
+            //create dialog-object
+            WebFeedDialog webFeedDialog = new WebFeedDialog(tmpList, this);
+            
+            //show dialog
+            if (webFeedDialog.ShowDialog() == DialogResult.OK)
             {
-                this.webPageFeedDefList = webFeedDialog.webPageFeedDefinitionList;
+                //'copy' edited list back to 'real'/'background'-list
+                this.webPageFeedDefList.Definitions = tmpList;
             }
         }
 
