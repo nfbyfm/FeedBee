@@ -146,6 +146,7 @@ namespace FeedRead.UI
             openListToolStripMenuItem.Enabled = enable;
             saveListToolStripMenuItem.Enabled = enable;
             settingsToolStripMenuItem.Enabled = enable;
+            webpageFeedDefinitionsToolStripMenuItem.Enabled = enable;
 
             //context-menu for tVMain
             cMS_Treeview.Enabled = enable;

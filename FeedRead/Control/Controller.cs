@@ -1833,6 +1833,19 @@ namespace FeedRead.Control
         /// <returns></returns>
         public List<string> CheckUrlForFeeds(string url)
         {
+            //edit reddit-urls
+            if(url.ToLower().Contains("reddit.com") && !url.ToLower().Contains(".rss"))
+            {
+                if(url.LastIndexOf("/") == url.Length-1)
+                {
+                    url = url.Remove(url.Length - 1);
+                }
+
+                url += ".rss";
+                //Console.WriteLine("edited url for reddit: " + url);
+            }
+
+
             List<string> result = null;
 
             Uri uriResult;
@@ -1858,7 +1871,7 @@ namespace FeedRead.Control
 
                     if (urls.Count() < 1) // no url - probably the url is already the right feed url
                     {
-
+                        
                         //try to get the actual Feed-Items from the url
                         try
                         {
@@ -1873,6 +1886,8 @@ namespace FeedRead.Control
                         {
                             Debug.WriteLine("Controller.CheckUrlForFeeds: Couldn't get feed from '" + url + "'. Errormessage: " + ex.Message);
                         }
+
+
                     }
                     else
                     {

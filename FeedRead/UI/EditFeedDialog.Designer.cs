@@ -74,7 +74,7 @@
             this.b_OK.Name = "b_OK";
             this.b_OK.Size = new System.Drawing.Size(75, 23);
             this.b_OK.TabIndex = 3;
-            this.b_OK.Text = "Ok";
+            this.b_OK.Text = "OK";
             this.b_OK.UseVisualStyleBackColor = true;
             this.b_OK.Click += new System.EventHandler(this.b_OK_Click);
             // 
