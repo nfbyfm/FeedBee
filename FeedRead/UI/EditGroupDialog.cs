@@ -34,8 +34,6 @@ namespace FeedRead.UI
             cB_MarkNSFW.Checked = isNSFW;
             tB_IconPath.Text = IconPath;
 
-            
-
             this.ActiveControl = tB_NewName;
 
         }
