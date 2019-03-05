@@ -119,12 +119,9 @@ namespace FeedRead.UI
                 //try to get rid of ads -> filter iframes
                 foreach (HtmlElement x in ((WebBrowser)sender).Document.GetElementsByTagName("iframe"))
                 {
-
                     if (x.OuterHtml.ToLower().Contains("adtrue") || x.OuterHtml.ToLower().Contains("zeus"))
-                    //if (x.OuterHtml.ToLower().Contains("zeus"))
                     {
                         x.OuterHtml = String.Empty;
-                        //Debug.WriteLine(x.OuterHtml);
                     }
                 }
             }

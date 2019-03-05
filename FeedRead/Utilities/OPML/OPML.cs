@@ -26,24 +26,41 @@ namespace FeedRead.Utilities.OPML
         public OPML(string Location)
         {
             XmlDocument Document = new XmlDocument();
-            Document.Load(Location);
-            foreach (XmlNode Children in Document.ChildNodes)
+
+            try
             {
-                if (Children.Name.Equals("opml", StringComparison.CurrentCultureIgnoreCase))
+                Document.Load(Location);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error in OPML-File '" + Location + "': " + ex.Message);
+            }
+
+            
+            if(Document != null)
+            {
+                foreach (XmlNode Children in Document.ChildNodes)
                 {
-                    foreach (XmlNode Child in Children.ChildNodes)
+
+                    if (Children.Name.Equals("opml", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        if (Child.Name.Equals("body", StringComparison.CurrentCultureIgnoreCase))
+                        foreach (XmlNode Child in Children.ChildNodes)
                         {
-                            Body = new Body((XmlElement)Child);
-                        }
-                        else if (Child.Name.Equals("head", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            Head = new Head((XmlElement)Child);
+                            if (Child.Name.Equals("body", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                //parse body out of XmlElement
+                                Body = new Body((XmlElement)Child);
+                            }
+                            else if (Child.Name.Equals("head", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                //parse head out of XmlElement
+                                Head = new Head((XmlElement)Child);
+                            }
                         }
                     }
                 }
             }
+            
         }
         /// <summary>
         /// Constructor
@@ -85,7 +102,7 @@ namespace FeedRead.Utilities.OPML
         {
             StringBuilder OPMLString = new StringBuilder();
 
-            OPMLString.Append("<opml version=\"1.0\" xmlns: fz = \"urn:forumzilla:\" > " + Environment.NewLine);// "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\">");
+            OPMLString.Append("<opml version=\"1.0\"> " + Environment.NewLine);// "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><opml version=\"2.0\">");
             OPMLString.Append(Head.GetOPMLString(1));
             OPMLString.Append(Body.GetOPMLString(1) + Environment.NewLine);
             OPMLString.Append("</opml>");

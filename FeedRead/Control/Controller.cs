@@ -1129,63 +1129,192 @@ namespace FeedRead.Control
             }
         }
 
-
+        /// <summary>
+        /// import mainModel from opml-file
+        /// </summary>
+        /// <param name="filename"></param>
         private void ImportFromOPML(string filename)
         {
-            Console.WriteLine("import opml-file");
+            //run a few checks
+            if(File.Exists(filename))
+            {
+                if(MessageBox.Show("The current Feeds will be overwritten. Do you really want to import the selected file?","Import feeds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("File '" + filename + "' doesn't exist. Please enter a valid file-name.", "Import feeds", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+
+
+            //try to load the opml-file
+
+            OPML opmlDoc = null;
 
             try
             {
-                OPML opmlDoc = new OPML(filename);
-                
-
-                if (opmlDoc != null)
-                {
-                    if (opmlDoc.Body != null)
-                    {
-                        Console.WriteLine(opmlDoc.Body.ToString());
-                        /*
-                        List<Outline> outlineList = opmlDoc.Body.Outlines;
-                        if (outlineList != null)
-                        {
-                            foreach (Outline oline in outlineList)
-                            {
-                                if (oline.IsFinalNode())
-                                {
-                                    Console.WriteLine(oline.ToString());
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Outline '" + oline.Title + "' has " + oline.Outlines.Count().ToString() + " sub items:");
-                                    foreach (Outline o2line in oline.Outlines)
-                                    {
-                                        Console.WriteLine(oline.Title + " -> " + o2line.ToString());
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Outline-List is null.");
-                        }
-                        */
-                    }
-                    else
-                    {
-                        Console.WriteLine("Body of ompl-File is null.");
-                    }
-
-                }
-                else
-                {
-                    Console.WriteLine("OPML-File is null.");
-                }
+                opmlDoc = new OPML(filename);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error while importing opml-file. Error: " + ex.Message);
+                MessageBox.Show(ex.Message, "Error importing opml-file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (opmlDoc != null)
+            {
+                if (opmlDoc.Body != null)
+                {
+                    //start the import-thread
+                    mainForm.EnableFeedFunctionalities(false);
+                    Thread t2 = new Thread(delegate ()
+                    {
+                        mainForm.SetStatusText("importing feeds ...", -1);
+
+                        mainModel = GetModelFromOPMLBody(opmlDoc.Body);
+
+                        mainForm.SetStatusText("Feeds imported. Updating ...", 2000);
+                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
+                        
+                    });
+                    t2.Start();
+                }
+                else
+                {
+                    Console.WriteLine("Body of ompl-File is null.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("OPML-File is null.");
             }
         }
+
+        /// <summary>
+        /// gets mainModel from the given opml-Body
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        private FeedGroup GetModelFromOPMLBody(Body body)
+        {
+            FeedGroup result = null;
+
+            if(body != null)
+            {
+                result = new FeedGroup();
+                result.FeedList = new List<Feed>();
+                result.FeedGroups = new List<FeedGroup>();
+
+                List<Outline> outlineList = body.Outlines;
+                if (outlineList != null)
+                {
+                    foreach (Outline oline in outlineList)
+                    {
+                        if (oline.IsFinalNode())
+                        {
+                            Feed tmpFeed = GetFeedFromOutline(oline);
+                            if(tmpFeed != null)
+                            {
+                                result.FeedList.Add(tmpFeed);
+                            }
+                            //Console.WriteLine(oline.ToString());
+                        }
+                        else
+                        {
+                            FeedGroup tmpGroup = GetFeedGroupFromOutline(oline);
+
+                            if(tmpGroup != null)
+                            {
+                                result.FeedGroups.Add(tmpGroup);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// generates Feed-object out of a given opml-outline
+        /// </summary>
+        /// <param name="outline"></param>
+        /// <returns></returns>
+        private Feed GetFeedFromOutline(Outline outline)
+        {
+            Feed result = null;
+
+            if(outline != null)
+            {
+                if(outline.IsFinalNode())
+                {
+                    result = new Feed();
+
+                    result.DirectlyLoadWebpage = false;
+                    result.Updated = false;
+                    result.Items = new List<FeedItem>();
+
+                    result.FeedURL = outline.XMLUrl;
+                    result.Description = outline.Description;
+                    result.ImageUrl = outline.HTMLUrl;
+                    result.Language = outline.Language;
+                    result.Link = outline.XMLUrl;
+                    result.Title = outline.Title;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// generates FeedGroup-object out of a given opml-outline
+        /// </summary>
+        /// <param name="outline"></param>
+        /// <returns></returns>
+        private FeedGroup GetFeedGroupFromOutline(Outline outline)
+        {
+            FeedGroup result = null;
+
+            if(outline!=null)
+            {
+                if(!outline.IsFinalNode())
+                {
+                    result = new FeedGroup(outline.Title, false, "");
+
+                    List<Outline> outlineList = outline.Outlines;
+                    if (outlineList != null)
+                    {
+                        foreach (Outline oline in outlineList)
+                        {
+                            if (oline.IsFinalNode())
+                            {
+                                Feed tmpFeed = GetFeedFromOutline(oline);
+                                if (tmpFeed != null)
+                                {
+                                    result.FeedList.Add(tmpFeed);
+                                }
+                            }
+                            else
+                            {
+                                FeedGroup tmpGroup = GetFeedGroupFromOutline(oline);
+
+                                if (tmpGroup != null)
+                                {
+                                    result.FeedGroups.Add(tmpGroup);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
 
         /// <summary>
         /// import a list of feeds from a txt-file and add them to a group
@@ -1578,7 +1707,7 @@ namespace FeedRead.Control
                 bool updateSuccess = false;
 
                 string url = origFeed.FeedURL;
-
+                
                 bool updateImage = !File.Exists(origFeed.ImageUrl);
 
                 //try to get current feed

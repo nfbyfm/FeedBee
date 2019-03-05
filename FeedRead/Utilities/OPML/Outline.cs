@@ -21,45 +21,50 @@ namespace FeedRead.Utilities.OPML
             Outlines = new List<Outline>();
         }
         /// <summary>
-        /// Constructors
+        /// Constructor: parse outline from xmlElement
         /// </summary>
         /// <param name="Element">Element containing outline information</param>
         public Outline(XmlElement Element)
         {
             if (Element.Name.Equals("outline", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (Element.Attributes["text"] != null)
+
+                foreach(XmlAttribute atr in Element.Attributes)
                 {
-                    Text = Element.Attributes["text"].Value;
+                    switch(atr.Name)
+                    {
+                        case "text":
+                            Text = atr.Value;
+                            break;
+                        case "description":
+                            Description = atr.Value;
+                            break;
+                        case "htmlUrl":
+                            HTMLUrl = atr.Value;
+                            break;
+                        case "type":
+                            Type = atr.Value;
+                            break;
+                        case "language":
+                            Language = atr.Value;
+                            break;
+                        case "title":
+                            Title = atr.Value;
+                            break;
+                        case "version":
+                            Version = atr.Value;
+                            break;
+                        case "xmlUrl":
+                            XMLUrl = atr.Value;
+                            break;
+                        
+                        default:
+                            break;
+                    }
                 }
-                else if (Element.Attributes["description"] != null)
-                {
-                    Description = Element.Attributes["description"].Value;
-                }
-                else if (Element.Attributes["htmlUrl"] != null)
-                {
-                    HTMLUrl = Element.Attributes["htmlUrl"].Value;
-                }
-                else if (Element.Attributes["type"] != null)
-                {
-                    Type = Element.Attributes["type"].Value;
-                }
-                else if (Element.Attributes["language"] != null)
-                {
-                    Language = Element.Attributes["language"].Value;
-                }
-                else if (Element.Attributes["title"] != null)
-                {
-                    Title = Element.Attributes["title"].Value;
-                }
-                else if (Element.Attributes["version"] != null)
-                {
-                    Version = Element.Attributes["version"].Value;
-                }
-                else if (Element.Attributes["xmlUrl"] != null)
-                {
-                    XMLUrl = Element.Attributes["xmlUrl"].Value;
-                }
+
+                Outlines = new List<Outline>();
+
                 foreach (XmlNode Child in Element.ChildNodes)
                 {
                     try
@@ -137,34 +142,37 @@ namespace FeedRead.Utilities.OPML
             StringBuilder OutlineString = new StringBuilder();
 
             OutlineString.Append(prefix + "<outline text=\"" + Text + "\"");
+
             if (!string.IsNullOrEmpty(XMLUrl))
             {
                 OutlineString.Append(" xmlUrl=\"" + XMLUrl + "\"");
             }
+
             if (!string.IsNullOrEmpty(Version))
             {
                 OutlineString.Append(" version=\"" + Version + "\"");
             }
+
             if (!string.IsNullOrEmpty(Title))
             {
                 OutlineString.Append(" title=\"" + Title + "\"");
             }
+
             if (!string.IsNullOrEmpty(Language))
             {
                 OutlineString.Append(" language=\"" + Language + "\"");
             }
+
             if (!string.IsNullOrEmpty(Type))
             {
                 OutlineString.Append(" type=\"" + Type + "\"");
             }
+
             if (!string.IsNullOrEmpty(HTMLUrl))
             {
                 OutlineString.Append(" htmlUrl=\"" + HTMLUrl + "\"");
             }
-            if (!string.IsNullOrEmpty(Text))
-            {
-                OutlineString.Append(" text=\"" + Text + "\"");
-            }
+            
             if (!string.IsNullOrEmpty(Description))
             {
                 OutlineString.Append(" description=\"" + Description + "\"");
@@ -183,12 +191,12 @@ namespace FeedRead.Utilities.OPML
                 }
                 else
                 {
-                    OutlineString.Append("/></outline>" + Environment.NewLine);
+                    OutlineString.Append("></outline>" + Environment.NewLine);
                 }
             }
             else
             {
-                OutlineString.Append("/></outline>" + Environment.NewLine);
+                OutlineString.Append("></outline>" + Environment.NewLine);
             }
 
 
@@ -198,8 +206,9 @@ namespace FeedRead.Utilities.OPML
         }
 
         #endregion
-
+        
         #region Overridden Functions
+        /*
         public override string ToString()
         {
             StringBuilder OutlineString = new StringBuilder();
@@ -259,7 +268,7 @@ namespace FeedRead.Utilities.OPML
             }
             return OutlineString.ToString();
         }
-
+        */
         public bool IsFinalNode()
         {
             bool result = true;
