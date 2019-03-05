@@ -159,7 +159,7 @@ namespace FeedRead.Control
             SaveFileDialog sadi = new SaveFileDialog();
             sadi.Title = "Export feeds";
             sadi.RestoreDirectory = true;
-            sadi.Filter = "txt-File|*.txt|ompl-File|*.opml";
+            sadi.Filter = "ompl-File|*.opml|txt-File|*.txt";
 
             if (sadi.ShowDialog() == DialogResult.OK)
             {
@@ -1257,12 +1257,27 @@ namespace FeedRead.Control
                     result.Updated = false;
                     result.Items = new List<FeedItem>();
 
-                    result.FeedURL = outline.XMLUrl;
+                    result.FeedURL = outline.HTMLUrl;
                     result.Description = outline.Description;
-                    result.ImageUrl = outline.HTMLUrl;
+                    
                     result.Language = outline.Language;
                     result.Link = outline.XMLUrl;
                     result.Title = outline.Title;
+
+                    /*
+                    fOutline = new Outline();
+                    fOutline.Description = feed.Description;
+                    fOutline.HTMLUrl = feed.FeedURL;
+                    fOutline.Language = feed.Language;
+                    fOutline.Outlines = new List<Outline>();
+                    fOutline.Text = feed.Title;
+                    fOutline.Title = feed.Title;
+                    fOutline.Type = feed.Type.ToString();
+                    fOutline.Version = feed.Type.ToString();
+                    fOutline.XMLUrl = feed.Link;
+                    */
+
+                    Console.WriteLine(result.GetDebugInfo());
                 }
             }
 

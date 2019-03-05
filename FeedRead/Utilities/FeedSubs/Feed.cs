@@ -188,5 +188,21 @@ namespace FeedSubs.FeedReader
 
             return result;
         }
+
+        /// <summary>
+        /// get whole feed-object-properties as one string (for debugging)
+        /// </summary>
+        /// <returns></returns>
+        public string GetDebugInfo()
+        {
+            string result = "Feedtitle = '" + Title + "'" + Environment.NewLine;
+
+            result += "Link: '" + Link + "' ";
+            result += "FeedUrl: '" + FeedURL + "' ";
+            result += "Description: '" + Description + "' ";
+            result += "ImageURL: '" + ImageUrl + "' ";
+
+            return result;
+        }
     }
 }

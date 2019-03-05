@@ -31,7 +31,7 @@ namespace FeedRead.Utilities.OPML
 
                 foreach(XmlAttribute atr in Element.Attributes)
                 {
-                    switch(atr.Name)
+                    switch (atr.Name.ToLower())
                     {
                         case "text":
                             Text = atr.Value;
@@ -39,7 +39,7 @@ namespace FeedRead.Utilities.OPML
                         case "description":
                             Description = atr.Value;
                             break;
-                        case "htmlUrl":
+                        case "htmlurl":
                             HTMLUrl = atr.Value;
                             break;
                         case "type":
@@ -54,7 +54,7 @@ namespace FeedRead.Utilities.OPML
                         case "version":
                             Version = atr.Value;
                             break;
-                        case "xmlUrl":
+                        case "xmlurl":
                             XMLUrl = atr.Value;
                             break;
                         
@@ -76,6 +76,7 @@ namespace FeedRead.Utilities.OPML
                     }
                     catch { }
                 }
+
             }
         }
         #endregion
