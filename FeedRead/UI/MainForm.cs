@@ -219,19 +219,26 @@ namespace FeedRead.UI
         /// </summary>
         private void ClearPropertyDisplays()
         {
-            sCMainBrowse.Panel1Collapsed = true;
-            browser.Navigate("about:blank");
+            try
+            {
+                sCMainBrowse.Panel1Collapsed = true;
+                browser.Navigate("about:blank");
 
-            lL_Url.Text = "";
-            lL_Url.Links.Clear();
-            lL_Url.LinkVisited = false;
+                lL_Url.Text = "";
+                lL_Url.Links.Clear();
+                lL_Url.LinkVisited = false;
 
-            b_DownloadVideo.Visible = false;
-            b_DownloadVideo.Enabled = false;
+                b_DownloadVideo.Visible = false;
+                b_DownloadVideo.Enabled = false;
 
-            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            lVFeedItems.View = View.Details;
+                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                lVFeedItems.View = View.Details;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error in 'ClearPropertyDisplays': " + ex.Message);
+            }
         }
 
         /// <summary>

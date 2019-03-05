@@ -206,52 +206,22 @@ namespace FeedRead.Control
                         //get group-name
                         string groupName = sGD.groupName;
                         bool groupIsNSFW = sGD.newGroupIsNSFW;
+                        bool addNewGroup = sGD.addNewGroupName;
 
-                        Feed newFeed = null;
+                       
+                        //add new feed to list (threaded)
 
-                        
-
-                        
-                        //check if it's a new group
-                        if (sGD.addNewGroupName)
+                        mainForm.EnableFeedFunctionalities(false);
+                        Thread t2 = new Thread(delegate ()
                         {
-                            //create a new group and add the feed to it
-                            //Debug.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to new group '" + groupName + "'.");
-                            GetFeed(newFeedUrl, ref newFeed, true);
+                            mainForm.SetStatusText("adding new feed ...", -1);
 
-                            if (newFeed != null)
-                            {
-                                mainModel.AddFeedAndGroup(newFeed, groupName, groupIsNSFW, "");
+                            AddNewFeed(newFeedUrl, addNewGroup, groupName, groupIsNSFW);
 
-                                UpdateTreeview();
-                            }
-                        }
-                        else
-                        {
-                            //find selected group
-                            //check if feed already exists and if not, add the new feed to it
-                            //Debug.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
-                            FeedGroup parentGroup = GetGroupByName(mainModel, groupName);
-
-                            if(IsFeedInGroup(parentGroup,newFeedUrl))
-                            {
-                                MessageBox.Show("Feed already exists in this Feedgroup!", "Add Feed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            }
-                            else
-                            {
-                                GetFeed(newFeedUrl, ref newFeed, true);
-                                if (newFeed != null)
-                                {
-                                    mainModel.AddFeed(newFeed, groupName);
-
-                                    UpdateTreeview();
-                                }
-                            }
-                                
-                        }
-                 
-
-
+                            mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
+                            mainForm.SetStatusText("New feed has been added to list.", 2000);
+                        });
+                        t2.Start();
                     }
                 }
             }
@@ -260,6 +230,52 @@ namespace FeedRead.Control
                 MessageBox.Show("No internet-connection could be detected. Can't add a new feed.", "Add new feed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
+
+        /// <summary>
+        /// method for adding a new feed to a (possibly existing or new) feedgroup; call only in new thread
+        /// </summary>
+        /// <param name="newFeedUrl"></param>
+        /// <param name="addNewGroup"></param>
+        /// <param name="groupName"></param>
+        /// <param name="groupIsNSFW"></param>
+        private void AddNewFeed(string newFeedUrl, bool addNewGroup, string groupName, bool groupIsNSFW)
+        {
+            Feed newFeed = null;
+
+            //check if it's a new group
+            if (addNewGroup)
+            {
+                //create a new group and add the feed to it
+                GetFeed(newFeedUrl, ref newFeed, true);
+
+                if (newFeed != null)
+                {
+                    mainModel.AddFeedAndGroup(newFeed, groupName, groupIsNSFW, "");
+                }
+            }
+            else
+            {
+                //find selected group
+                //check if feed already exists and if not, add the new feed to it
+                //Debug.WriteLine("Controller.AddNewFeed: add feed '" + newFeedUrl + "' to existing group '" + groupName + "'");
+                FeedGroup parentGroup = GetGroupByName(mainModel, groupName);
+
+                if (IsFeedInGroup(parentGroup, newFeedUrl))
+                {
+                    MessageBox.Show("Feed already exists in this Feedgroup!", "Add Feed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    GetFeed(newFeedUrl, ref newFeed, true);
+                    if (newFeed != null)
+                    {
+                        mainModel.AddFeed(newFeed, groupName);
+                    }
+                }
+
+            }
+        }
+
 
         /// <summary>
         /// get list of unread feeditems of a specific feedgroup
