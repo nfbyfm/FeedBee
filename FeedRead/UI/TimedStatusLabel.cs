@@ -37,7 +37,7 @@ namespace FeedRead.UI
             timer.Enabled = false;
             timer.Stop();
 
-            stLabel.Text = "";
+            stLabel.Text = "...";
         }
 
 

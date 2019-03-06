@@ -20,6 +20,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using Utilities.FeedSubs;
 using FeedRead.Utilities.FeedSubs;
+using System.ComponentModel;
 
 namespace FeedRead.Control
 {
@@ -28,9 +29,12 @@ namespace FeedRead.Control
     /// </summary>
     public class Controller
     {
-        
+        #region Properties, private variables
+
         private MainForm mainForm;
         private FeedGroup mainModel;
+
+        private FeedGroup updateGroup;      //FeedGroup that shal get updated
 
         private WebPageFeedDefList webPageFeedDefList;
 
@@ -38,12 +42,20 @@ namespace FeedRead.Control
         private const string youtubeID = "Youtube";
 
         private InternetCheck internetCheck;
-        
+
+        public delegate void UpdateTreeViewCallback();      //delegate for updating the treeview of the main window (after updates are done for example)
+
+        #endregion
+
         public Controller(MainForm mainForm, InternetCheck iCheck)
         {
             this.mainForm = mainForm;
+            
             this.mainModel = new FeedGroup(mainModelID, false, "");
+            this.updateGroup = mainModel;
             this.internetCheck = iCheck;
+
+            InitializeFeedUpdateBackgroundWorker();
 
             //load list of webpageFeed-definitions
             LoadWebPageFeedList();
@@ -335,13 +347,20 @@ namespace FeedRead.Control
         {
             FeedGroup result = null;
 
-            if (parentGroup != null)
+            if (parentGroup != null && groupName != null)
             {
-                if(parentGroup.Title.ToLower() == groupName.ToLower())
+                bool cont = true;
+
+                if(parentGroup.Title != null)
                 {
-                    result = parentGroup;
+                    if (parentGroup.Title.ToLower() == groupName.ToLower())
+                    {
+                        result = parentGroup;
+                        cont = false;
+                    }
                 }
-                else
+                
+                if(cont)
                 {
                     if(parentGroup.FeedGroups != null)
                     {
@@ -416,8 +435,7 @@ namespace FeedRead.Control
             return result;
         }
 
-        public delegate void UpdateTreeViewCallback();
-
+        
         /// <summary>
         /// update feed-list / get new feeditems in separate thread
         /// </summary>
@@ -426,25 +444,17 @@ namespace FeedRead.Control
             //check if update is even possible
             if(CheckInternetConnectivity())
             {
-                //start the update-thread
-                mainForm.EnableFeedFunctionalities(false);
-                Thread t2 = new Thread(delegate ()
+                if(mainModel != null)
                 {
-                    mainForm.SetStatusText("updating feeds ...", -1);
-                    UpdateFeed(!Properties.Settings.Default.updateNSFW);
-                    mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
-                    mainForm.SetStatusText("feeds updated", 2000);
-                });
-                t2.Start();
+                    updateGroup = mainModel;
+                    StartUpdateFeeds();
+                }
             }
             else
             {
                 mainForm.SetStatusText("no connection to internet detected ...", 5000);
             }
-            
         }
-
-        
 
 
         /// <summary>
@@ -517,9 +527,6 @@ namespace FeedRead.Control
         }
 
 
-
-
-
         /// <summary>
         /// update the treeview-control of the main form
         /// </summary>
@@ -589,6 +596,234 @@ namespace FeedRead.Control
 
         #endregion
 
+        #region Context-Menu-GUI-functions
+        //expensive-finder-function:
+        /*
+        object tmpResult = GetFeedElementFromHash(mainModel, tagObject.GetHashCode());
+
+        if(tmpResult != null)
+        {
+            if (tmpResult.GetType() == typeof(FeedGroup))
+            {
+                FeedGroup selFeedGroup = (FeedGroup)tmpResult;
+
+                Debug.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
+
+                selFeedGroup.Title = newName;
+                UpdateTreeview();
+            }
+            else if (tmpResult.GetType() == typeof(Feed))
+            {
+                Feed selFeed = (Feed)tmpResult;
+
+                Debug.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
+
+                selFeed.Title = newName;
+                UpdateTreeview();
+            }
+            else
+            {
+                Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+            }
+        }
+        else
+        {
+            Debug.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
+        }
+
+        */
+        /// <summary>
+        /// rename a Node (Group or Feed)
+        /// </summary>
+        /// <param name="tagObject"></param>
+        /// <param name="newName"></param>
+        public void RenameNode(object tagObject)
+        {
+            if (tagObject != null)
+            {
+                if (tagObject.GetType() == typeof(FeedGroup))
+                {
+                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
+
+                    //get new name
+                    EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup, selFeedGroup.ImagePath);
+
+                    if (rd.ShowDialog() == DialogResult.OK)
+                    {
+                        string newNodeName = rd.newName;
+
+                        if (!string.IsNullOrEmpty(newNodeName) && !string.IsNullOrWhiteSpace(newNodeName))
+                        {
+                            //set feedgroup-properties
+                            selFeedGroup.Title = newNodeName;
+                            selFeedGroup.IsNSFWGroup = rd.IsNSFW;
+                            selFeedGroup.ImagePath = rd.iconPath;
+
+                            UpdateTreeview();
+                        }
+                    }
+
+                    rd.Dispose();
+
+                }
+                else if (tagObject.GetType() == typeof(Feed))
+                {
+                    Feed selFeed = (Feed)tagObject;
+
+                    //get new name
+                    EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage, selFeed.ImageUrl);
+
+                    if (fd.ShowDialog() == DialogResult.OK)
+                    {
+                        string newFeedName = fd.feedTitle;
+
+
+                        if (!string.IsNullOrEmpty(newFeedName) && !string.IsNullOrWhiteSpace(newFeedName))
+                        {
+                            //set the feed-properties
+                            selFeed.Title = fd.feedTitle;
+                            selFeed.DirectlyLoadWebpage = fd.directlyLoadWebURL;
+                            selFeed.ImageUrl = fd.iconPath;
+                            UpdateTreeview();
+                        }
+                    }
+                    fd.Dispose();
+                }
+                else
+                {
+                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                }
+
+            }
+            else
+            {
+                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+
+
+        /// <summary>
+        /// delete a feed or feedgroup by it's hashcode
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void DeleteNode(object tagObject)
+        {
+            if (tagObject != null)
+            {
+                bool result = DeleteFeedElementByHash(mainModel, tagObject.GetHashCode());
+
+                if (result == true)
+                {
+                    UpdateTreeview();
+                }
+                else
+                {
+                    Debug.WriteLine("DeleteNode: couldn't find element of selected Treenode is null.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("DeleteNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+        /// <summary>
+        /// update a selected feed or feedgroup
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void UpdateNode(object tagObject)
+        {
+            //check if update is even possible
+            if (CheckInternetConnectivity())
+            {
+
+                if (tagObject != null)
+                {
+                    if (tagObject.GetType() == typeof(FeedGroup))
+                    {
+                        FeedGroup selFeedGroup = (FeedGroup)tagObject;
+                        updateGroup = selFeedGroup;
+
+                        StartUpdateFeeds();
+                    }
+                    else if (tagObject.GetType() == typeof(Feed))
+                    {
+                        Feed selFeed = (Feed)tagObject;
+
+                        mainForm.SetStatusText("Updating '" + selFeed.Title + "' ...", 1000);
+
+                        UpdateFeed(selFeed);
+
+                        UpdateTreeview();
+
+                        mainForm.SetStatusText("Feed '" + selFeed.Title + "' updated.", 2000);
+
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                    }
+
+                }
+                else
+                {
+                    Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+                }
+            }
+            else
+            {
+                mainForm.SetStatusText("no connection to internet detected ...", 5000);
+            }
+        }
+
+        /// <summary>
+        /// mark feed or feedgroup as read
+        /// </summary>
+        /// <param name="tagObject"></param>
+        public void MarkNodeAsRead(object tagObject)
+        {
+            if (tagObject != null)
+            {
+                if (tagObject.GetType() == typeof(FeedGroup))
+                {
+                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
+
+                    MarkGroupAsRead(selFeedGroup);
+
+                    UpdateTreeview();
+                }
+                else if (tagObject.GetType() == typeof(Feed))
+                {
+                    Feed selFeed = (Feed)tagObject;
+
+                    MarkFeedAsRead(selFeed, true);
+
+                    UpdateTreeview();
+                }
+                else
+                {
+                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
+                }
+
+            }
+            else
+            {
+                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
+            }
+        }
+
+        /// <summary>
+        /// open unread feeds of a specific feedgroup
+        /// </summary>
+        /// <param name="subGroup"></param>
+        public void OpenUnreadFeeds(FeedGroup subGroup)
+        {
+            OpenUnreadFeeds(subGroup, false);
+        }
+
+
+        #endregion
 
         #region get / delete Feeds and Groups
 
@@ -728,248 +963,7 @@ namespace FeedRead.Control
         }
 
         #endregion
-
-        #region Context-Menu-GUI-functions
-        //expensive-finder-function:
-                /*
-                object tmpResult = GetFeedElementFromHash(mainModel, tagObject.GetHashCode());
-
-                if(tmpResult != null)
-                {
-                    if (tmpResult.GetType() == typeof(FeedGroup))
-                    {
-                        FeedGroup selFeedGroup = (FeedGroup)tmpResult;
-
-                        Debug.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
-
-                        selFeedGroup.Title = newName;
-                        UpdateTreeview();
-                    }
-                    else if (tmpResult.GetType() == typeof(Feed))
-                    {
-                        Feed selFeed = (Feed)tmpResult;
-
-                        Debug.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
-
-                        selFeed.Title = newName;
-                        UpdateTreeview();
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
-                }
-
-                */
-        /// <summary>
-        /// rename a Node (Group or Feed)
-        /// </summary>
-        /// <param name="tagObject"></param>
-        /// <param name="newName"></param>
-        public void RenameNode(object tagObject)
-        {
-            if(tagObject != null)
-            {
-                if (tagObject.GetType() == typeof(FeedGroup))
-                {
-                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
-
-                    //get new name
-                    EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup, selFeedGroup.ImagePath);
-
-                    if (rd.ShowDialog() == DialogResult.OK)
-                    {
-                        string newNodeName = rd.newName;
-                        
-                        if (!string.IsNullOrEmpty(newNodeName) && !string.IsNullOrWhiteSpace(newNodeName))
-                        {
-                            //set feedgroup-properties
-                            selFeedGroup.Title = newNodeName;
-                            selFeedGroup.IsNSFWGroup = rd.IsNSFW;
-                            selFeedGroup.ImagePath = rd.iconPath;
-
-                            UpdateTreeview();
-                        }
-                    }
-
-                    rd.Dispose();
-
-                }
-                else if (tagObject.GetType() == typeof(Feed))
-                {
-                    Feed selFeed = (Feed)tagObject;
-
-                    //get new name
-                    EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage, selFeed.ImageUrl);
-                    
-                    if (fd.ShowDialog() == DialogResult.OK)
-                    {
-                        string newFeedName = fd.feedTitle;
-
-                        
-                        if (!string.IsNullOrEmpty(newFeedName) && !string.IsNullOrWhiteSpace(newFeedName))
-                        {
-                            //set the feed-properties
-                            selFeed.Title = fd.feedTitle;
-                            selFeed.DirectlyLoadWebpage = fd.directlyLoadWebURL;
-                            selFeed.ImageUrl = fd.iconPath;
-                            UpdateTreeview();
-                        }
-                    }
-                    fd.Dispose();
-                }
-                else
-                {
-                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
-                }
-
-            }
-            else
-            {
-                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
-            }
-        }
-
-        
-
-        /// <summary>
-        /// delete a feed or feedgroup by it's hashcode
-        /// </summary>
-        /// <param name="tagObject"></param>
-        public void DeleteNode(object tagObject)
-        {
-            if (tagObject != null)
-            {
-                bool result = DeleteFeedElementByHash(mainModel, tagObject.GetHashCode());
-
-                if (result == true)
-                {
-                    UpdateTreeview();
-                }
-                else
-                {
-                    Debug.WriteLine("DeleteNode: couldn't find element of selected Treenode is null.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine("DeleteNode: tagObject of selected Treenode is null.");
-            }
-        }
-
-        /// <summary>
-        /// update a selected feed or feedgroup
-        /// </summary>
-        /// <param name="tagObject"></param>
-        public void UpdateNode(object tagObject)
-        {
-            //check if update is even possible
-            if (CheckInternetConnectivity())
-            {
-
-                if (tagObject != null)
-                {
-                    if (tagObject.GetType() == typeof(FeedGroup))
-                    {
-                        FeedGroup selFeedGroup = (FeedGroup)tagObject;
-
-                        //start the update-thread
-                        mainForm.EnableFeedFunctionalities(false);
-
-                        Thread t2 = new Thread(delegate ()
-                        {
-                            mainForm.SetStatusText("updating feeds of '" + selFeedGroup.Title + "' ...", -1);
-
-                            UpdateFeedList(selFeedGroup, !Properties.Settings.Default.updateNSFW);
-
-                            mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
-                            mainForm.SetStatusText("feeds of '" + selFeedGroup.Title + "' updated.", 2000);
-                        });
-                        t2.Start();
-                    
-                    }
-                    else if (tagObject.GetType() == typeof(Feed))
-                    {
-                        Feed selFeed = (Feed)tagObject;
-
-                        mainForm.SetStatusText("Updating '" + selFeed.Title + "' ...", 1000);
-
-                        UpdateFeed(selFeed);
-
-                        UpdateTreeview();
-
-                        mainForm.SetStatusText("Feed '" + selFeed.Title + "' updated.", 2000);
-
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
-                    }
-
-                }
-                else
-                {
-                    Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
-                }
-            }
-            else
-            {
-                mainForm.SetStatusText("no connection to internet detected ...", 5000);
-            }
-        }
-
-        /// <summary>
-        /// mark feed or feedgroup as read
-        /// </summary>
-        /// <param name="tagObject"></param>
-        public void MarkNodeAsRead(object tagObject)
-        {
-            if (tagObject != null)
-            {
-                if (tagObject.GetType() == typeof(FeedGroup))
-                {
-                    FeedGroup selFeedGroup = (FeedGroup)tagObject;
-
-                    MarkGroupAsRead(selFeedGroup);
-
-                    UpdateTreeview();
-                }
-                else if (tagObject.GetType() == typeof(Feed))
-                {
-                    Feed selFeed = (Feed)tagObject;
-
-                    MarkFeedAsRead(selFeed, true);
-
-                    UpdateTreeview();
-                }
-                else
-                {
-                    Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
-                }
-
-            }
-            else
-            {
-                Debug.WriteLine("RenameNode: tagObject of selected Treenode is null.");
-            }
-        }
-
-        /// <summary>
-        /// open unread feeds of a specific feedgroup
-        /// </summary>
-        /// <param name="subGroup"></param>
-        public void OpenUnreadFeeds(FeedGroup subGroup)
-        {
-            OpenUnreadFeeds(subGroup, false);
-        }
-
-
-        #endregion
-
+                
         #region webpagefeed-definitonlist functions
         /// <summary>
         /// tries to load defintions from file
@@ -1073,6 +1067,465 @@ namespace FeedRead.Control
 
         #endregion
 
+        #region update-functions
+        /// <summary>
+        /// background-worker for updating feeds
+        /// </summary>
+        private BackgroundWorker updateFeedsbGWorker;
+
+        /// <summary>
+        /// init-function for backgroundworker (call in constructor)
+        /// </summary>
+        private void InitializeFeedUpdateBackgroundWorker()
+        {
+            updateFeedsbGWorker = new BackgroundWorker();
+            updateFeedsbGWorker.WorkerReportsProgress = true;
+            updateFeedsbGWorker.DoWork += new DoWorkEventHandler(UpdateFeeds_DoWork);
+            updateFeedsbGWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(UpdateFeeds_RunWorkerCompleted);
+            updateFeedsbGWorker.ProgressChanged += new ProgressChangedEventHandler(UpdateFeeds_ProgressChanged);
+        }
+
+        /// <summary>
+        /// starts the background-worker; set "updateGroup" before calling this function
+        /// </summary>
+        private void StartUpdateFeeds()
+        {
+            string updateMessage = "";
+
+            if (updateGroup != null)
+            {
+
+                mainForm.EnableFeedFunctionalities(false);
+
+                if (updateGroup != mainModel)
+                {
+                    updateMessage = "updating feeds of '" + updateGroup.Title + "' ...";
+                }
+                else
+                {
+                    updateMessage = "updating all feeds ...";
+                }
+
+                mainForm.SetStatusText(updateMessage, -1);
+
+                //start the background-worker
+                updateFeedsbGWorker.RunWorkerAsync();
+            }
+            else
+            {
+                updateMessage = "Error while updating: Feedgroup that has to get updated is null";
+                mainForm.SetStatusText(updateMessage, 2000);
+            }
+        }
+
+        /// <summary>
+        /// function for canceling the update (background-worker)
+        /// </summary>
+        public void CancelUpdate()
+        {
+            updateFeedsbGWorker.CancelAsync();
+        }
+
+        /// <summary>
+        /// method for actually calling the update-Method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateFeeds_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Assign the result of the computation
+            // to the Result property of the DoWorkEventArgs
+            // object. This is will be available to the 
+            // RunWorkerCompleted eventhandler.
+            UpdateFeedList(updateGroup, !Properties.Settings.Default.updateNSFW, worker, e);
+            //e.Result = UpdateFeedList(mainModel, !Properties.Settings.Default.updateNSFW, worker, e);
+        }
+
+        
+        /// <summary>
+        /// function that gets called once the updates are finished
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateFeeds_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            try
+            {
+                // First, handle the case where an exception was thrown.
+                if (e.Error != null)
+                {
+                    MessageBox.Show(e.Error.Message, "Updating Feeds: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //Console.WriteLine("Error RunWorkerCompleted: " + e.Error.Message);
+                }
+                else if (e.Cancelled)
+                {
+                    // Next, handle the case where the user canceled 
+                    // the operation.
+                    // Note that due to a race condition in 
+                    // the DoWork event handler, the Cancelled
+                    // flag may not have been set, even though
+                    // CancelAsync was called.
+                    mainForm.SetStatusText("Updating canceled.", 2000);
+                    //Console.WriteLine("RunworkerCompleted: Updating canceled.");
+                }
+                else
+                {
+                    // Finally, handle the case where the operation 
+                    // succeeded.
+                    //mainForm.SetStatusText(e.Result.ToString(),2000);
+                    //Console.WriteLine("RunworkerCompleted: " + e.Result.ToString());
+
+                    mainForm.SetStatusText("update finished", 2000);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error RunWorkerCompleted: " + ex.Message);
+            }
+
+            try
+            {
+                mainForm.SetProgress(101, 100);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error RunWorkerCompleted: SetProgress: " + ex.Message);
+            }
+
+            mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
+
+        }
+
+        /// <summary>
+        /// This event handler updates the progress bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateFeeds_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            mainForm.SetProgress(e.ProgressPercentage, 100);
+        }
+
+        /// <summary>
+        /// update feeds of a specific feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="atWork"></param>
+        private long UpdateFeedList(FeedGroup group, bool atWork, BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            long result = 0;
+
+            if (worker.CancellationPending)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                if (group != null)
+                {
+                    //create a list of threads
+                    List<Thread> tList = new List<Thread>();
+
+                    if (group.FeedGroups != null)
+                    {
+                        if (group.FeedGroups.Count() > 0)
+                        {
+                            for (int i = 0; i < group.FeedGroups.Count(); i++)
+                            {
+                                tList.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
+                            }
+                        }
+                    }
+
+                    worker.ReportProgress(5);
+
+                    if (group.FeedList != null)
+                    {
+                        bool checkNSFW = true;
+
+                        //if "atWork" = true -> check if group has nsfw-flag -> ignore / don't update if so
+                        if (atWork)
+                        {
+                            checkNSFW = !group.IsNSFWGroup;//.Title.ToLower().Contains("nsfw");
+                        }
+
+                        if (group.FeedList.Count > 0 && checkNSFW)
+                        {
+                            for (int i = 0; i < group.FeedList.Count(); i++)
+                            {
+                                Feed fed = group.FeedList[i];
+                                //define own new thread for importing
+                                Thread t1 = new Thread(delegate ()
+                                {
+                                    UpdateFeed(fed);
+                                });
+
+                                //add thread to list
+                                tList.Add(t1);
+                            }
+                        }
+                    }
+                    worker.ReportProgress(10);
+
+                    //actually run all the threads
+
+                    if (tList.Count > 0)
+                    {
+                        int numberOfThreads = tList.Count();
+                        //Debug.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
+
+                        //start every thread at once
+                        foreach (Thread th in tList)
+                        {
+                            th.Start();
+                        }
+
+                        bool updateFinished = false;
+                        int counter_before = 0;
+                        worker.ReportProgress(25);
+
+                        //wait until each thread ist finished
+                        while (!updateFinished)
+                        {
+                            int counter = 0;
+
+                            foreach (Thread thr in tList)
+                            {
+                                if (thr.IsAlive == false)
+                                {
+                                    counter++;
+                                }
+                            }
+
+                            if (counter != counter_before)
+                            {
+                                //mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+
+                                double perc = Convert.ToDouble(counter) / Convert.ToDouble(numberOfThreads) * 100;
+                                int progress = Convert.ToInt32(perc);
+
+                                if (progress >= 100)
+                                {
+                                    progress = 99;
+                                }
+                                else if (progress <= 0)
+                                {
+                                    progress = 1;
+                                }
+                                //Console.WriteLine("Progress: " + progress);
+                                worker.ReportProgress(progress);
+
+                                counter_before = counter;
+                            }
+
+                            if (counter == numberOfThreads)
+                            {
+                                updateFinished = true;
+                            }
+
+                            result = counter;
+                        }
+
+                        tList.Clear();
+
+                        worker.ReportProgress(100);
+                    }
+
+                }
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// get update-threads from a feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="atWork"></param>
+        /// <returns></returns>
+        private List<Thread> GetThreadsFromGroup(FeedGroup group, bool atWork)
+        {
+            List<Thread> result = new List<Thread>();
+
+            if (group != null)
+            {
+                if (atWork && group.IsNSFWGroup)
+                {
+                    //do nothing / don't update group
+                }
+                else
+                {
+                    if (group.FeedGroups != null)
+                    {
+                        if (group.FeedGroups.Count() > 0)
+                        {
+                            for (int i = 0; i < group.FeedGroups.Count(); i++)
+                            {
+                                result.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
+                            }
+                        }
+                    }
+
+                    if (group.FeedList != null)
+                    {
+                        if (group.FeedList.Count() > 0)
+                        {
+                            for (int i = 0; i < group.FeedList.Count(); i++)
+                            {
+                                Feed fed = group.FeedList[i];
+                                //define own new thread for importing
+                                Thread t1 = new Thread(delegate ()
+                                {
+                                    UpdateFeed(fed);
+                                });
+
+                                //add thread to list
+                                result.Add(t1);
+                            }
+                        }
+                    }
+                }
+
+
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// function for updating a single / specific feed
+        /// </summary>
+        /// <param name="origFeed"></param>
+        private void UpdateFeed(Feed origFeed)
+        {
+            try
+            {
+                //Debug.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+
+                //get Feeditems
+                Feed tmpFeed = null;
+
+                bool updateSuccess = false;
+
+                string url = origFeed.FeedURL;
+
+                bool updateImage = !File.Exists(origFeed.ImageUrl);
+
+                //try to get current feed
+                GetFeed(url, ref tmpFeed, updateImage);
+
+                if (tmpFeed != null)
+                {
+                    if (tmpFeed.Items != null)
+                    {
+                        if (tmpFeed.Items.Count() > 0)
+                        {
+                            List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                            //update the image-url (if not saved to file already)
+                            if (updateImage)
+                            {
+                                origFeed.ImageUrl = tmpFeed.ImageUrl;
+                            }
+
+
+                            origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+
+                            int itemCountNew = updateList.Count();
+                            int itemCountOld = origFeed.Items.Count();
+
+                            if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
+                            {
+                                //Debug.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
+
+                                List<FeedItem> tmpSwapList = new List<FeedItem>();
+
+                                //count number of matches
+                                int matchCounter = 0;
+                                int maxMatches = 5;
+
+                                //compare both lists
+                                foreach (FeedItem newItem in updateList)
+                                {
+                                    newItem.Read = false;
+
+
+                                    bool found = false;
+
+                                    //compare new item with all the old items
+                                    foreach (FeedItem oldItem in origFeed.Items)
+                                    {
+                                        //compare id's
+                                        if (newItem.Id == oldItem.Id)
+                                        {
+                                            found = true;
+                                            matchCounter++;
+                                            break;
+                                        }
+                                    }
+
+                                    //if item couldn't be found in list -> add to temp. List
+                                    if (found == false)
+                                    {
+                                        tmpSwapList.Add(newItem);
+                                        matchCounter = 0;
+                                    }
+
+                                    if (matchCounter > maxMatches)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                if (tmpSwapList.Count > 0)
+                                {
+                                    //append old List
+                                    origFeed.Items.AddRange(tmpSwapList);
+
+                                    //Debug.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+
+                                    //order list again
+                                    origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                                }
+
+                                updateSuccess = true;
+
+                            }
+                            else
+                            {
+                                if (itemCountNew == itemCountOld)
+                                {
+                                    updateSuccess = true;
+                                    Debug.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+                                }
+                            }
+
+
+                        }
+                    }
+
+                }
+
+                //mark Feed as updated or not
+                origFeed.Updated = updateSuccess;
+
+                //Console.WriteLine("Feed '" + origFeed.Title + "' has been updated.");
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error when getting update for feed '" + origFeed + "': " + ex.Message);
+            }
+        }
+
+        #endregion
+
         #region Feed-related functions
 
         /// <summary>
@@ -1080,30 +1533,30 @@ namespace FeedRead.Control
         /// </summary>
         /// <returns></returns>
         private List<string> GetGroupNames()
+        {
+            List<string> result = null;
+
+            if(mainModel != null)
+            {
+                if(mainModel.FeedGroups != null)
                 {
-                    List<string> result = null;
-
-                    if(mainModel != null)
+                    if(mainModel.FeedGroups.Count >0)
                     {
-                        if(mainModel.FeedGroups != null)
+                        result = new List<string>();
+
+                        //go through list recursively (?)
+
+                        //simple version:
+                        foreach(FeedGroup group in mainModel.FeedGroups)
                         {
-                            if(mainModel.FeedGroups.Count >0)
-                            {
-                                result = new List<string>();
-
-                                //go through list recursively (?)
-
-                                //simple version:
-                                foreach(FeedGroup group in mainModel.FeedGroups)
-                                {
-                                    result.Add(group.Title);
-                                }
-                            }
+                            result.Add(group.Title);
                         }
                     }
-
-                    return result;
                 }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// load current model from the given xml-file
@@ -1365,7 +1818,7 @@ namespace FeedRead.Control
 
                         ImportFromTxtSubFunction(filename, ref groupAdded, groupName, groupIsNSFW);
 
-                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock), mainModel);
+                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
                         mainForm.SetStatusText("import done", 2000);
                     });
                     t2.Start();
@@ -1539,296 +1992,25 @@ namespace FeedRead.Control
             }
         }
 
-        /// <summary>
-        /// update each feed of the main model
-        /// </summary>
-        /// <param name="atWork">if true nsfw-feeds won't get checked</param>
-        private void UpdateFeed(bool atWork)
-        {
-            if(mainModel != null)
-            {
-                UpdateFeedList(mainModel, atWork);
-            }
-        }
-
-        /// <summary>
-        /// get updates for a specific feedgroup
-        /// </summary>
-        /// <param name="group"></param>
-        /// <param name="atWork"></param>
-        private void UpdateFeedList(FeedGroup group, bool atWork)
-        {
-            if(group != null)
-            {
-                //create a list of threads
-                List<Thread> tList = new List<Thread>();
-
-                if (group.FeedGroups != null)
-                {
-                    if(group.FeedGroups.Count() > 0 )
-                    {
-                        for (int i = 0; i < group.FeedGroups.Count(); i++)
-                        {
-                            tList.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
-                        }
-                    }
-                }
-
-                if(group.FeedList != null)
-                {
-                    bool checkNSFW = true;
-
-                    //if "atWork" = true -> check if group has nsfw-flag -> ignore / don't update if so
-                    if(atWork)
-                    {
-                        checkNSFW = !group.IsNSFWGroup;//.Title.ToLower().Contains("nsfw");
-                    }
-
-                    if(group.FeedList.Count > 0 && checkNSFW)
-                    {
-                        for (int i =0; i< group.FeedList.Count(); i++)
-                        {
-                            Feed fed = group.FeedList[i];
-                            //define own new thread for importing
-                            Thread t1 = new Thread(delegate ()
-                            {
-                                UpdateFeed(fed);
-                            });
-                            
-                            //add thread to list
-                            tList.Add(t1);
-                        } 
-                    }
-                }
-
-
-                //actually run all the threads
-
-                if(tList.Count > 0)
-                {
-                    int numberOfThreads = tList.Count();
-                    //Debug.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
-
-                    //start every thread at once
-                    foreach (Thread th in tList)
-                    {
-                        th.Start();
-                    }
-
-                    bool updateFinished = false;
-                    int counter_before = 0;
-
-                    //wait until each thread ist finished
-                    while (!updateFinished)
-                    {
-                        int counter = 0;
-
-                        foreach (Thread thr in tList)
-                        {
-                            if (thr.IsAlive == false)
-                            {
-                                counter++;
-                            }
-                        }
-
-                        if (counter != counter_before)
-                        {
-                            mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
-                            //Debug.WriteLine(counter.ToString() + " threads out of " + numberOfThreads + " are done.");
-                            counter_before = counter;
-                        }
-
-                        if (counter == numberOfThreads)
-                        {
-                            updateFinished = true;
-                        }
-                    }
-
-                    tList.Clear();
-                }
-                
-            }
-        }
-
-        /// <summary>
-        /// get update-threads from a feedgroup
-        /// </summary>
-        /// <param name="group"></param>
-        /// <param name="atWork"></param>
-        /// <returns></returns>
-        private List<Thread> GetThreadsFromGroup(FeedGroup group, bool atWork)
-        {
-            List<Thread> result = new List<Thread>();
-
-            if(group != null)
-            {
-                if(atWork && group.IsNSFWGroup)
-                {
-                    //do nothing / don't update group
-                }
-                else
-                {
-                    if (group.FeedGroups != null)
-                    {
-                        if (group.FeedGroups.Count() > 0)
-                        {
-                            for(int i = 0; i < group.FeedGroups.Count(); i++)
-                            {
-                                result.AddRange(GetThreadsFromGroup(group.FeedGroups[i], atWork));
-                            }
-                        }
-                    }
-
-                    if (group.FeedList != null)
-                    {
-                        if (group.FeedList.Count() > 0)
-                        {
-                            for (int i = 0; i < group.FeedList.Count(); i++)
-                            {
-                                Feed fed = group.FeedList[i];
-                                //define own new thread for importing
-                                Thread t1 = new Thread(delegate ()
-                                {
-                                    UpdateFeed(fed);
-                                });
-
-                                //add thread to list
-                                result.Add(t1);
-                            }
-                        }
-                    }
-                }
-                
-
-            }
-
-            return result;
-        }
         
 
-        /// <summary>
-        /// update a single feed
-        /// </summary>
-        /// <param name="origFeed"></param>
-        private void UpdateFeed(Feed origFeed)
-        {
-            try
-            {
-                //Debug.WriteLine("Starting update on '" + origFeed.Title + "' ...");
-
-                //get Feeditems
-                Feed tmpFeed = null;
-
-                bool updateSuccess = false;
-
-                string url = origFeed.FeedURL;
-                
-                bool updateImage = !File.Exists(origFeed.ImageUrl);
-
-                //try to get current feed
-                GetFeed(url, ref tmpFeed, updateImage);
-
-                if (tmpFeed != null)
-                {
-                    if (tmpFeed.Items != null)
-                    {
-                        if (tmpFeed.Items.Count() > 0)
-                        {
-                            List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-                            //update the image-url (if not saved to file already)
-                            if(updateImage)
-                            {
-                                origFeed.ImageUrl = tmpFeed.ImageUrl;
-                            }
-                            
-
-                            origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-
-                            int itemCountNew = updateList.Count();
-                            int itemCountOld = origFeed.Items.Count();
-
-                            if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
-                            {
-                                //Debug.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
-
-                                List<FeedItem> tmpSwapList = new List<FeedItem>();
-
-                                //count number of matches
-                                int matchCounter = 0;
-                                int maxMatches = 5;
-
-                                //compare both lists
-                                foreach (FeedItem newItem in updateList)
-                                {
-                                    newItem.Read = false;
+        
 
 
-                                    bool found = false;
-
-                                    //compare new item with all the old items
-                                    foreach (FeedItem oldItem in origFeed.Items)
-                                    {
-                                        //compare id's
-                                        if (newItem.Id == oldItem.Id)
-                                        {
-                                            found = true;
-                                            matchCounter++;
-                                            break;
-                                        }
-                                    }
-
-                                    //if item couldn't be found in list -> add to temp. List
-                                    if (found == false)
-                                    {
-                                        tmpSwapList.Add(newItem);
-                                        matchCounter = 0;
-                                    }
-
-                                    if(matchCounter > maxMatches)
-                                    {
-                                        break;
-                                    }
-                                }
-
-                                if (tmpSwapList.Count > 0)
-                                {
-                                    //append old List
-                                    origFeed.Items.AddRange(tmpSwapList);
-
-                                    //Debug.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
-
-                                    //order list again
-                                    origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-                                }
-
-                                updateSuccess = true;
-
-                            }
-                            else
-                            {
-                                if (itemCountNew == itemCountOld)
-                                {
-                                    updateSuccess = true;
-                                    Debug.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
-                                }
-                            }
 
 
-                        }
-                    }
 
-                }
 
-                //mark Feed as updated or not
-                origFeed.Updated = updateSuccess;
 
-             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error when getting update for feed '" + origFeed + "': " + ex.Message);
-            }
-        }
+
+
+
+
+
+
+
+
+
 
         
         /// <summary>
@@ -1968,7 +2150,6 @@ namespace FeedRead.Control
         
 
         #endregion
-
 
         #region public utility-functions
 
@@ -2190,8 +2371,7 @@ namespace FeedRead.Control
             }
         }
         #endregion
-
-
+        
         #region opml import and export
 
 
@@ -2345,8 +2525,6 @@ namespace FeedRead.Control
 
 
         #endregion
-
-
 
         #region treeView-functions
 

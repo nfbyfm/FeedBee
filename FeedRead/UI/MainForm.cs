@@ -36,8 +36,10 @@ namespace FeedRead.UI
             controller = new Controller(this, internetCheck);
 
             UpdateTreeView();
-            ClearPropertyDisplays();            
-        }
+            ClearPropertyDisplays();
+
+            SetProgress(101, 100);
+         }
 
         #endregion
 
@@ -208,8 +210,38 @@ namespace FeedRead.UI
             }
         }
 
+        /// <summary>
+        /// set the value of the progressbar, if currentValue bigger maximum: hides progressbar
+        /// </summary>
+        /// <param name="currentValue"></param>
+        /// <param name="maximum"></param>
+        /// <param name="minimum"></param>
+        public void SetProgress(int currentValue, int maximum, int minimum =0)
+        {
+            try
+            {
+                if (currentValue > maximum)
+                {
+                    this.mainProgressBar.Visible = false;
+                }
+                else
+                {
+                    if (currentValue >= minimum)
+                    {
+                        this.mainProgressBar.Visible = true;
+                        this.mainProgressBar.Value = currentValue;
+                        this.mainProgressBar.Maximum = maximum;
+                        this.mainProgressBar.Minimum = minimum;
+                    }
 
-
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error setting Progressbar-value: " + ex.Message);
+            }
+            
+        }
 
         /// <summary>
         /// clears and hides controls which show information about a feed-item
