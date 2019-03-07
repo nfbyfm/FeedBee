@@ -31,14 +31,13 @@ namespace FeedRead.UI
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             internetCheck = new InternetCheck();
 
             controller = new Controller(this, internetCheck);
 
             UpdateTreeView();
             ClearPropertyDisplays();
-
-            cancelUpdateToolStripMenuItem.Enabled = false;
 
             SetProgress(101, 100);
          }
