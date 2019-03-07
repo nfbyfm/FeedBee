@@ -55,6 +55,7 @@
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.mainProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.statusLabel = new FeedRead.UI.TimedStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tVMain = new System.Windows.Forms.TreeView();
@@ -74,7 +75,7 @@
             this.lL_Url = new System.Windows.Forms.LinkLabel();
             this.b_DownloadVideo = new System.Windows.Forms.Button();
             this.browser = new System.Windows.Forms.WebBrowser();
-            this.mainProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.cancelUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -174,6 +175,7 @@
             this.addToolStripMenuItem,
             this.toolStripSeparator4,
             this.updateToolStripMenuItem,
+            this.cancelUpdateToolStripMenuItem,
             this.toolStripSeparator5,
             this.markToolStripMenuItem,
             this.openExternallyToolStripMenuItem});
@@ -185,34 +187,34 @@
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addToolStripMenuItem.Text = "add ...";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(151, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // updateToolStripMenuItem
             // 
             this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
             this.updateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.updateToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.updateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.updateToolStripMenuItem.Text = "update";
             this.updateToolStripMenuItem.Click += new System.EventHandler(this.updateToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(151, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // markToolStripMenuItem
             // 
             this.markToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MarkAllAsReadToolStripMenuItem});
             this.markToolStripMenuItem.Name = "markToolStripMenuItem";
-            this.markToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.markToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.markToolStripMenuItem.Text = "mark ...";
             // 
             // MarkAllAsReadToolStripMenuItem
@@ -228,7 +230,7 @@
             this.openExternallyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenAllUnreadToolStripMenuItem});
             this.openExternallyToolStripMenuItem.Name = "openExternallyToolStripMenuItem";
-            this.openExternallyToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.openExternallyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openExternallyToolStripMenuItem.Text = "open externally";
             // 
             // OpenAllUnreadToolStripMenuItem
@@ -292,6 +294,11 @@
             this.statusStrip1.Size = new System.Drawing.Size(800, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // mainProgressBar
+            // 
+            this.mainProgressBar.Name = "mainProgressBar";
+            this.mainProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
             // statusLabel
             // 
@@ -499,10 +506,13 @@
             this.browser.TabIndex = 0;
             this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
             // 
-            // mainProgressBar
+            // cancelUpdateToolStripMenuItem
             // 
-            this.mainProgressBar.Name = "mainProgressBar";
-            this.mainProgressBar.Size = new System.Drawing.Size(100, 16);
+            this.cancelUpdateToolStripMenuItem.Name = "cancelUpdateToolStripMenuItem";
+            this.cancelUpdateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.cancelUpdateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cancelUpdateToolStripMenuItem.Text = "cancel update";
+            this.cancelUpdateToolStripMenuItem.Click += new System.EventHandler(this.cancelUpdateToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -588,6 +598,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem webpageFeedDefinitionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripProgressBar mainProgressBar;
+        private System.Windows.Forms.ToolStripMenuItem cancelUpdateToolStripMenuItem;
     }
 }
 

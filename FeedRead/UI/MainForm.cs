@@ -38,6 +38,8 @@ namespace FeedRead.UI
             UpdateTreeView();
             ClearPropertyDisplays();
 
+            cancelUpdateToolStripMenuItem.Enabled = false;
+
             SetProgress(101, 100);
          }
 
@@ -105,6 +107,11 @@ namespace FeedRead.UI
             controller.EditWebPageFeedDefinitions();
         }
 
+        private void cancelUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.CancelUpdate();
+        }
+
         #endregion
 
         #region draw-functions
@@ -137,15 +144,20 @@ namespace FeedRead.UI
         /// <param name="enable"></param>
         public void EnableFeedFunctionalities(bool enable)
         {
-            feedToolStripMenuItem.Enabled = enable;
+            //feedToolStripMenuItem.Enabled = enable;
             addToolStripMenuItem.Enabled = enable;
             updateToolStripMenuItem.Enabled = enable;
+            cancelUpdateToolStripMenuItem.Enabled = !enable;
+            markToolStripMenuItem.Enabled = enable;
+            openExternallyToolStripMenuItem.Enabled = enable;
+
             importToolStripMenuItem.Enabled = enable;
             exportToolStripMenuItem.Enabled = enable;
             openListToolStripMenuItem.Enabled = enable;
             saveListToolStripMenuItem.Enabled = enable;
             settingsToolStripMenuItem.Enabled = enable;
             webpageFeedDefinitionsToolStripMenuItem.Enabled = enable;
+                       
 
             //context-menu for tVMain
             cMS_Treeview.Enabled = enable;
@@ -663,6 +675,7 @@ namespace FeedRead.UI
                 }
             }
         }
+
 
 
 

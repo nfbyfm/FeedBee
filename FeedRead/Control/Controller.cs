@@ -1080,6 +1080,7 @@ namespace FeedRead.Control
         {
             updateFeedsbGWorker = new BackgroundWorker();
             updateFeedsbGWorker.WorkerReportsProgress = true;
+            updateFeedsbGWorker.WorkerSupportsCancellation = true;
             updateFeedsbGWorker.DoWork += new DoWorkEventHandler(UpdateFeeds_DoWork);
             updateFeedsbGWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(UpdateFeeds_RunWorkerCompleted);
             updateFeedsbGWorker.ProgressChanged += new ProgressChangedEventHandler(UpdateFeeds_ProgressChanged);
@@ -1124,6 +1125,26 @@ namespace FeedRead.Control
         public void CancelUpdate()
         {
             updateFeedsbGWorker.CancelAsync();
+            //Console.WriteLine("Cancel backgroundworker called");
+
+            //abort each active thread
+            if(tList != null)
+            {
+                if(tList.Count>0)
+                {
+                    for(int i = 0; i< tList.Count(); i++)
+                    {
+                        if(tList[i].IsAlive)
+                        {
+                            tList[i].Abort();
+                        }
+                        
+                    }
+                }
+            }
+            
+            cancelupdate = true;
+            //Console.WriteLine("triggered abort for each active thread");
         }
 
         /// <summary>
@@ -1178,8 +1199,16 @@ namespace FeedRead.Control
                     // succeeded.
                     //mainForm.SetStatusText(e.Result.ToString(),2000);
                     //Console.WriteLine("RunworkerCompleted: " + e.Result.ToString());
-
-                    mainForm.SetStatusText("update finished", 2000);
+                    if(cancelupdate)
+                    {
+                        mainForm.SetStatusText("Update canceled.", 2000);
+                        cancelupdate = false;
+                    }
+                    else
+                    {
+                        mainForm.SetStatusText("Update finished.", 2000);
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -1210,6 +1239,9 @@ namespace FeedRead.Control
             mainForm.SetProgress(e.ProgressPercentage, 100);
         }
 
+        private List<Thread> tList;
+        private bool cancelupdate;
+
         /// <summary>
         /// update feeds of a specific feedgroup
         /// </summary>
@@ -1218,6 +1250,7 @@ namespace FeedRead.Control
         private long UpdateFeedList(FeedGroup group, bool atWork, BackgroundWorker worker, DoWorkEventArgs e)
         {
             long result = 0;
+            cancelupdate = false;
 
             if (worker.CancellationPending)
             {
@@ -1228,7 +1261,15 @@ namespace FeedRead.Control
                 if (group != null)
                 {
                     //create a list of threads
-                    List<Thread> tList = new List<Thread>();
+                    //List<Thread> tList = new List<Thread>();
+                    if(tList == null)
+                    {
+                        tList = new List<Thread>();
+                    }
+                    else
+                    {
+                        tList.Clear();
+                    }
 
                     if (group.FeedGroups != null)
                     {
@@ -1241,7 +1282,7 @@ namespace FeedRead.Control
                         }
                     }
 
-                    worker.ReportProgress(5);
+                    worker.ReportProgress(1);
 
                     if (group.FeedList != null)
                     {
@@ -1269,7 +1310,7 @@ namespace FeedRead.Control
                             }
                         }
                     }
-                    worker.ReportProgress(10);
+                    worker.ReportProgress(5);
 
                     //actually run all the threads
 
