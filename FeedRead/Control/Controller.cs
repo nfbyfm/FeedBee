@@ -2283,7 +2283,16 @@ namespace FeedRead.Control
                         //add each found feed to list
                         foreach (HtmlFeedLink feedLink in urls)
                         {
-                            result.Add(feedLink.Url);
+                            string suburl = feedLink.Url;
+
+                            if(!suburl.ToLower().Contains(url.ToLower()))
+                            {
+                                var uri = new Uri(url);
+                                string host = uri.Host;
+                                suburl = host + suburl;
+                            }
+
+                            result.Add(suburl);
                         }
                     }
                 }
