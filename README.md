@@ -66,12 +66,14 @@ These groups will be displayed in the treeview as nodes. If you choose to create
 
 | Number | Name | Description |
 |--------|------|-------------|
-|#<a name="FeedsSetting1"></a> 1      | folder of youtube-dl     |             | 
-|#<a name="FeedsSetting2"></a> 2      | load / save list     |             | 
-|#<a name="FeedsSetting3"></a> 3      | update nsfw     |             | 
-|#<a name="FeedsSetting4"></a> 4      | update upon load     |             | 
-|#<a name="FeedsSetting5"></a> 5      | feed definitions     |             | 
-[//]: # (|#<a name="FeedsSetting6"></a> 6      |      |             | )
+|#<a name="FeedsSetting1"></a> 1      | folder of youtube-dl     | if you have a copy of the youtube-dl.exe (), you can select the path for the program here. 
+When subscribed to a youtube-channel, a download-button will appear near the url, if one of the feed-items (single video) gets selected.   | 
+|#<a name="FeedsSetting2"></a> 2      | load / save list     | If set to true (selected), the programm will try to load upon start and save upon exit all the feedgroups to the specified file.  | 
+|#<a name="FeedsSetting3"></a> 3      | update nsfw     | If set to false (not checked), feedgroups which are marked as nsfw will not get updated. Otherwise all feeds will get 
+updated | 
+|#<a name="FeedsSetting4"></a> 4      | update upon load     | if set to true, the programm will automatically start the update-routine upon startup.  | 
+|#<a name="FeedsSetting5"></a> 5      | feed definitions     | filepath to the webpage-feed-definitions-file (will get saved / loaded upon start / exit of the program).   | 
+
 
 
 ### View
