@@ -659,6 +659,21 @@ namespace FeedRead.Control
                             selFeedGroup.IsNSFWGroup = rd.IsNSFW;
                             selFeedGroup.ImagePath = rd.iconPath;
 
+                            //set image-paths of all subfeeds
+                            if(rd.SetSameIconForAllFeeds)
+                            {
+                                if(selFeedGroup.FeedList!=null)
+                                {
+                                    if(selFeedGroup.FeedList.Count > 0)
+                                    {
+                                        foreach(Feed feed in selFeedGroup.FeedList)
+                                        {
+                                            feed.ImageUrl = selFeedGroup.ImagePath;
+                                        }
+                                    }
+                                }
+                            }
+
                             UpdateTreeview();
                         }
                     }

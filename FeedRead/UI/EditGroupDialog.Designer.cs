@@ -37,6 +37,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tB_IconPath = new System.Windows.Forms.TextBox();
             this.bSelectIconpath = new System.Windows.Forms.Button();
+            this.cB_SetIconForFeeds = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -51,7 +52,7 @@
             // bOK
             // 
             this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bOK.Location = new System.Drawing.Point(208, 94);
+            this.bOK.Location = new System.Drawing.Point(208, 130);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(75, 23);
             this.bOK.TabIndex = 1;
@@ -62,7 +63,7 @@
             // bCancel
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCancel.Location = new System.Drawing.Point(289, 94);
+            this.bCancel.Location = new System.Drawing.Point(289, 130);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 2;
@@ -118,11 +119,22 @@
             this.bSelectIconpath.UseVisualStyleBackColor = true;
             this.bSelectIconpath.Click += new System.EventHandler(this.bSelectIconpath_Click);
             // 
+            // cB_SetIconForFeeds
+            // 
+            this.cB_SetIconForFeeds.AutoSize = true;
+            this.cB_SetIconForFeeds.Location = new System.Drawing.Point(12, 100);
+            this.cB_SetIconForFeeds.Name = "cB_SetIconForFeeds";
+            this.cB_SetIconForFeeds.Size = new System.Drawing.Size(149, 17);
+            this.cB_SetIconForFeeds.TabIndex = 8;
+            this.cB_SetIconForFeeds.Text = "set same Icon for all feeds";
+            this.cB_SetIconForFeeds.UseVisualStyleBackColor = true;
+            // 
             // EditGroupDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(376, 129);
+            this.ClientSize = new System.Drawing.Size(376, 165);
+            this.Controls.Add(this.cB_SetIconForFeeds);
             this.Controls.Add(this.bSelectIconpath);
             this.Controls.Add(this.tB_IconPath);
             this.Controls.Add(this.label2);
@@ -149,5 +161,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tB_IconPath;
         private System.Windows.Forms.Button bSelectIconpath;
+        private System.Windows.Forms.CheckBox cB_SetIconForFeeds;
     }
 }

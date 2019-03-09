@@ -16,6 +16,7 @@ namespace FeedRead.UI
         public string newName;
         public bool IsNSFW;
         public string iconPath;
+        public bool SetSameIconForAllFeeds;
 
         /// <summary>
         /// Constructor for Rename-Dialog
@@ -44,6 +45,7 @@ namespace FeedRead.UI
             newName = tB_NewName.Text;
             IsNSFW = cB_MarkNSFW.Checked;
             iconPath = tB_IconPath.Text;
+            SetSameIconForAllFeeds = cB_SetIconForFeeds.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
