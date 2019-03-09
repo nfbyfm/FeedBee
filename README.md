@@ -5,7 +5,7 @@ This program is a simple RSS-Reader, which has been written for Windows 7 and up
 ![Screenshot FeedRead](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/MainApp.jpg)
 
 This program lets you create various groups of feeds for web-comics, tumblr-pages, youtube-channels (without having to subscribe with an actual google-account), rss-feeds in general and mangarock-pages per default. 
-This software also allows you to create feeds from webpages, that don't have any direct rss-functionalities (just like the mangarock-pages for example). For more info on that, see part about [Webpage-Feed-Definitions](### Webpage-Feed-Definitions).
+This software also allows you to create feeds from webpages, that don't have any direct rss-functionalities (just like the mangarock-pages for example). For more info on that, see part about [Webpage-Feed-Definitions](#webpage-feed-definitions).
 
 
 
