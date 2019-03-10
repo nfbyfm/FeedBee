@@ -157,10 +157,19 @@
         /// <returns>parsed feed</returns>
         public static Feed Read(string url)
         {
-            var task = ReadAsync(url);
-            task.ConfigureAwait(false);
+            try
+            {
+                var task = ReadAsync(url);
+                task.ConfigureAwait(false);
 
-            return task.Result;
+                return task.Result;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error getting Feed from " + url + Environment.NewLine + "Error: " + ex.Message);
+                return null;
+            }
+            
         }
 
         /// <summary>

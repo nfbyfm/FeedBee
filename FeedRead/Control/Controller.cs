@@ -2299,11 +2299,12 @@ namespace FeedRead.Control
                         foreach (HtmlFeedLink feedLink in urls)
                         {
                             string suburl = feedLink.Url;
+                            var uri = new Uri(url);
+                            string host = uri.Host;
 
-                            if(!suburl.ToLower().Contains(url.ToLower()))
+                            if (!suburl.ToLower().Contains(host.ToLower()))
                             {
-                                var uri = new Uri(url);
-                                string host = uri.Host;
+                                
                                 suburl = host + suburl;
                             }
 
