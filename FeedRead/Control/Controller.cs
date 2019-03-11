@@ -258,7 +258,14 @@ namespace FeedRead.Control
             if (addNewGroup)
             {
                 //create a new group and add the feed to it
-                GetFeed(newFeedUrl, ref newFeed, true);
+                try
+                {
+                    GetFeed(newFeedUrl, ref newFeed, true);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error getting feed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 if (newFeed != null)
                 {
@@ -278,7 +285,15 @@ namespace FeedRead.Control
                 }
                 else
                 {
-                    GetFeed(newFeedUrl, ref newFeed, true);
+                    try
+                    {
+                        GetFeed(newFeedUrl, ref newFeed, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error getting feed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     if (newFeed != null)
                     {
                         mainModel.AddFeed(newFeed, groupName);
@@ -1957,32 +1972,43 @@ namespace FeedRead.Control
             if(!foundInWebPageDef)
             {
                 newFeed = FeedReader.Read(url);
-                newFeed.FeedURL = url;
-                newFeed.Updated = true;
-            }
-            
-
-            //get icon for treeview
-            if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons && getImage)
-            {
-                //try to get the image-path from the main webpage first
-                string tmpImageUrl = GetFaviconOfWebpage(newFeed.Link);
-
-                if (string.IsNullOrEmpty(tmpImageUrl) || string.IsNullOrWhiteSpace(tmpImageUrl))
+                if(newFeed != null)
                 {
-                    //try to get image-path from one of the feed-item-pages
-                    if (newFeed.Items.Count > 0)
+                    newFeed.FeedURL = url;
+                    newFeed.Updated = true;
+
+                    //get icon for treeview
+                    if (!IsValidURL(newFeed.ImageUrl) && Properties.Settings.Default.displayFeedIcons && getImage)
                     {
-                        newFeed.ImageUrl = GetFaviconOfWebpage(newFeed.Items[0].Link);
+                        //try to get the image-path from the main webpage first
+                        string tmpImageUrl = GetFaviconOfWebpage(newFeed.Link);
+
+                        if (string.IsNullOrEmpty(tmpImageUrl) || string.IsNullOrWhiteSpace(tmpImageUrl))
+                        {
+                            //try to get image-path from one of the feed-item-pages
+                            if (newFeed.Items.Count > 0)
+                            {
+                                newFeed.ImageUrl = GetFaviconOfWebpage(newFeed.Items[0].Link);
+                            }
+                        }
+                        else
+                        {
+                            newFeed.ImageUrl = tmpImageUrl;
+                        }
+
+
                     }
                 }
                 else
                 {
-                    newFeed.ImageUrl = tmpImageUrl;
+                    throw new Exception("Error: Couldn't get feed from " + url);
+                    //MessageBox.Show("Error: Couldn't get feed from " + url, "Error getting feed",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 }
-
-
+                
             }
+            
+
+            
         }
 
         /// <summary>
