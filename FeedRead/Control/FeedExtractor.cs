@@ -18,7 +18,7 @@ namespace FeedRead.Control
     /// <summary>
     /// class for creating a pseudo-feed from a webpage without a rss-feed
     /// </summary>
-    public class ComicFeedReader
+    public class FeedExtractor
     {
         /// <summary>
         /// List of possible markers which indicate the title of a possible feeditem
@@ -27,7 +27,7 @@ namespace FeedRead.Control
 
 
 
-        public ComicFeedReader()
+        public FeedExtractor()
         {
             titleMarkers = new List<string>();
             titleMarkers.Add("alt=\"");
@@ -69,7 +69,7 @@ namespace FeedRead.Control
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error while getting comic-webpage: " + Environment.NewLine + ex.Message);
+                Debug.WriteLine("Error while getting feed-webpage: " + Environment.NewLine + ex.Message);
             }
 
             if(loadSuccess)
@@ -91,8 +91,6 @@ namespace FeedRead.Control
                     HtmlNode titleNode = htmlDoc.DocumentNode.Descendants("title").FirstOrDefault();
                     if (titleNode != null)
                     {
-                        //feed.Title = titleNode.Attributes["title"]?.Value?.HtmlDecode();
-
                         feed.Title = System.Web.HttpUtility.HtmlDecode(titleNode.InnerText);
                     }
                     else
@@ -100,7 +98,7 @@ namespace FeedRead.Control
                         Debug.WriteLine("titlenode is null!");
                     }
 
-                    //get chapters
+                    //get feeditems
                     string classID_Title = webPageFeedDef.ClassID_Title;
                     string classID_UpdateTime = webPageFeedDef.ClassID_UpdateTime;
 
@@ -117,7 +115,7 @@ namespace FeedRead.Control
                             {
                                 feed.Items = new List<FeedItem>();
 
-                                //create List of chapters from detected entries with their upload-Dates
+                                //create List of items from detected entries with their upload-Dates
                                 for (int i = 0; i < Math.Min(timeNodes.Count, titleNodes.Count); i++)
                                 {
 
@@ -137,9 +135,9 @@ namespace FeedRead.Control
                                     }
 
                                     
-                                    string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();
+                                    string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);
 
-                                    //search for title in the innerHtml
+                                    //search for feeditem-title in the innerHtml
                                     foreach(string titleMarker in titleMarkers)
                                     {
                                         if (title.ToLower().Contains(titleMarker))
@@ -216,7 +214,7 @@ namespace FeedRead.Control
             }
             catch (Exception ex)
             {
-                result = "Error while getting comic-webpage: " + Environment.NewLine + ex.Message;
+                result = "Error while getting feed-webpage: " + Environment.NewLine + ex.Message;
             }
 
             if (loadSuccess)
@@ -237,7 +235,6 @@ namespace FeedRead.Control
                     HtmlNode titleNode = htmlDoc.DocumentNode.Descendants("title").FirstOrDefault();
                     if (titleNode != null)
                     {
-                        //feed.Title = titleNode.Attributes["title"]?.Value?.HtmlDecode();
                         feedTitle = System.Web.HttpUtility.HtmlDecode(titleNode.InnerText);
                         result += "Title = " + feedTitle + Environment.NewLine;
                     }
@@ -246,12 +243,12 @@ namespace FeedRead.Control
                         result += "No Title found" + Environment.NewLine;
                     }
 
-                    //get chapters
-                    string classID_Title = webPageFeedDef.ClassID_Title;//"_2dU-m _1qbNn";
-                    string classID_UpdateTime = webPageFeedDef.ClassID_UpdateTime;//"_1D0de col-4 col-md-3";
+                    //get feeditems
+                    string classID_Title = webPageFeedDef.ClassID_Title;
+                    string classID_UpdateTime = webPageFeedDef.ClassID_UpdateTime;
 
-                    HtmlNodeCollection titleNodes = htmlDoc.DocumentNode.SelectNodes(classID_Title);// "//*[@class='" + classID_Title + "']");
-                    HtmlNodeCollection timeNodes = htmlDoc.DocumentNode.SelectNodes(classID_UpdateTime);//"//*[@class='" + classID_UpdateTime + "']");
+                    HtmlNodeCollection titleNodes = htmlDoc.DocumentNode.SelectNodes(classID_Title);
+                    HtmlNodeCollection timeNodes = htmlDoc.DocumentNode.SelectNodes(classID_UpdateTime);
                     try
                     {
                         if (titleNodes != null && timeNodes != null)
@@ -259,7 +256,7 @@ namespace FeedRead.Control
                             if (timeNodes.Count > 0 && titleNodes.Count > 0)
                             {
                                 
-                                //create List of chapters from detected entries with their upload-Dates
+                                //create List of feeditems from detected entries with their upload-Dates
                                 for (int i = 0; i < Math.Min(timeNodes.Count, titleNodes.Count); i++)
                                 {
 
@@ -281,9 +278,9 @@ namespace FeedRead.Control
                                     //Debug.WriteLine("suburl = " + suburl + "   url = " + url);
 
 
-                                    string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);//titleNodes[i].Attributes[classID_Title]?.Value?.HtmlDecode();
+                                    string title = System.Web.HttpUtility.HtmlDecode(titleNodes[i].InnerHtml);
 
-                                    //search for title in the innerHtml
+                                    //search for feeditem-title in the innerHtml
                                     foreach (string titleMarker in titleMarkers)
                                     {
                                         if (title.ToLower().Contains(titleMarker))
@@ -330,13 +327,10 @@ namespace FeedRead.Control
                     string[] splits = innerHtml.Split();
                     int days = Convert.ToInt32(splits[0]);
                     dateTime = DateTime.Today.AddDays(-1 * days);
-
-                    //Debug.WriteLine("'ago'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
                 }
                 else
                 {
                     dateTime = DateTime.Parse(innerHtml);
-                    //Debug.WriteLine("'normal'-Time: " + time + "  parsed = " + dateTime.ToShortDateString());
                 }
 
             }

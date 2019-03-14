@@ -1088,7 +1088,7 @@ namespace FeedRead.Control
 
         public string GetDefTestResults(WebPageFeedDef definition, string testpageURL)
         {
-            ComicFeedReader reader = new ComicFeedReader();
+            FeedExtractor reader = new FeedExtractor();
 
             string result = reader.TestRead(testpageURL, definition);
 
@@ -1958,7 +1958,7 @@ namespace FeedRead.Control
                 if(url.ToLower().Contains(webdef.KeyID))
                 {
                     newFeed = new Feed();
-                    ComicFeedReader reader = new ComicFeedReader();
+                    FeedExtractor reader = new FeedExtractor();
                     reader.Read(url, ref newFeed, webdef);
 
                     if (newFeed != null)
