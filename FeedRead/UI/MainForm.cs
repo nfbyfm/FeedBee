@@ -671,6 +671,11 @@ namespace FeedRead.UI
                         controller.OpenUnreadFeeds(subGroup);
                     }
 
+                    if(ob.GetType() == typeof(Feed))
+                    {
+                        Feed selFeed = (Feed)ob;
+                        controller.OpenUnreadFeeds(selFeed);
+                    }
                 }
             }
         }

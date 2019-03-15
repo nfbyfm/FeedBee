@@ -852,6 +852,14 @@ namespace FeedRead.Control
             OpenUnreadFeeds(subGroup, false);
         }
 
+        /// <summary>
+        /// open unread feeditems of a specific feed
+        /// </summary>
+        /// <param name="subFeed"></param>
+        public void OpenUnreadFeeds(Feed subFeed)
+        {
+            OpenUnreadFeedsOfFeed(subFeed);
+        }
 
         #endregion
 
@@ -2207,26 +2215,36 @@ namespace FeedRead.Control
                     {
                         foreach (Feed feed in group.FeedList)
                         {
-                            if (feed.Items != null)
-                            {
-                                if (feed.Items.Count() > 0)
-                                {
-                                    foreach (FeedItem item in feed.Items)
-                                    {
-                                        if(item.Read == false)
-                                        {
-                                            System.Diagnostics.Process.Start(item.Link);
-                                        }
-                                    }
-                                }
-                            }
+                            OpenUnreadFeedsOfFeed(feed);
                         }
                     }
                 }
             }
         }
 
-
+        /// <summary>
+        /// open unread feeds of a single feed
+        /// </summary>
+        /// <param name="feed"></param>
+        private void OpenUnreadFeedsOfFeed(Feed feed)
+        {
+            if(feed != null)
+            {
+                if (feed.Items != null)
+                {
+                    if (feed.Items.Count() > 0)
+                    {
+                        foreach (FeedItem item in feed.Items)
+                        {
+                            if (item.Read == false)
+                            {
+                                System.Diagnostics.Process.Start(item.Link);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
 
         
