@@ -19,15 +19,52 @@ namespace FeedRead.UI
 
         public string feedUrl;
 
-        public AddFeedDialog(Controller parentController)
+        public string groupName;
+        public bool addNewGroupName;
+        public bool newGroupIsNSFW;
+
+        private List<string> groupNames;
+
+
+        public AddFeedDialog(Controller parentController, List<string> groupNames)
         {
             InitializeComponent();
 
             this.controller = parentController;
+            this.groupNames = groupNames;
         }
 
         private void AddFeedDialog_Load(object sender, EventArgs e)
         {
+
+            bool allowAddToGroup = false;
+
+            //set items of comboBox
+            if (groupNames != null)
+            {
+                if (groupNames.Count() > 0)
+                {
+                    cB_Groups.Items.Clear();
+
+                    foreach (string groupName in groupNames)
+                    {
+                        cB_Groups.Items.Add(groupName);
+                    }
+                    cB_Groups.SelectedIndex = 0;
+
+                    allowAddToGroup = true;
+
+                }
+
+            }
+
+            rB_addToGroup.Enabled = allowAddToGroup;
+            cB_Groups.Enabled = allowAddToGroup;
+            
+            rB_addToGroup.Checked = allowAddToGroup;
+            rB_CreateNewGroup.Checked = !allowAddToGroup;
+
+
             feedUrl = "";
 
             //check if there is text in the clipboard -> fill into the textbox
@@ -45,10 +82,15 @@ namespace FeedRead.UI
         }
 
 
-        private void b_Next_Click(object sender, EventArgs e)
+        private void b_Add_Click(object sender, EventArgs e)
         {
+
+            groupName = cB_Groups.Text;
+            addNewGroupName = rB_CreateNewGroup.Checked;
+            newGroupIsNSFW = cB_GroupIsNSFW.Checked;
+
             //check if item in listbox has been selected
-            if(lb_FoundFeeds.SelectedIndex >= 0)
+            if (lb_FoundFeeds.SelectedIndex >= 0)
             {
                 feedUrl = lb_FoundFeeds.Items[lb_FoundFeeds.SelectedIndex].ToString();
 
@@ -92,6 +134,10 @@ namespace FeedRead.UI
 
         private void b_Cancel_Click(object sender, EventArgs e)
         {
+            groupName = "";
+            addNewGroupName = false;
+            newGroupIsNSFW = false;
+
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
@@ -101,11 +147,35 @@ namespace FeedRead.UI
             tB_Url.SelectAll();
         }
 
+
+        private void rB_addToGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            rBSelectionChanged();
+        }
+
+        private void rB_CreateNewGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            rBSelectionChanged();
+        }
+
+        /// <summary>
+        /// radio-button-selection has changed
+        /// </summary>
+        private void rBSelectionChanged()
+        {
+            cB_Groups.Enabled = rB_addToGroup.Checked;
+
+            tB_NewGroupName.Enabled = rB_CreateNewGroup.Checked;
+            cB_GroupIsNSFW.Enabled = rB_CreateNewGroup.Checked;
+        }
+
         #endregion
 
 
         private void CheckForFeeds()
         {
+            gB_FeedGroup.Enabled = false;
+
             if(controller != null && !string.IsNullOrEmpty(tB_Url.Text) && !string.IsNullOrWhiteSpace(tB_Url.Text))
             {
                 List <string> results = controller.CheckUrlForFeeds(tB_Url.Text);
@@ -127,11 +197,31 @@ namespace FeedRead.UI
                     if(results.Count() == 1)
                     {
                         lb_FoundFeeds.SelectedIndex = 0;
+
+                        //select fitting group
+                        if(cB_Groups.Items!=null && rB_addToGroup.Checked)
+                        {
+                            int numberOfCBItems = cB_Groups.Items.Count;
+                            if (numberOfCBItems > 0)
+                            {
+                                for(int i =0; i< numberOfCBItems; i++)
+                                {
+                                    string itemString = cB_Groups.Items[i].ToString();
+
+                                    if (results[0].ToLower().Contains(itemString.ToLower()))
+                                    {
+                                        cB_Groups.SelectedIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
+                    gB_FeedGroup.Enabled = true;
                 }
             }
         }
 
-       
+        
     }
 }

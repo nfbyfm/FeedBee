@@ -226,14 +226,31 @@ namespace FeedRead.Control
         {
             if(CheckInternetConnectivity())
             {
-                AddFeedDialog addFeedDialog = new AddFeedDialog(this);
+                AddFeedDialog addFeedDialog = new AddFeedDialog(this, GetGroupNames());
                 if (addFeedDialog.ShowDialog(mainForm) == DialogResult.OK)
                 {
                     //show next dialog (add Feed to a Group)
                     string newFeedUrl = addFeedDialog.feedUrl;
+                    string groupName = addFeedDialog.groupName;
+                    bool groupIsNSFW = addFeedDialog.newGroupIsNSFW;
+                    bool addNewGroup = addFeedDialog.addNewGroupName;
 
+
+                    //add new feed to list (threaded)
+
+                    mainForm.EnableFeedFunctionalities(false);
+                    Thread t2 = new Thread(delegate ()
+                    {
+                        mainForm.SetStatusText("adding new feed ...", -1);
+
+                        AddNewFeed(newFeedUrl, addNewGroup, groupName, groupIsNSFW);
+
+                        mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
+                        mainForm.SetStatusText("New feed has been added to list.", 2000);
+                    });
+                    t2.Start();
                     //Debug.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
-
+                    /*
                     //show group-Dialog
                     SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
 
@@ -259,6 +276,7 @@ namespace FeedRead.Control
                         });
                         t2.Start();
                     }
+                    */
                 }
             }
             else
