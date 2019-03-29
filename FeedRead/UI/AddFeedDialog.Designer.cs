@@ -124,6 +124,7 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddFeedDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add new Feed";
             this.Load += new System.EventHandler(this.AddFeedDialog_Load);
             this.ResumeLayout(false);

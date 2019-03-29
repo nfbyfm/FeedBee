@@ -32,30 +32,30 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lV_Definitions = new System.Windows.Forms.ListView();
-            this.tB_Name = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.rTB_Testresults = new System.Windows.Forms.RichTextBox();
-            this.bAdd = new System.Windows.Forms.Button();
-            this.bTest = new System.Windows.Forms.Button();
-            this.tB_TestpageUrl = new System.Windows.Forms.TextBox();
+            this.tB_Name = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tB_BaseURL = new System.Windows.Forms.TextBox();
+            this.tB_FeeditemID = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tb_DateID = new System.Windows.Forms.TextBox();
-            this.tB_FeeditemID = new System.Windows.Forms.TextBox();
-            this.tB_BaseURL = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rTB_Testresults = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.tB_TestpageUrl = new System.Windows.Forms.TextBox();
+            this.bTest = new System.Windows.Forms.Button();
+            this.bAdd = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.bCancel = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -102,14 +102,22 @@
             this.lV_Definitions.SelectedIndexChanged += new System.EventHandler(this.lV_Definitions_SelectedIndexChanged);
             this.lV_Definitions.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lV_Definitions_KeyUp);
             // 
-            // tB_Name
+            // groupBox3
             // 
-            this.tB_Name.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_Name.Location = new System.Drawing.Point(133, 19);
-            this.tB_Name.Name = "tB_Name";
-            this.tB_Name.Size = new System.Drawing.Size(322, 20);
-            this.tB_Name.TabIndex = 12;
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.tB_Name);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.tB_BaseURL);
+            this.groupBox3.Controls.Add(this.tB_FeeditemID);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.tb_DateID);
+            this.groupBox3.Location = new System.Drawing.Point(10, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(461, 129);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Definition properties";
             // 
             // label5
             // 
@@ -119,6 +127,69 @@
             this.label5.Size = new System.Drawing.Size(41, 13);
             this.label5.TabIndex = 11;
             this.label5.Text = "Name: ";
+            // 
+            // tB_Name
+            // 
+            this.tB_Name.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_Name.Location = new System.Drawing.Point(133, 19);
+            this.tB_Name.Name = "tB_Name";
+            this.tB_Name.Size = new System.Drawing.Size(322, 20);
+            this.tB_Name.TabIndex = 12;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(5, 49);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Base-URL:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(5, 75);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(96, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Feeditem-Identifier:";
+            // 
+            // tB_BaseURL
+            // 
+            this.tB_BaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_BaseURL.Location = new System.Drawing.Point(133, 46);
+            this.tB_BaseURL.Name = "tB_BaseURL";
+            this.tB_BaseURL.Size = new System.Drawing.Size(322, 20);
+            this.tB_BaseURL.TabIndex = 3;
+            // 
+            // tB_FeeditemID
+            // 
+            this.tB_FeeditemID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_FeeditemID.Location = new System.Drawing.Point(133, 72);
+            this.tB_FeeditemID.Name = "tB_FeeditemID";
+            this.tB_FeeditemID.Size = new System.Drawing.Size(322, 20);
+            this.tB_FeeditemID.TabIndex = 4;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(5, 101);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(122, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Feeditem-Date-Identifier:";
+            // 
+            // tb_DateID
+            // 
+            this.tb_DateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tb_DateID.Location = new System.Drawing.Point(133, 98);
+            this.tb_DateID.Name = "tb_DateID";
+            this.tb_DateID.Size = new System.Drawing.Size(322, 20);
+            this.tb_DateID.TabIndex = 5;
             // 
             // groupBox2
             // 
@@ -147,16 +218,23 @@
             this.rTB_Testresults.TabIndex = 0;
             this.rTB_Testresults.Text = "";
             // 
-            // bAdd
+            // label3
             // 
-            this.bAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bAdd.Location = new System.Drawing.Point(400, 388);
-            this.bAdd.Name = "bAdd";
-            this.bAdd.Size = new System.Drawing.Size(75, 23);
-            this.bAdd.TabIndex = 9;
-            this.bAdd.Text = "add to list";
-            this.bAdd.UseVisualStyleBackColor = true;
-            this.bAdd.Click += new System.EventHandler(this.bAdd_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Testpage:";
+            // 
+            // tB_TestpageUrl
+            // 
+            this.tB_TestpageUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tB_TestpageUrl.Location = new System.Drawing.Point(68, 19);
+            this.tB_TestpageUrl.Name = "tB_TestpageUrl";
+            this.tB_TestpageUrl.Size = new System.Drawing.Size(308, 20);
+            this.tB_TestpageUrl.TabIndex = 7;
             // 
             // bTest
             // 
@@ -169,77 +247,16 @@
             this.bTest.UseVisualStyleBackColor = true;
             this.bTest.Click += new System.EventHandler(this.bTest_Click);
             // 
-            // tB_TestpageUrl
+            // bAdd
             // 
-            this.tB_TestpageUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_TestpageUrl.Location = new System.Drawing.Point(68, 19);
-            this.tB_TestpageUrl.Name = "tB_TestpageUrl";
-            this.tB_TestpageUrl.Size = new System.Drawing.Size(308, 20);
-            this.tB_TestpageUrl.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(5, 101);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(122, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Feeditem-Date-Identifier:";
-            // 
-            // tb_DateID
-            // 
-            this.tb_DateID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_DateID.Location = new System.Drawing.Point(133, 98);
-            this.tb_DateID.Name = "tb_DateID";
-            this.tb_DateID.Size = new System.Drawing.Size(322, 20);
-            this.tb_DateID.TabIndex = 5;
-            // 
-            // tB_FeeditemID
-            // 
-            this.tB_FeeditemID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_FeeditemID.Location = new System.Drawing.Point(133, 72);
-            this.tB_FeeditemID.Name = "tB_FeeditemID";
-            this.tB_FeeditemID.Size = new System.Drawing.Size(322, 20);
-            this.tB_FeeditemID.TabIndex = 4;
-            // 
-            // tB_BaseURL
-            // 
-            this.tB_BaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_BaseURL.Location = new System.Drawing.Point(133, 46);
-            this.tB_BaseURL.Name = "tB_BaseURL";
-            this.tB_BaseURL.Size = new System.Drawing.Size(322, 20);
-            this.tB_BaseURL.TabIndex = 3;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Testpage:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 75);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Feeditem-Identifier:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 49);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Base-URL:";
+            this.bAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bAdd.Location = new System.Drawing.Point(400, 388);
+            this.bAdd.Name = "bAdd";
+            this.bAdd.Size = new System.Drawing.Size(75, 23);
+            this.bAdd.TabIndex = 9;
+            this.bAdd.Text = "add to list";
+            this.bAdd.UseVisualStyleBackColor = true;
+            this.bAdd.Click += new System.EventHandler(this.bAdd_Click);
             // 
             // bSave
             // 
@@ -263,23 +280,6 @@
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.tB_Name);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.tB_BaseURL);
-            this.groupBox3.Controls.Add(this.tB_FeeditemID);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.tb_DateID);
-            this.groupBox3.Location = new System.Drawing.Point(10, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(461, 129);
-            this.groupBox3.TabIndex = 13;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Definition properties";
-            // 
             // WebFeedDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,6 +290,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WebFeedDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Webpage-Feed Definitions";
             this.Load += new System.EventHandler(this.WebFeedDialog_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -297,10 +298,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }

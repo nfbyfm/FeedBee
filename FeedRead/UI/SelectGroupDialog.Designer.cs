@@ -134,6 +134,7 @@
             this.Controls.Add(this.rB_addToGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SelectGroupDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Feed-Group";
             this.Load += new System.EventHandler(this.SelectGroupDialog_Load);
             this.ResumeLayout(false);

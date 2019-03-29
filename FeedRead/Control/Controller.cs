@@ -227,7 +227,7 @@ namespace FeedRead.Control
             if(CheckInternetConnectivity())
             {
                 AddFeedDialog addFeedDialog = new AddFeedDialog(this);
-                if (addFeedDialog.ShowDialog() == DialogResult.OK)
+                if (addFeedDialog.ShowDialog(mainForm) == DialogResult.OK)
                 {
                     //show next dialog (add Feed to a Group)
                     string newFeedUrl = addFeedDialog.feedUrl;
@@ -237,7 +237,7 @@ namespace FeedRead.Control
                     //show group-Dialog
                     SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
 
-                    if (sGD.ShowDialog() == DialogResult.OK)
+                    if (sGD.ShowDialog(mainForm) == DialogResult.OK)
                     {
                         //get group-name
                         string groupName = sGD.groupName;
@@ -513,7 +513,7 @@ namespace FeedRead.Control
         public void ShowAboutDialog()
         {
             AboutBoxFeedRead aboutWindow = new AboutBoxFeedRead();
-            aboutWindow.ShowDialog();
+            aboutWindow.ShowDialog(mainForm);
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace FeedRead.Control
         public void ShowSettings()
         {
             SettingsDialog sedi = new SettingsDialog();
-            if(sedi.ShowDialog() == DialogResult.OK)
+            if(sedi.ShowDialog(mainForm) == DialogResult.OK)
             {
                 //save settings
                 Properties.Settings.Default.Save();
@@ -687,7 +687,7 @@ namespace FeedRead.Control
                     //get new name
                     EditGroupDialog rd = new EditGroupDialog(selFeedGroup.Title, selFeedGroup.IsNSFWGroup, selFeedGroup.ImagePath);
 
-                    if (rd.ShowDialog() == DialogResult.OK)
+                    if (rd.ShowDialog(mainForm) == DialogResult.OK)
                     {
                         string newNodeName = rd.newName;
 
@@ -727,7 +727,7 @@ namespace FeedRead.Control
                     //get new name
                     EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage, selFeed.ImageUrl);
 
-                    if (fd.ShowDialog() == DialogResult.OK)
+                    if (fd.ShowDialog(mainForm) == DialogResult.OK)
                     {
                         string newFeedName = fd.feedTitle;
 
@@ -1110,7 +1110,7 @@ namespace FeedRead.Control
             WebFeedDialog webFeedDialog = new WebFeedDialog(tmpList, this);
             
             //show dialog
-            if (webFeedDialog.ShowDialog() == DialogResult.OK)
+            if (webFeedDialog.ShowDialog(mainForm) == DialogResult.OK)
             {
                 //'copy' edited list back to 'real'/'background'-list
                 this.webPageFeedDefList.Definitions = tmpList;
@@ -1406,7 +1406,7 @@ namespace FeedRead.Control
 
                             if (counter != counter_before)
                             {
-                                //mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                                mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
 
                                 double perc = Convert.ToDouble(counter) / Convert.ToDouble(numberOfThreads) * 100;
                                 int progress = Convert.ToInt32(perc);
