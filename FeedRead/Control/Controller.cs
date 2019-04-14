@@ -1051,7 +1051,7 @@ namespace FeedRead.Control
                 //couldn't load the definitions -> define at least the default-entries
 
                 //mangarock:
-                WebPageFeedDef mangarockDef = new WebPageFeedDef("Mangarock", "mangarock", "https://mangarock.com", "//*[@class='_2dU-m _1qbNn']", "//*[@class='_1D0de col-4 col-md-3']");
+                WebPageFeedDef mangarockDef = new WebPageFeedDef("Mangarock", "mangarock", "https://mangarock.com", "//*[@class='_2dU-m _3a09A']", "//*[@class='zJ1XQ']");
                 
 
                 webPageFeedDefList = new WebPageFeedDefList(mangarockDef);
