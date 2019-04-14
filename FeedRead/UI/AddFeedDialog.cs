@@ -84,11 +84,19 @@ namespace FeedRead.UI
 
         private void b_Add_Click(object sender, EventArgs e)
         {
-
-            groupName = cB_Groups.Text;
             addNewGroupName = rB_CreateNewGroup.Checked;
             newGroupIsNSFW = cB_GroupIsNSFW.Checked;
 
+            if(addNewGroupName)
+            {
+                groupName = tB_NewGroupName.Text;
+            }
+            else
+            {
+                groupName = cB_Groups.Text;
+            }
+
+            
             //check if item in listbox has been selected
             if (lb_FoundFeeds.SelectedIndex >= 0)
             {

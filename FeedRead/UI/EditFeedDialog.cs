@@ -17,11 +17,11 @@ namespace FeedRead.UI
         public bool directlyLoadWebURL;
         public string iconPath;
 
-        public EditFeedDialog(string feedTitle, bool directlyLoad, string iconPath)
+        public EditFeedDialog(string feedTitle, bool directlyLoad, string iconPath, string feedURL)
         {
             InitializeComponent();
 
-
+            tb_URL.Text = feedURL;
             tB_FeedTitle.Text = feedTitle;
             cB_DirectlyLoadWebURL.Checked = directlyLoad;
             tB_IconPath.Text = iconPath;

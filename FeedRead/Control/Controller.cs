@@ -229,7 +229,6 @@ namespace FeedRead.Control
                 AddFeedDialog addFeedDialog = new AddFeedDialog(this, GetGroupNames());
                 if (addFeedDialog.ShowDialog(mainForm) == DialogResult.OK)
                 {
-                    //show next dialog (add Feed to a Group)
                     string newFeedUrl = addFeedDialog.feedUrl;
                     string groupName = addFeedDialog.groupName;
                     bool groupIsNSFW = addFeedDialog.newGroupIsNSFW;
@@ -249,34 +248,7 @@ namespace FeedRead.Control
                         mainForm.SetStatusText("New feed has been added to list.", 2000);
                     });
                     t2.Start();
-                    //Debug.WriteLine("Controller.AddNewFeed: got new feed-source from user: " + newFeedUrl);
-                    /*
-                    //show group-Dialog
-                    SelectGroupDialog sGD = new SelectGroupDialog(GetGroupNames());
-
-                    if (sGD.ShowDialog(mainForm) == DialogResult.OK)
-                    {
-                        //get group-name
-                        string groupName = sGD.groupName;
-                        bool groupIsNSFW = sGD.newGroupIsNSFW;
-                        bool addNewGroup = sGD.addNewGroupName;
-
-                       
-                        //add new feed to list (threaded)
-
-                        mainForm.EnableFeedFunctionalities(false);
-                        Thread t2 = new Thread(delegate ()
-                        {
-                            mainForm.SetStatusText("adding new feed ...", -1);
-
-                            AddNewFeed(newFeedUrl, addNewGroup, groupName, groupIsNSFW);
-
-                            mainForm.Invoke(new UpdateTreeViewCallback(mainForm.UpdateTreeViewUnlock));
-                            mainForm.SetStatusText("New feed has been added to list.", 2000);
-                        });
-                        t2.Start();
-                    }
-                    */
+                    
                 }
             }
             else
@@ -743,7 +715,7 @@ namespace FeedRead.Control
                     Feed selFeed = (Feed)tagObject;
 
                     //get new name
-                    EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage, selFeed.ImageUrl);
+                    EditFeedDialog fd = new EditFeedDialog(selFeed.Title, selFeed.DirectlyLoadWebpage, selFeed.ImageUrl, selFeed.FeedURL);
 
                     if (fd.ShowDialog(mainForm) == DialogResult.OK)
                     {

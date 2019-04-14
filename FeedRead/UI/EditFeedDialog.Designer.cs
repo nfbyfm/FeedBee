@@ -37,6 +37,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tB_IconPath = new System.Windows.Forms.TextBox();
             this.b_SelectIconPath = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tb_URL = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -60,7 +62,7 @@
             // cB_DirectlyLoadWebURL
             // 
             this.cB_DirectlyLoadWebURL.AutoSize = true;
-            this.cB_DirectlyLoadWebURL.Location = new System.Drawing.Point(16, 36);
+            this.cB_DirectlyLoadWebURL.Location = new System.Drawing.Point(16, 62);
             this.cB_DirectlyLoadWebURL.Name = "cB_DirectlyLoadWebURL";
             this.cB_DirectlyLoadWebURL.Size = new System.Drawing.Size(190, 17);
             this.cB_DirectlyLoadWebURL.TabIndex = 2;
@@ -70,7 +72,7 @@
             // b_OK
             // 
             this.b_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_OK.Location = new System.Drawing.Point(266, 106);
+            this.b_OK.Location = new System.Drawing.Point(267, 114);
             this.b_OK.Name = "b_OK";
             this.b_OK.Size = new System.Drawing.Size(75, 23);
             this.b_OK.TabIndex = 3;
@@ -81,7 +83,7 @@
             // b_Cancel
             // 
             this.b_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Cancel.Location = new System.Drawing.Point(347, 106);
+            this.b_Cancel.Location = new System.Drawing.Point(348, 114);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
             this.b_Cancel.TabIndex = 4;
@@ -92,7 +94,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 69);
+            this.label2.Location = new System.Drawing.Point(13, 82);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 5;
@@ -102,14 +104,14 @@
             // 
             this.tB_IconPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_IconPath.Location = new System.Drawing.Point(73, 66);
+            this.tB_IconPath.Location = new System.Drawing.Point(74, 79);
             this.tB_IconPath.Name = "tB_IconPath";
             this.tB_IconPath.Size = new System.Drawing.Size(268, 20);
             this.tB_IconPath.TabIndex = 6;
             // 
             // b_SelectIconPath
             // 
-            this.b_SelectIconPath.Location = new System.Drawing.Point(347, 64);
+            this.b_SelectIconPath.Location = new System.Drawing.Point(348, 77);
             this.b_SelectIconPath.Name = "b_SelectIconPath";
             this.b_SelectIconPath.Size = new System.Drawing.Size(75, 23);
             this.b_SelectIconPath.TabIndex = 7;
@@ -117,11 +119,32 @@
             this.b_SelectIconPath.UseVisualStyleBackColor = true;
             this.b_SelectIconPath.Click += new System.EventHandler(this.b_SelectIconPath_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 39);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(32, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "URL:";
+            // 
+            // tb_URL
+            // 
+            this.tb_URL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tb_URL.Location = new System.Drawing.Point(49, 36);
+            this.tb_URL.Name = "tb_URL";
+            this.tb_URL.ReadOnly = true;
+            this.tb_URL.Size = new System.Drawing.Size(373, 20);
+            this.tb_URL.TabIndex = 9;
+            // 
             // EditFeedDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(434, 141);
+            this.ClientSize = new System.Drawing.Size(434, 149);
+            this.Controls.Add(this.tb_URL);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.b_SelectIconPath);
             this.Controls.Add(this.tB_IconPath);
             this.Controls.Add(this.label2);
@@ -149,5 +172,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tB_IconPath;
         private System.Windows.Forms.Button b_SelectIconPath;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox tb_URL;
     }
 }
