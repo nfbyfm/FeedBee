@@ -1,8 +1,8 @@
-# FeedRead
+# FeedBee
 
-This program is a simple RSS-Reader, which has been written for Windows 7 and up. You can download the latest release [here](https://github.com/nfbyfm/FeedRead/releases).
+This program is a simple RSS-Reader, which has been written for Windows 7 and up. You can download the latest release [here](https://github.com/nfbyfm/FeedBee/releases).
 
-![Screenshot FeedRead](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/MainApp.jpg)
+![Screenshot FeedBee](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/MainApp.jpg)
 
 This program lets you create various groups of feeds for web-comics, tumblr-pages, youtube-channels (without having to subscribe with an actual google-account), rss-feeds in general and mangarock-pages per default. 
 This software also allows you to create feeds from webpages, that don't have any direct rss-functionalities (just like the mangarock-pages for example). For more info on that, see part about [Webpage-Feed-Definitions](#webpage-feed-definitions).
@@ -16,7 +16,7 @@ This software also allows you to create feeds from webpages, that don't have any
 
 The 'file'-menu contains all functions concerning the saving an loading of feed-lists and the closing of the application.
 
-![Screenshot file-menu](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/file-menu.jpg)
+![Screenshot file-menu](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/file-menu.jpg)
 
 
 ### open file
@@ -43,14 +43,14 @@ If the '[load / save list](#FeedsSetting2)'-setting is activated, the program wi
 
 The 'feed'-menu contains all functions which are applicable to every feedgroup / every single feed.
 
-![Screenshot feed-menu](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/feed-menu.jpg)
+![Screenshot feed-menu](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/feed-menu.jpg)
 
 
 ### add a new feed
 
-Copy the webpage or rss-url into memory (ctrl+c) and then click Feeds-> add new feed (or ctrl+n) in FeedRead. A dialog pops up which will show you which feeds could be found in the given url. 
+Copy the webpage or rss-url into memory (ctrl+c) and then click Feeds-> add new feed (or ctrl+n) in FeedBee. A dialog pops up which will show you which feeds could be found in the given url. 
 
-![Screenshot Add new feed](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/add_new_feed.jpg)
+![Screenshot Add new feed](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/add_new_feed.jpg)
 
 Alternitavely you can also simply start the dialog, paste the webpage-url into the upper textbox and then click 'check for feeds'. Usually the programm will try to find feeds before showing the dialog 
 if there's text in memory (If showing the dialog is a bit slow it is because of this search for possible feeds). 
@@ -58,7 +58,7 @@ if there's text in memory (If showing the dialog is a bit slow it is because of 
 Afterwards you can select one of the shown feeds and then click 'next'. A new Dialog will show up, asking into which group you want to add the feed. 
 You can choose from either an existing group or create a new group.
 
-![Screenshot select group](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/select_feedgroup.jpg)
+![Screenshot select group](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/select_feedgroup.jpg)
 
 These groups will be displayed in the treeview as nodes. If you choose to create a new group, you can select if it is a feed-group that can be considered nsfw. If you set is to true and the setting
 '[update nsfw feeds](#FeedsSetting3)' is set to false, the feeds within the group won't get updated (if an update gets triggered).
@@ -84,11 +84,11 @@ This function allows you to open all unread feed-items at once. Either click on 
 
 By first clicking on a feed or feedgroup and then right-clicking you can choose to edit the selected node. In case of a feed a dialog will pop up, letting you edit the name, the path to the icon and whether or not the webbrowser is supposed to directly load a webpage when one of the feed-items gets selected.
 
-![Screenshot edit feed](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/edit_feed.jpg)
+![Screenshot edit feed](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/edit_feed.jpg)
 
 In case of a feed-group you can change the name and icon path as well. Additionally the pop-up dialog lets you set the feedgroup as 'nsfw' (see setting '[update nsfw feeds](#FeedsSetting3)') and, if you wish, you can set the icon-path for all child-feeds to the same image as teh group's.
 
-![Screenshot edit feed](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/edit_feedgroup.jpg)
+![Screenshot edit feed](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/edit_feedgroup.jpg)
 
 
 
@@ -97,7 +97,7 @@ In case of a feed-group you can change the name and icon path as well. Additiona
 
 The 'extras'-menu contains the settings, an about-function (which shows informations about the application) and the Webpage-Feed-Definitions-Editor.
 
-![Screenshot extras-menu](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/extras-menu.jpg)
+![Screenshot extras-menu](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/extras-menu.jpg)
 
 ## Settings
 
@@ -105,7 +105,7 @@ The settings are currently divided into two categories: 'Feeds' and 'View'.
 
 ### Feeds
 
-![Screenshot feed-settings](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/settings_feeds.jpg)
+![Screenshot feed-settings](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/settings_feeds.jpg)
 
 
 | Number | Name | Description |
@@ -120,7 +120,7 @@ The settings are currently divided into two categories: 'Feeds' and 'View'.
 
 ### View
 
-![Screenshot view-settings](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/settings_view.jpg)
+![Screenshot view-settings](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/settings_view.jpg)
 
 
 | Number | Name | Description |
@@ -138,11 +138,11 @@ The settings are currently divided into two categories: 'Feeds' and 'View'.
 Webpages like mangarock don't have any rss-functionalities per se. The links to a chapter of a manga / comic however, has alway the same html-identifier. In order to find this id/class, you open the webpage you want to create a feed from and right-click on one of the 'feed-items'.
 If you then click on 'inspect-element' (in firefox for instance), the browser will show you the html-code of the selected element. In case of a chapter-link on one of the mangarock-overview-page this will look something like this:
 
-![Screenshot classID-mangarock](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/webpagedef_inspectItem_browser.jpg)
+![Screenshot classID-mangarock](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/webpagedef_inspectItem_browser.jpg)
 
 In order for the application to generate a feed-item out of this, you'll have to find the identifier of the item itself and it's publishing date. You can then enter them into the editor-mask as follows:
 
-![Screenshot Webpage-Feed-Definition-Editor](https://raw.githubusercontent.com/nfbyfm/FeedRead/master/doc/edit_webpagefeeddefinitions.jpg)
+![Screenshot Webpage-Feed-Definition-Editor](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/edit_webpagefeeddefinitions.jpg)
 
 Underneath the webpage-feed-definition's properties themselves, you can enter the url of a future feed you'd want to add and test if the application can actually create / find feed-items for the given webpage.
 
