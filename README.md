@@ -147,13 +147,3 @@ In order for the application to generate a feed-item out of this, you'll have to
 Underneath the webpage-feed-definition's properties themselves, you can enter the url of a future feed you'd want to add and test if the application can actually create / find feed-items for the given webpage.
 
 After you're done / were able to test a feed-url, you can click 'add to list' and then 'save'. You should now be able to add / generate feeds from webpages, that don't have any rss-functionalities.
-
-
-# misc
-## sources
-
-The main icon of the application has been downloaded from flaticon.com. Disclaimer:
-<div>
-	Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> 
-	are licensed by <a href="http://creativecommons.org/licenses/by/3.0/"title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
