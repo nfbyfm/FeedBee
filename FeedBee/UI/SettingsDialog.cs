@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FeedBee.Control;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,9 +15,12 @@ namespace FeedBee.UI
     public partial class SettingsDialog : Form
     {
         #region UI-functions
+        private Controller parentController;
 
-        public SettingsDialog()
+        public SettingsDialog(Controller controller)
         {
+            this.parentController = controller;
+
             InitializeComponent();
         }
 
@@ -55,6 +59,19 @@ namespace FeedBee.UI
             if(folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 tB_youtubedlFolder.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        /// <summary>
+        /// update youtube-dl.exe
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_UpdateYoutubeDL_Click(object sender, EventArgs e)
+        {
+            if(parentController != null)
+            {
+                parentController.UpdateYoutubedl(tB_youtubedlFolder.Text + "\\youtube-dl.exe");
             }
         }
 
@@ -225,6 +242,7 @@ namespace FeedBee.UI
 
             Properties.Settings.Default.iconFolderPath = tB_IconFolder.Text;
         }
+
 
 
 

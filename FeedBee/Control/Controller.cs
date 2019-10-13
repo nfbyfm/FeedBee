@@ -511,7 +511,7 @@ namespace FeedBee.Control
         /// </summary>
         public void ShowSettings()
         {
-            SettingsDialog sedi = new SettingsDialog();
+            SettingsDialog sedi = new SettingsDialog(this);
             if(sedi.ShowDialog(mainForm) == DialogResult.OK)
             {
                 //save settings
@@ -608,9 +608,10 @@ namespace FeedBee.Control
                 //call youtube-dl.exe
                 Process p = new Process();
                 ProcessStartInfo pi = new ProcessStartInfo();
-
-                string argument = "/c start " + Properties.Settings.Default.youtubedlFolder + "\\youtube-dl.exe " + url + " -o \"" + Properties.Settings.Default.youtubedlFolder.Replace("\\", "/") + "/%(title)s.%(ext)s\" && exit";
-
+                string youtubedlPath = Properties.Settings.Default.youtubedlFolder;
+                string youtubedlExe = youtubedlPath + "\\youtube-dl.exe";
+                
+                string argument = "/c start " + youtubedlExe + " -o \"" + youtubedlPath + "\\%(title)s.%(ext)s\" " + url;
 
                 pi.Arguments = argument;
                 pi.FileName = "cmd.exe";
@@ -623,6 +624,33 @@ namespace FeedBee.Control
             }
         }
 
+        /// <summary>
+        /// update the youtube-dl-application
+        /// </summary>
+        public void UpdateYoutubedl(string pathToExe)
+        {
+            try
+            {
+                if(File.Exists(pathToExe))
+                {
+                    Process p = new Process();
+                    ProcessStartInfo pi = new ProcessStartInfo();
+                    string argument = "/c start " + pathToExe + " -U";
+                    pi.Arguments = argument;
+                    pi.FileName = "cmd.exe";
+                    p.StartInfo = pi;
+                    p.Start();
+                }
+                else
+                {
+                    throw new Exception("File '" + pathToExe + "' doesn't exist!");
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error while updating youtube-dl.exe: " + ex.Message, "Update youtube-dl", MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+            }
+        }
         #endregion
 
         #region Context-Menu-GUI-functions
@@ -1356,6 +1384,7 @@ namespace FeedBee.Control
                                 {
                                     UpdateFeed(fed);
                                 });
+                                t1.Name = fed.Title + "; " + fed.FeedURL;
 
                                 //add thread to list
                                 tList.Add(t1);
@@ -1385,18 +1414,29 @@ namespace FeedBee.Control
                         while (!updateFinished)
                         {
                             int counter = 0;
+                            Thread lastThread = null;
 
                             foreach (Thread thr in tList)
                             {
                                 if (thr.IsAlive == false)
                                 {
+                                    lastThread = thr;
                                     counter++;
                                 }
                             }
 
                             if (counter != counter_before)
                             {
-                                mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                                if((numberOfThreads-counter) == 1 && lastThread != null)
+                                {
+                                    mainForm.SetStatusText("Updating last feed: " + lastThread.Name, -1);
+                                }
+                                else
+                                {
+                                    mainForm.SetStatusText("Updated " + counter.ToString() + " feeds out of " + numberOfThreads + " ...", -1);
+                                }
+                                
+
 
                                 double perc = Convert.ToDouble(counter) / Convert.ToDouble(numberOfThreads) * 100;
                                 int progress = Convert.ToInt32(perc);
@@ -1477,6 +1517,7 @@ namespace FeedBee.Control
                                     UpdateFeed(fed);
                                 });
 
+                                t1.Name = fed.Title + "; " + fed.FeedURL;
                                 //add thread to list
                                 result.Add(t1);
                             }
@@ -1499,7 +1540,13 @@ namespace FeedBee.Control
         {
             try
             {
-                //Debug.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+                bool showDebugMessages = true;
+
+                showDebugMessages = origFeed.Link.ToLower().Contains("questionable");
+                if (showDebugMessages)
+                {
+                    Debug.WriteLine("Starting update on '" + origFeed.Title + "' ...");
+                }
 
                 //get Feeditems
                 Feed tmpFeed = null;
@@ -1517,9 +1564,19 @@ namespace FeedBee.Control
                 {
                     if (tmpFeed.Items != null)
                     {
+                        if (showDebugMessages)
+                        {
+                            Console.WriteLine(" ");
+                            Console.WriteLine("got the feed for '" + origFeed.Title + "'");
+                            Console.WriteLine("  last update: " + tmpFeed.LastUpdatedDateString);
+                            Console.WriteLine("  number of items: " + tmpFeed.Items.Count);
+                            Console.WriteLine(" orig. Feed: " + origFeed.Items.Count + " number of items. Last update: " + origFeed.LastUpdatedDateString);
+                            Console.WriteLine(" ");
+                        }
+
                         if (tmpFeed.Items.Count() > 0)
                         {
-                            List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                            //List<FeedItem> updateList = tmpFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
                             //update the image-url (if not saved to file already)
                             if (updateImage)
@@ -1530,73 +1587,176 @@ namespace FeedBee.Control
 
                             origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
 
-                            int itemCountNew = updateList.Count();
+                            int itemCountNew = tmpFeed.Items.Count();// updateList.Count();
                             int itemCountOld = origFeed.Items.Count();
 
-                            if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
+                            try
                             {
-                                //Debug.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
-
-                                List<FeedItem> tmpSwapList = new List<FeedItem>();
-
-                                //count number of matches
-                                int matchCounter = 0;
-                                int maxMatches = 5;
-
-                                //compare both lists
-                                foreach (FeedItem newItem in updateList)
+                                if (itemCountNew > 0) //if ((itemCountNew != itemCountOld) && (itemCountNew > 0))
                                 {
-                                    newItem.Read = false;
+                                    //Debug.WriteLine("'" + group.FeedList[i].Title + "': New: " + itemCountNew.ToString() + "  old: " + itemCountOld.ToString());
 
+                                    List<FeedItem> tmpSwapList = new List<FeedItem>();
 
-                                    bool found = false;
+                                    //count number of matches
+                                    //int matchCounter = 0;
+                                    //int maxMatches = 10;
 
-                                    //compare new item with all the old items
-                                    foreach (FeedItem oldItem in origFeed.Items)
+                                    //compare both lists
+                                    /*
+                                    foreach (FeedItem newItem in updateList)
                                     {
-                                        //compare id's
-                                        if (newItem.Id == oldItem.Id)
+                                        bool found = false;
+
+                                        //compare new item with all the old items
+                                        foreach (FeedItem oldItem in origFeed.Items)
                                         {
-                                            found = true;
-                                            matchCounter++;
+                                            //compare link's
+                                            if ((newItem.Link.ToLower() == oldItem.Link.ToLower()))// || (newItem.Id == oldItem.Id))
+                                            {
+                                                found = true;
+                                               // matchCounter++;
+                                                break;
+                                            }
+                                        }
+
+                                        //if item couldn't be found in list -> add to temp. List
+                                        if (found == false)
+                                        {
+                                            newItem.Read = false;
+                                            tmpSwapList.Add(newItem);
+                                            //matchCounter = 0;
+                                        }
+
+                                        if (matchCounter > maxMatches)
+                                        {
                                             break;
+                                        }
+
+                                    }
+                                    */
+                                    if (showDebugMessages)
+                                    {
+                                        Console.WriteLine("starting compare of old vs new feed. Number of old items: " + itemCountOld + "; Number of new items: " + itemCountNew);
+                                    }
+
+
+                                    for (int i = 0; i < itemCountNew; i++)
+                                    {
+                                        if(tmpFeed.Items[i] != null)
+                                        {
+                                            string newLink = tmpFeed.Items[i].Link;
+                                            if(!string.IsNullOrEmpty(newLink) &&!string.IsNullOrWhiteSpace(newLink))
+                                            {
+                                                bool found = false;
+
+
+                                                for (int k = 0; k < itemCountOld; k++)
+                                                {
+                                                    if(origFeed.Items[k] != null)
+                                                    {
+                                                        string oldLink = origFeed.Items[k].Link;
+
+                                                        if(!string.IsNullOrEmpty(oldLink) && ! string.IsNullOrWhiteSpace(oldLink))
+                                                        {
+                                                            if (newLink.ToLower() == oldLink.ToLower())
+                                                            {
+                                                                found = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if(showDebugMessages)
+                                                            {
+                                                                Console.WriteLine("Error comparing new feeditem index " + k + ": Link is empty.");
+                                                            }
+                                                        }
+                                                        
+                                                    }
+                                                    else
+                                                    {
+                                                        if (showDebugMessages)
+                                                        {
+                                                            Console.WriteLine("Error comparing new feeditem index " + k + ": Item is null.");
+                                                        }
+                                                    }
+                                                }
+
+                                               
+                                                if (found == false)
+                                                {
+                                                    tmpSwapList.Add(tmpFeed.Items[i]);
+                                                    if (showDebugMessages)
+                                                    {
+                                                        Console.WriteLine("couldn't find " + tmpFeed.Items[i].Link + " in current list. Adding as new feeditem.");
+                                                    }
+                                                }
+                                                
+                                            }
+                                            else
+                                            {
+                                                if (showDebugMessages)
+                                                {
+                                                    Console.WriteLine("Error comparing old feeditem index " + i + ": Link is empty.");
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (showDebugMessages)
+                                            {
+                                                Console.WriteLine("Error comparing old feeditem index " + i + ": Item is null.");
+                                            }
+                                        }
+
+                                    }
+
+                                    if (tmpSwapList.Count > 0)
+                                    {
+                                        //append old List
+                                        origFeed.Items.AddRange(tmpSwapList);
+
+                                        if (showDebugMessages)
+                                        {
+                                            Console.WriteLine("'" + origFeed.Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
+                                        }
+
+                                        //order list again
+                                        origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
+                                    }
+                                    else
+                                    {
+                                        if (showDebugMessages)
+                                        {
+                                            Console.WriteLine("done comparing. No new items added.");
                                         }
                                     }
 
-                                    //if item couldn't be found in list -> add to temp. List
-                                    if (found == false)
-                                    {
-                                        tmpSwapList.Add(newItem);
-                                        matchCounter = 0;
-                                    }
-
-                                    if (matchCounter > maxMatches)
-                                    {
-                                        break;
-                                    }
-                                }
-
-                                if (tmpSwapList.Count > 0)
-                                {
-                                    //append old List
-                                    origFeed.Items.AddRange(tmpSwapList);
-
-                                    //Debug.WriteLine("'" + group.FeedList[i].Title + "': Added: " + tmpSwapList.Count().ToString() + "  new items to feed-list.");
-
-                                    //order list again
-                                    origFeed.Items = origFeed.Items.OrderByDescending(o => o.PublishingDate).ToList();
-                                }
-
-                                updateSuccess = true;
-
-                            }
-                            else
-                            {
-                                if (itemCountNew == itemCountOld)
-                                {
                                     updateSuccess = true;
-                                    Debug.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+
                                 }
+                                else
+                                {
+                                    if (itemCountNew == itemCountOld)
+                                    {
+                                        updateSuccess = true;
+
+                                        if (showDebugMessages)
+                                        {
+                                            Debug.WriteLine("no updates found for '" + origFeed.Title + "'. Old: " + itemCountOld.ToString() + "   new: " + itemCountNew.ToString());
+                                        }
+
+                                    }
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                if(showDebugMessages)
+                                {
+                                    Console.WriteLine("Error updating '" + origFeed.Title + "': " + ex.Message);
+                                }
+                                throw ex;
                             }
 
 
@@ -1608,7 +1768,11 @@ namespace FeedBee.Control
                 //mark Feed as updated or not
                 origFeed.Updated = updateSuccess;
 
-                //Console.WriteLine("Feed '" + origFeed.Title + "' has been updated.");
+                if (showDebugMessages)
+                {
+                    Debug.WriteLine("Feed '" + origFeed.Title + "' has been updated.");
+                }
+
 
             }
             catch (Exception ex)

@@ -4,12 +4,15 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-
+using System.Windows.Forms;
+using System.Xml;
 
 namespace FeedBee.Control
 {
@@ -60,18 +63,19 @@ namespace FeedBee.Control
             bool loadSuccess = false;
 
             string content = "";
-
+            /*
             try
             {
                 //try to download the main page
                 content = new System.Net.WebClient().DownloadString(pageUrl);
+                //Console.WriteLine(content);
                 loadSuccess = true;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error while getting feed-webpage: " + Environment.NewLine + ex.Message);
+                Console.WriteLine("Error while getting feed-webpage: " + Environment.NewLine + ex.Message);
             }
-
+            */
             if(loadSuccess)
             {
                 var htmlDoc = new HtmlAgilityPack.HtmlDocument()
@@ -81,6 +85,15 @@ namespace FeedBee.Control
                 };
 
                 htmlDoc.LoadHtml(content);
+                try
+                {
+                    Clipboard.SetText(content);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    //Console.WriteLine(content);
+                }
 
                 if (htmlDoc.DocumentNode != null)
                 {
@@ -95,7 +108,7 @@ namespace FeedBee.Control
                     }
                     else
                     {
-                        Debug.WriteLine("titlenode is null!");
+                        Console.WriteLine("titlenode is null!");
                     }
 
                     //get feeditems
@@ -165,12 +178,21 @@ namespace FeedBee.Control
                         }
                         else
                         {
-                            Debug.WriteLine(feed.Title + ": no Chapter-Nodes detected.");
+                            Console.WriteLine("FeedURL: " + feed.FeedURL + "  Title = " + feed.Title + ": no Chapter-Nodes detected. DetectionText: '" + classID_Title + "'");
+
+                            if(timeNodes==null)
+                            {
+                                Console.WriteLine("TimeNodes is null.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Number of timenodes = " + timeNodes.Count());
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Innerexception 1: " + ex.Message);
+                        Console.WriteLine("Innerexception 1: " + ex.Message);
                     }
                     
                 }

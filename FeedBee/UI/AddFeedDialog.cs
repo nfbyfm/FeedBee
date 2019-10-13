@@ -202,12 +202,13 @@ namespace FeedBee.UI
                         lb_FoundFeeds.Items.Add(newFeed);
                     }
 
-                    if(results.Count() == 1)
+                    if (results.Count() > 0)
                     {
+                        //select first item
                         lb_FoundFeeds.SelectedIndex = 0;
 
                         //select fitting group
-                        if(cB_Groups.Items!=null && rB_addToGroup.Checked)
+                        if (cB_Groups.Items!=null && rB_addToGroup.Checked)
                         {
                             int numberOfCBItems = cB_Groups.Items.Count;
                             if (numberOfCBItems > 0)
