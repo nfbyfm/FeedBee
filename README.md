@@ -1,4 +1,4 @@
-![FeedBee Banner](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/FeedBee_SP.png =x120)
+![FeedBee Banner](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/FeedBee_SP.png)
 
 # FeedBee
 
