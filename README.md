@@ -1,3 +1,5 @@
+![FeedBee Banner](https://raw.githubusercontent.com/nfbyfm/FeedBee/master/doc/FeedBee_SP.png =x120)
+
 # FeedBee
 
 This program is a simple RSS-Reader, which has been written for Windows 7 and up. You can download the latest release [here](https://github.com/nfbyfm/FeedBee/releases).
