@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,47 +35,8 @@ namespace FeedBee.UI
             LoadSettings();
         }
 
-        /// <summary>
-        /// select the folder of youtube-dl.exe
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void b_SelectYTdl_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.ShowNewFolderButton = true;
 
-            if(!(string.IsNullOrEmpty(tB_youtubedlFolder.Text) || string.IsNullOrWhiteSpace(tB_youtubedlFolder.Text)))
-            {
-                try
-                {
-                    folderBrowserDialog.SelectedPath = tB_youtubedlFolder.Text;
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine("Error setting default-path for youtube-dl.exe-path: " + ex.Message);
-                }
-            }
-
-            if(folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                tB_youtubedlFolder.Text = folderBrowserDialog.SelectedPath;
-            }
-        }
-
-        /// <summary>
-        /// update youtube-dl.exe
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void b_UpdateYoutubeDL_Click(object sender, EventArgs e)
-        {
-            if(parentController != null)
-            {
-                parentController.UpdateYoutubedl(tB_youtubedlFolder.Text + "\\youtube-dl.exe");
-            }
-        }
-
+        #region Button-clicks and Checkboxes
         /// <summary>
         /// reset settings
         /// </summary>
@@ -121,8 +83,7 @@ namespace FeedBee.UI
         /// <param name="e"></param>
         private void cB_LoadUponStartup_CheckedChanged(object sender, EventArgs e)
         {
-            tB_FeedListPath.Enabled = cB_LoadUponStartup.Checked;
-            bSelectFeedList.Enabled = cB_LoadUponStartup.Checked;
+            UpdateControls();
         }
 
         /// <summary>
@@ -132,11 +93,7 @@ namespace FeedBee.UI
         /// <param name="e"></param>
         private void cB_DisplayFeedIcons_CheckedChanged(object sender, EventArgs e)
         {
-            bool enabled = cB_DisplayFeedIcons.Checked;
-
-            label3.Enabled = enabled;
-            tB_IconFolder.Enabled = enabled;
-            b_SelectIconFolder.Enabled = enabled;
+            UpdateControls();
         }
 
         /// <summary>
@@ -194,6 +151,34 @@ namespace FeedBee.UI
             }
         }
 
+
+        private void cB_automaticUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateControls();
+        }
+        #endregion
+
+        private void UpdateControls()
+        {
+            bool enabled;
+
+            //Feedlist-Path
+            enabled = cB_LoadUponStartup.Checked;
+            tB_FeedListPath.Enabled = enabled;
+            bSelectFeedList.Enabled = enabled;
+
+            //display Feedicons
+            enabled = cB_DisplayFeedIcons.Checked;
+            label3.Enabled = enabled;
+            tB_IconFolder.Enabled = enabled;
+            b_SelectIconFolder.Enabled = enabled;
+
+
+            //automatic Updates
+            enabled = cB_automaticUpdate.Checked;
+            l_autoUpdateInterval.Enabled = enabled;
+            mTB_autoUpdateTimeSpan.Enabled = enabled;
+        }
         #endregion
 
 
@@ -203,7 +188,6 @@ namespace FeedBee.UI
         /// </summary>
         private void LoadSettings()
         {
-            tB_youtubedlFolder.Text = Properties.Settings.Default.youtubedlFolder;
             tB_FeedListPath.Text = Properties.Settings.Default.loadListPath;
             cB_LoadUponStartup.Checked = Properties.Settings.Default.bLoadUponStartup;
             cB_LoadUponStartup_CheckedChanged(null,null);
@@ -211,7 +195,7 @@ namespace FeedBee.UI
             cB_UpdateNSFW.Checked = Properties.Settings.Default.updateNSFW;
 
 
-
+            
 
             cB_DisplayFeedIcons.Checked = Properties.Settings.Default.displayFeedIcons;
             cB_FilterIFrames.Checked = Properties.Settings.Default.filterIFrames;
@@ -221,7 +205,10 @@ namespace FeedBee.UI
 
             tB_IconFolder.Text = Properties.Settings.Default.iconFolderPath;
 
-            cB_DisplayFeedIcons_CheckedChanged(null, null);
+            cB_automaticUpdate.Checked = Properties.Settings.Default.automaticUpdateEnabled;
+            mTB_autoUpdateTimeSpan.Text = Properties.Settings.Default.automaticUpdateTime.ToString(@"hh\:mm\:ss");
+
+            UpdateControls();
         }
 
         /// <summary>
@@ -229,7 +216,7 @@ namespace FeedBee.UI
         /// </summary>
         private void SaveSettings()
         {
-            Properties.Settings.Default.youtubedlFolder = tB_youtubedlFolder.Text;
+            
             Properties.Settings.Default.loadListPath = tB_FeedListPath.Text;
             Properties.Settings.Default.bLoadUponStartup = cB_LoadUponStartup.Checked;
             Properties.Settings.Default.updateNSFW = cB_UpdateNSFW.Checked;
@@ -241,7 +228,30 @@ namespace FeedBee.UI
             Properties.Settings.Default.expandNodes = cB_ExpandNodes.Checked;
 
             Properties.Settings.Default.iconFolderPath = tB_IconFolder.Text;
+
+            Properties.Settings.Default.automaticUpdateEnabled = cB_automaticUpdate.Checked;
+
+            string timespanStr = "";
+
+            timespanStr = mTB_autoUpdateTimeSpan.Text;
+            timespanStr = timespanStr.Replace("_", "0");
+            timespanStr = timespanStr.Replace(" ", "0");
+
+            int hours = Int32.Parse(timespanStr.Split(':')[0]);
+            int minutes = Int32.Parse(timespanStr.Split(':')[1]);
+            int seconds = Int32.Parse(timespanStr.Split(':')[2]);            
+
+            try
+            {
+                TimeSpan span = new TimeSpan(hours,minutes,seconds);
+                Properties.Settings.Default.automaticUpdateTime = span;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error generating new timespan: " + ex);
+            }
         }
+
 
 
 

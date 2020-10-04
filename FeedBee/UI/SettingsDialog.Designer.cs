@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
-            this.label1 = new System.Windows.Forms.Label();
-            this.b_SelectYTdl = new System.Windows.Forms.Button();
-            this.tB_youtubedlFolder = new System.Windows.Forms.TextBox();
             this.b_Reset = new System.Windows.Forms.Button();
             this.b_Save = new System.Windows.Forms.Button();
             this.b_Cancel = new System.Windows.Forms.Button();
@@ -53,45 +51,19 @@
             this.b_SelectIconFolder = new System.Windows.Forms.Button();
             this.tB_IconFolder = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.b_UpdateYoutubeDL = new System.Windows.Forms.Button();
+            this.cB_automaticUpdate = new System.Windows.Forms.CheckBox();
+            this.l_autoUpdateInterval = new System.Windows.Forms.Label();
+            this.mTB_autoUpdateTimeSpan = new System.Windows.Forms.MaskedTextBox();
+            this.toolTipUpdateTime = new System.Windows.Forms.ToolTip(this.components);
             this.tC_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "folder of youtube-dl.exe:";
-            // 
-            // b_SelectYTdl
-            // 
-            this.b_SelectYTdl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_SelectYTdl.Location = new System.Drawing.Point(459, 7);
-            this.b_SelectYTdl.Name = "b_SelectYTdl";
-            this.b_SelectYTdl.Size = new System.Drawing.Size(75, 23);
-            this.b_SelectYTdl.TabIndex = 1;
-            this.b_SelectYTdl.Text = "select ...";
-            this.b_SelectYTdl.UseVisualStyleBackColor = true;
-            this.b_SelectYTdl.Click += new System.EventHandler(this.b_SelectYTdl_Click);
-            // 
-            // tB_youtubedlFolder
-            // 
-            this.tB_youtubedlFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_youtubedlFolder.Location = new System.Drawing.Point(132, 9);
-            this.tB_youtubedlFolder.Name = "tB_youtubedlFolder";
-            this.tB_youtubedlFolder.Size = new System.Drawing.Size(321, 20);
-            this.tB_youtubedlFolder.TabIndex = 2;
-            // 
             // b_Reset
             // 
             this.b_Reset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.b_Reset.Location = new System.Drawing.Point(12, 264);
+            this.b_Reset.Location = new System.Drawing.Point(12, 228);
             this.b_Reset.Name = "b_Reset";
             this.b_Reset.Size = new System.Drawing.Size(75, 23);
             this.b_Reset.TabIndex = 3;
@@ -102,7 +74,7 @@
             // b_Save
             // 
             this.b_Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Save.Location = new System.Drawing.Point(404, 264);
+            this.b_Save.Location = new System.Drawing.Point(404, 228);
             this.b_Save.Name = "b_Save";
             this.b_Save.Size = new System.Drawing.Size(75, 23);
             this.b_Save.TabIndex = 4;
@@ -113,7 +85,7 @@
             // b_Cancel
             // 
             this.b_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_Cancel.Location = new System.Drawing.Point(485, 264);
+            this.b_Cancel.Location = new System.Drawing.Point(485, 228);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
             this.b_Cancel.TabIndex = 5;
@@ -124,7 +96,7 @@
             // cB_LoadUponStartup
             // 
             this.cB_LoadUponStartup.AutoSize = true;
-            this.cB_LoadUponStartup.Location = new System.Drawing.Point(9, 66);
+            this.cB_LoadUponStartup.Location = new System.Drawing.Point(6, 6);
             this.cB_LoadUponStartup.Name = "cB_LoadUponStartup";
             this.cB_LoadUponStartup.Size = new System.Drawing.Size(214, 17);
             this.cB_LoadUponStartup.TabIndex = 6;
@@ -135,7 +107,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(52, 92);
+            this.label2.Location = new System.Drawing.Point(29, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 7;
@@ -144,7 +116,7 @@
             // bSelectFeedList
             // 
             this.bSelectFeedList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSelectFeedList.Location = new System.Drawing.Point(459, 87);
+            this.bSelectFeedList.Location = new System.Drawing.Point(459, 27);
             this.bSelectFeedList.Name = "bSelectFeedList";
             this.bSelectFeedList.Size = new System.Drawing.Size(75, 23);
             this.bSelectFeedList.TabIndex = 8;
@@ -156,15 +128,15 @@
             // 
             this.tB_FeedListPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_FeedListPath.Location = new System.Drawing.Point(132, 89);
+            this.tB_FeedListPath.Location = new System.Drawing.Point(135, 29);
             this.tB_FeedListPath.Name = "tB_FeedListPath";
-            this.tB_FeedListPath.Size = new System.Drawing.Size(321, 20);
+            this.tB_FeedListPath.Size = new System.Drawing.Size(318, 20);
             this.tB_FeedListPath.TabIndex = 9;
             // 
             // cB_UpdateNSFW
             // 
             this.cB_UpdateNSFW.AutoSize = true;
-            this.cB_UpdateNSFW.Location = new System.Drawing.Point(9, 111);
+            this.cB_UpdateNSFW.Location = new System.Drawing.Point(6, 55);
             this.cB_UpdateNSFW.Name = "cB_UpdateNSFW";
             this.cB_UpdateNSFW.Size = new System.Drawing.Size(113, 17);
             this.cB_UpdateNSFW.TabIndex = 10;
@@ -174,7 +146,7 @@
             // cB_UpdateUponLoad
             // 
             this.cB_UpdateUponLoad.AutoSize = true;
-            this.cB_UpdateUponLoad.Location = new System.Drawing.Point(9, 134);
+            this.cB_UpdateUponLoad.Location = new System.Drawing.Point(6, 78);
             this.cB_UpdateUponLoad.Name = "cB_UpdateUponLoad";
             this.cB_UpdateUponLoad.Size = new System.Drawing.Size(138, 17);
             this.cB_UpdateUponLoad.TabIndex = 11;
@@ -222,18 +194,17 @@
             this.tC_Main.Location = new System.Drawing.Point(12, 12);
             this.tC_Main.Name = "tC_Main";
             this.tC_Main.SelectedIndex = 0;
-            this.tC_Main.Size = new System.Drawing.Size(548, 246);
+            this.tC_Main.Size = new System.Drawing.Size(548, 210);
             this.tC_Main.TabIndex = 15;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.b_UpdateYoutubeDL);
+            this.tabPage1.Controls.Add(this.mTB_autoUpdateTimeSpan);
+            this.tabPage1.Controls.Add(this.l_autoUpdateInterval);
+            this.tabPage1.Controls.Add(this.cB_automaticUpdate);
             this.tabPage1.Controls.Add(this.bSelectFeedDefFilePath);
             this.tabPage1.Controls.Add(this.tB_FeedDefFilePath);
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.tB_youtubedlFolder);
-            this.tabPage1.Controls.Add(this.b_SelectYTdl);
             this.tabPage1.Controls.Add(this.cB_LoadUponStartup);
             this.tabPage1.Controls.Add(this.cB_UpdateUponLoad);
             this.tabPage1.Controls.Add(this.label2);
@@ -243,7 +214,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(540, 220);
+            this.tabPage1.Size = new System.Drawing.Size(540, 184);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Feeds";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -251,7 +222,7 @@
             // bSelectFeedDefFilePath
             // 
             this.bSelectFeedDefFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSelectFeedDefFilePath.Location = new System.Drawing.Point(459, 149);
+            this.bSelectFeedDefFilePath.Location = new System.Drawing.Point(459, 99);
             this.bSelectFeedDefFilePath.Name = "bSelectFeedDefFilePath";
             this.bSelectFeedDefFilePath.Size = new System.Drawing.Size(75, 23);
             this.bSelectFeedDefFilePath.TabIndex = 14;
@@ -263,15 +234,15 @@
             // 
             this.tB_FeedDefFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_FeedDefFilePath.Location = new System.Drawing.Point(112, 151);
+            this.tB_FeedDefFilePath.Location = new System.Drawing.Point(135, 101);
             this.tB_FeedDefFilePath.Name = "tB_FeedDefFilePath";
-            this.tB_FeedDefFilePath.Size = new System.Drawing.Size(341, 20);
+            this.tB_FeedDefFilePath.Size = new System.Drawing.Size(318, 20);
             this.tB_FeedDefFilePath.TabIndex = 13;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 154);
+            this.label4.Location = new System.Drawing.Point(29, 104);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 13);
             this.label4.TabIndex = 12;
@@ -288,7 +259,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(540, 220);
+            this.tabPage2.Size = new System.Drawing.Size(540, 253);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "View";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -322,22 +293,46 @@
             this.label3.TabIndex = 15;
             this.label3.Text = "Fodler for feed-icons:";
             // 
-            // b_UpdateYoutubeDL
+            // cB_automaticUpdate
             // 
-            this.b_UpdateYoutubeDL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_UpdateYoutubeDL.Location = new System.Drawing.Point(459, 36);
-            this.b_UpdateYoutubeDL.Name = "b_UpdateYoutubeDL";
-            this.b_UpdateYoutubeDL.Size = new System.Drawing.Size(75, 23);
-            this.b_UpdateYoutubeDL.TabIndex = 15;
-            this.b_UpdateYoutubeDL.Text = "update exe";
-            this.b_UpdateYoutubeDL.UseVisualStyleBackColor = true;
-            this.b_UpdateYoutubeDL.Click += new System.EventHandler(this.b_UpdateYoutubeDL_Click);
+            this.cB_automaticUpdate.AutoSize = true;
+            this.cB_automaticUpdate.Location = new System.Drawing.Point(6, 127);
+            this.cB_automaticUpdate.Name = "cB_automaticUpdate";
+            this.cB_automaticUpdate.Size = new System.Drawing.Size(155, 17);
+            this.cB_automaticUpdate.TabIndex = 16;
+            this.cB_automaticUpdate.Text = "automatically update Feeds";
+            this.cB_automaticUpdate.UseVisualStyleBackColor = true;
+            this.cB_automaticUpdate.CheckedChanged += new System.EventHandler(this.cB_automaticUpdate_CheckedChanged);
+            // 
+            // l_autoUpdateInterval
+            // 
+            this.l_autoUpdateInterval.AutoSize = true;
+            this.l_autoUpdateInterval.Location = new System.Drawing.Point(29, 153);
+            this.l_autoUpdateInterval.Name = "l_autoUpdateInterval";
+            this.l_autoUpdateInterval.Size = new System.Drawing.Size(79, 13);
+            this.l_autoUpdateInterval.TabIndex = 18;
+            this.l_autoUpdateInterval.Text = "Updateinterval:";
+            // 
+            // mTB_autoUpdateTimeSpan
+            // 
+            this.mTB_autoUpdateTimeSpan.Culture = new System.Globalization.CultureInfo("");
+            this.mTB_autoUpdateTimeSpan.Location = new System.Drawing.Point(135, 150);
+            this.mTB_autoUpdateTimeSpan.Mask = "00:00:00";
+            this.mTB_autoUpdateTimeSpan.Name = "mTB_autoUpdateTimeSpan";
+            this.mTB_autoUpdateTimeSpan.Size = new System.Drawing.Size(61, 20);
+            this.mTB_autoUpdateTimeSpan.TabIndex = 19;
+            this.toolTipUpdateTime.SetToolTip(this.mTB_autoUpdateTimeSpan, "Updateinterval: HH:mm:ss => hours : minutes : seconds");
+            this.mTB_autoUpdateTimeSpan.ValidatingType = typeof(System.DateTime);
+            // 
+            // toolTipUpdateTime
+            // 
+            this.toolTipUpdateTime.ToolTipTitle = "HH:mm:ss";
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(572, 299);
+            this.ClientSize = new System.Drawing.Size(572, 263);
             this.Controls.Add(this.tC_Main);
             this.Controls.Add(this.b_Cancel);
             this.Controls.Add(this.b_Save);
@@ -357,10 +352,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button b_SelectYTdl;
-        private System.Windows.Forms.TextBox tB_youtubedlFolder;
         private System.Windows.Forms.Button b_Reset;
         private System.Windows.Forms.Button b_Save;
         private System.Windows.Forms.Button b_Cancel;
@@ -382,6 +373,9 @@
         private System.Windows.Forms.Button bSelectFeedDefFilePath;
         private System.Windows.Forms.TextBox tB_FeedDefFilePath;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button b_UpdateYoutubeDL;
+        private System.Windows.Forms.MaskedTextBox mTB_autoUpdateTimeSpan;
+        private System.Windows.Forms.Label l_autoUpdateInterval;
+        private System.Windows.Forms.CheckBox cB_automaticUpdate;
+        private System.Windows.Forms.ToolTip toolTipUpdateTime;
     }
 }

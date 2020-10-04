@@ -25,18 +25,6 @@ namespace FeedBee.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\User\\Default\\youtube-dl")]
-        public string youtubedlFolder {
-            get {
-                return ((string)(this["youtubedlFolder"]));
-            }
-            set {
-                this["youtubedlFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool bLoadUponStartup {
             get {
@@ -140,6 +128,30 @@ namespace FeedBee.Properties {
             }
             set {
                 this["WebpageFeedDefPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool automaticUpdateEnabled {
+            get {
+                return ((bool)(this["automaticUpdateEnabled"]));
+            }
+            set {
+                this["automaticUpdateEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:10:00")]
+        public global::System.TimeSpan automaticUpdateTime {
+            get {
+                return ((global::System.TimeSpan)(this["automaticUpdateTime"]));
+            }
+            set {
+                this["automaticUpdateTime"] = value;
             }
         }
     }

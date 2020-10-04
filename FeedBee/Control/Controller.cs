@@ -22,6 +22,7 @@ using Utilities.FeedSubs;
 using FeedBee.Utilities.FeedSubs;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Timers;
 
 namespace FeedBee.Control
 {
@@ -46,6 +47,8 @@ namespace FeedBee.Control
 
         private InternetCheck internetCheck;
 
+        private System.Windows.Forms.Timer updateTimer;
+
         public delegate void UpdateTreeViewCallback();      //delegate for updating the treeview of the main window (after updates are done for example)
 
         #endregion
@@ -61,6 +64,8 @@ namespace FeedBee.Control
             SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_CONTINUOUS);
 
             InitializeFeedUpdateBackgroundWorker();
+
+            
 
             //load list of webpageFeed-definitions
             LoadWebPageFeedList();
@@ -84,8 +89,17 @@ namespace FeedBee.Control
             //update feeds upon load
             if(Properties.Settings.Default.updateUponLoad)
             {
-                UpdateFeeds();
+                UpdateFeeds(null,null);
             }
+
+            //setup automatic Timer
+            updateTimer = new System.Windows.Forms.Timer();
+            updateTimer.Interval = Convert.ToInt32(Properties.Settings.Default.automaticUpdateTime.TotalMilliseconds);
+            updateTimer.Tick += new EventHandler(UpdateFeeds);
+            updateTimer.Enabled = Properties.Settings.Default.automaticUpdateEnabled;
+
+            Console.WriteLine("automatic Updateinterval set to: " + updateTimer.Interval+ " milliseconds.");
+
         }
 
         /// <summary>
@@ -468,12 +482,12 @@ namespace FeedBee.Control
         /// <summary>
         /// update feed-list / get new feeditems in separate thread
         /// </summary>
-        public void UpdateFeeds()
+        public void UpdateFeeds(object Sender, EventArgs e)
         {
             //check if update is even possible
             if(CheckInternetConnectivity())
             {
-                if(mainModel != null)
+                if(mainModel != null && !updateFeedsbGWorker.IsBusy)
                 {
                     updateGroup = mainModel;
                     StartUpdateFeeds();
@@ -516,6 +530,10 @@ namespace FeedBee.Control
             {
                 //save settings
                 Properties.Settings.Default.Save();
+
+                updateTimer.Interval = Convert.ToInt32(Properties.Settings.Default.automaticUpdateTime.TotalMilliseconds);
+                bool autoUpdateEnabled = Properties.Settings.Default.automaticUpdateEnabled;
+                updateTimer.Enabled = autoUpdateEnabled;
             }
         }
 
@@ -596,99 +614,10 @@ namespace FeedBee.Control
         }
 
         
-
-        /// <summary>
-        /// download a (youtube-) video 
-        /// </summary>
-        /// <param name="url"></param>
-        public void DownloadVideo(string url)
-        {
-            try
-            {
-                //call youtube-dl.exe
-                Process p = new Process();
-                ProcessStartInfo pi = new ProcessStartInfo();
-                string youtubedlPath = Properties.Settings.Default.youtubedlFolder;
-                string youtubedlExe = youtubedlPath + "\\youtube-dl.exe";
-                
-                string argument = "/c start " + youtubedlExe + " -o \"" + youtubedlPath + "\\%(title)s.%(ext)s\" " + url;
-
-                pi.Arguments = argument;
-                pi.FileName = "cmd.exe";
-                p.StartInfo = pi;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error while downloading the video. Errormessage: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        /// <summary>
-        /// update the youtube-dl-application
-        /// </summary>
-        public void UpdateYoutubedl(string pathToExe)
-        {
-            try
-            {
-                if(File.Exists(pathToExe))
-                {
-                    Process p = new Process();
-                    ProcessStartInfo pi = new ProcessStartInfo();
-                    string argument = "/c start " + pathToExe + " -U";
-                    pi.Arguments = argument;
-                    pi.FileName = "cmd.exe";
-                    p.StartInfo = pi;
-                    p.Start();
-                }
-                else
-                {
-                    throw new Exception("File '" + pathToExe + "' doesn't exist!");
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Error while updating youtube-dl.exe: " + ex.Message, "Update youtube-dl", MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
-            }
-        }
+        
         #endregion
 
         #region Context-Menu-GUI-functions
-        //expensive-finder-function:
-        /*
-        object tmpResult = GetFeedElementFromHash(mainModel, tagObject.GetHashCode());
-
-        if(tmpResult != null)
-        {
-            if (tmpResult.GetType() == typeof(FeedGroup))
-            {
-                FeedGroup selFeedGroup = (FeedGroup)tmpResult;
-
-                Debug.WriteLine("RenameNode: Changeing Name of FeedGroup '" + selFeedGroup.Title + "' to: " + newName);
-
-                selFeedGroup.Title = newName;
-                UpdateTreeview();
-            }
-            else if (tmpResult.GetType() == typeof(Feed))
-            {
-                Feed selFeed = (Feed)tmpResult;
-
-                Debug.WriteLine("RenameNode: Changeing Name of Feed '" + selFeed.Title + "' to: " + newName);
-
-                selFeed.Title = newName;
-                UpdateTreeview();
-            }
-            else
-            {
-                Debug.WriteLine("Error while casting the found Element with the same Hash-Code of the treenode-tag-object. Unknown type: " + tagObject.GetType().ToString());
-            }
-        }
-        else
-        {
-            Debug.WriteLine("Couldn't find a Feed or FeedGroup in the current mainModel with the Hash-Code of the selected TreeNode-Tag-Object. HashCode: " + tagObject.GetHashCode().ToString());
-        }
-
-        */
         /// <summary>
         /// rename a Node (Group or Feed)
         /// </summary>
@@ -817,7 +746,10 @@ namespace FeedBee.Control
                         FeedGroup selFeedGroup = (FeedGroup)tagObject;
                         updateGroup = selFeedGroup;
 
-                        StartUpdateFeeds();
+                        if (!updateFeedsbGWorker.IsBusy)
+                        {
+                            StartUpdateFeeds();
+                        }
                     }
                     else if (tagObject.GetType() == typeof(Feed))
                     {
@@ -1166,6 +1098,8 @@ namespace FeedBee.Control
             updateFeedsbGWorker.ProgressChanged += new ProgressChangedEventHandler(UpdateFeeds_ProgressChanged);
         }
 
+        
+
         /// <summary>
         /// starts the background-worker; set "updateGroup" before calling this function
         /// </summary>
@@ -1190,7 +1124,10 @@ namespace FeedBee.Control
                 mainForm.SetStatusText(updateMessage, -1);
 
                 //start the background-worker
-                updateFeedsbGWorker.RunWorkerAsync();
+                if(!updateFeedsbGWorker.IsBusy)
+                {
+                    updateFeedsbGWorker.RunWorkerAsync();
+                }                
             }
             else
             {

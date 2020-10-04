@@ -74,7 +74,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.lL_Url = new System.Windows.Forms.LinkLabel();
-            this.b_DownloadVideo = new System.Windows.Forms.Button();
             this.browser = new System.Windows.Forms.WebBrowser();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -354,12 +353,12 @@
             this.toolStripSeparator7,
             this.cMS_Delete});
             this.cMS_Treeview.Name = "cMS_Treeview";
-            this.cMS_Treeview.Size = new System.Drawing.Size(181, 148);
+            this.cMS_Treeview.Size = new System.Drawing.Size(142, 126);
             // 
             // openAllUnreadToolStripMenuItem1
             // 
             this.openAllUnreadToolStripMenuItem1.Name = "openAllUnreadToolStripMenuItem1";
-            this.openAllUnreadToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.openAllUnreadToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
             this.openAllUnreadToolStripMenuItem1.Text = "open all unread";
             this.openAllUnreadToolStripMenuItem1.Click += new System.EventHandler(this.openAllUnreadToolStripMenuItem1_Click);
             // 
@@ -368,38 +367,38 @@
             this.cMS_MarkAsRead.Name = "cMS_MarkAsRead";
             this.cMS_MarkAsRead.RightToLeftAutoMirrorImage = true;
             this.cMS_MarkAsRead.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.cMS_MarkAsRead.Size = new System.Drawing.Size(180, 22);
+            this.cMS_MarkAsRead.Size = new System.Drawing.Size(141, 22);
             this.cMS_MarkAsRead.Text = "mark as read";
             this.cMS_MarkAsRead.Click += new System.EventHandler(this.cMS_MarkAsRead_Click);
             // 
             // cMS_Update
             // 
             this.cMS_Update.Name = "cMS_Update";
-            this.cMS_Update.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Update.Size = new System.Drawing.Size(141, 22);
             this.cMS_Update.Text = "update";
             this.cMS_Update.Click += new System.EventHandler(this.cMS_Update_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(138, 6);
             // 
             // cMS_Edit
             // 
             this.cMS_Edit.Name = "cMS_Edit";
-            this.cMS_Edit.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Edit.Size = new System.Drawing.Size(141, 22);
             this.cMS_Edit.Text = "edit";
             this.cMS_Edit.Click += new System.EventHandler(this.cMS_Rename_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(138, 6);
             // 
             // cMS_Delete
             // 
             this.cMS_Delete.Name = "cMS_Delete";
-            this.cMS_Delete.Size = new System.Drawing.Size(180, 22);
+            this.cMS_Delete.Size = new System.Drawing.Size(141, 22);
             this.cMS_Delete.Text = "delete";
             this.cMS_Delete.Click += new System.EventHandler(this.cMS_Delete_Click);
             // 
@@ -462,7 +461,6 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lL_Url, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.b_DownloadVideo, 5, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -495,17 +493,6 @@
             this.lL_Url.Text = "link";
             this.lL_Url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lL_Url.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lL_Url_LinkClicked);
-            // 
-            // b_DownloadVideo
-            // 
-            this.b_DownloadVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_DownloadVideo.Location = new System.Drawing.Point(527, 5);
-            this.b_DownloadVideo.Name = "b_DownloadVideo";
-            this.b_DownloadVideo.Size = new System.Drawing.Size(109, 23);
-            this.b_DownloadVideo.TabIndex = 3;
-            this.b_DownloadVideo.Text = "download video";
-            this.b_DownloadVideo.UseVisualStyleBackColor = true;
-            this.b_DownloadVideo.Click += new System.EventHandler(this.b_DownloadVideo_Click);
             // 
             // browser
             // 
@@ -579,7 +566,6 @@
         private System.Windows.Forms.ToolStripMenuItem openListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveListToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.Button b_DownloadVideo;
         private System.Windows.Forms.LinkLabel lL_Url;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

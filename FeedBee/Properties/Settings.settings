@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FeedBee.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="youtubedlFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\User\Default\youtube-dl</Value>
-    </Setting>
     <Setting Name="bLoadUponStartup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -31,6 +28,12 @@
     </Setting>
     <Setting Name="WebpageFeedDefPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\User\Default\WebPageFeedDefinitionList.xml</Value>
+    </Setting>
+    <Setting Name="automaticUpdateEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="automaticUpdateTime" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:10:00</Value>
     </Setting>
   </Settings>
 </SettingsFile>

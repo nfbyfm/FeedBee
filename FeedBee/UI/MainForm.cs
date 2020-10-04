@@ -88,7 +88,7 @@ namespace FeedBee.UI
 
         private void updateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controller.UpdateFeeds();
+            controller.UpdateFeeds(sender, e);
         }
 
         private void MarkAllAsReadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -267,10 +267,7 @@ namespace FeedBee.UI
                 lL_Url.Text = "";
                 lL_Url.Links.Clear();
                 lL_Url.LinkVisited = false;
-
-                b_DownloadVideo.Visible = false;
-                b_DownloadVideo.Enabled = false;
-
+                
                 lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
                 lVFeedItems.View = View.Details;
@@ -497,12 +494,7 @@ namespace FeedBee.UI
 
                             sCMainBrowse.Panel1Collapsed = false;
 
-                            if (item.Link.ToLower().Contains(controller.GetYoutubeID().ToLower()))
-                            {
-                                b_DownloadVideo.Visible = true;
-                                b_DownloadVideo.Enabled = true;
-                            }
-                            
+                                                        
                             //try to display the description of the feed -> if not possible: load webpage
                             bool loadWebpage = false;
 
@@ -561,27 +553,6 @@ namespace FeedBee.UI
             lL_Url.LinkVisited = true;
             System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
         }
-
-        /// <summary>
-        /// download a (youtube-) video
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void b_DownloadVideo_Click(object sender, EventArgs e)
-        {
-            if(lL_Url.Links != null)
-            {
-                if (lL_Url.Links[0] != null)
-                {
-                    controller.DownloadVideo(lL_Url.Links[0].LinkData.ToString());
-                }
-            }
-        }
-
-
-
-
-
 
         #endregion
 
