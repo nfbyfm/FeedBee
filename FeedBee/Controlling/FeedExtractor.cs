@@ -14,7 +14,7 @@ using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace FeedBee.Control
+namespace FeedBee.Controlling
 {
     
 

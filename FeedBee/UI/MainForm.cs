@@ -1,5 +1,5 @@
 ﻿using FeedSubs.FeedReader;
-using FeedBee.Control;
+using FeedBee.Controlling;
 using FeedBee.Utilities;
 using System;
 using System.Collections.Generic;
@@ -37,7 +37,6 @@ namespace FeedBee.UI
             controller = new Controller(this, internetCheck);
 
             UpdateTreeView();
-            ClearPropertyDisplays();
 
             SetProgress(101, 100);
          }
@@ -111,32 +110,18 @@ namespace FeedBee.UI
             controller.CancelUpdate();
         }
 
+        private void ResetAllEntries(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("This resets all feeds. Are you sure you want to delete all entries?", "reset all feeds", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            {
+                controller.ResetAllFeeds();
+            }
+        }
         #endregion
 
         #region draw-functions
 
-        /// <summary>
-        /// edit the displayed html if setting "filerIFrames" is set to true
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            if (Properties.Settings.Default.filterIFrames)
-            {
-                //try to get rid of ads -> filter iframes
-                foreach (HtmlElement x in ((WebBrowser)sender).Document.GetElementsByTagName("iframe"))
-                {
-                    if (x.OuterHtml.ToLower().Contains("adtrue") || x.OuterHtml.ToLower().Contains("zeus"))
-                    {
-                        x.OuterHtml = String.Empty;
-                    }
-                }
-            }
-        }
-
-
-
+        
         /// <summary>
         /// dis-/enable gui-functions that let the user manipulate the feeds
         /// </summary>
@@ -180,15 +165,15 @@ namespace FeedBee.UI
         /// </summary>
         public void UpdateTreeView()
         {
-            ClearPropertyDisplays();
             lVFeedItems.Items.Clear();
 
             tVMain.Nodes.Clear();
 
             List<TreeNode> treeNodes = new List<TreeNode>();
             ImageList iList = new ImageList();
-
+            
             controller.GetTreeNodes(ref treeNodes, ref iList);
+
 
             if(treeNodes != null)
             {
@@ -202,18 +187,20 @@ namespace FeedBee.UI
                 }
                 else
                 {
-                    Debug.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
+                    Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
                 }
             }
             else
             {
-                Debug.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
+                Console.WriteLine("MainForm: UpdateTreeview: Got no Nodes from controller.");
             }
 
             tVMain.ImageList = iList;
 
             if (iList == null)
-                Debug.WriteLine("List of Icons for treeview is null");
+            {
+                Console.WriteLine("List of Icons for treeview is null");
+            }
 
             if (Properties.Settings.Default.expandNodes)
             {
@@ -254,29 +241,7 @@ namespace FeedBee.UI
             
         }
 
-        /// <summary>
-        /// clears and hides controls which show information about a feed-item
-        /// </summary>
-        private void ClearPropertyDisplays()
-        {
-            try
-            {
-                sCMainBrowse.Panel1Collapsed = true;
-                browser.Navigate("about:blank");
-
-                lL_Url.Text = "";
-                lL_Url.Links.Clear();
-                lL_Url.LinkVisited = false;
-                
-                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                lVFeedItems.View = View.Details;
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine("Error in 'ClearPropertyDisplays': " + ex.Message);
-            }
-        }
+        
 
         /// <summary>
         /// lists feeditems in listview
@@ -294,76 +259,22 @@ namespace FeedBee.UI
             }
         }
 
-        /// <summary>
-        /// show unread feeditems of a whole group in the listview 
-        /// </summary>
-        /// <param name="currentGroup"></param>
-        private void ShowFeedList(FeedGroup currentGroup)
-        {
-            if(currentGroup != null)
-            {
-                List<FeedItem> items = controller.GetUnreadFeedItems(currentGroup);
-
-                UpdateListView(items);
-
-            }
-        }
-
-
+        
         /// <summary>
         /// show list of specific feeditems
         /// </summary>
         /// <param name="feedItems"></param>
         private void UpdateListView(List<FeedItem> feedItems)
         {
-            if(feedItems != null)
+            lVFeedItems.Items.Clear();
+
+            if (feedItems != null)
             {
-                lVFeedItems.Clear();
-
-                ColumnHeader columnHeader1 = new ColumnHeader();
-                columnHeader1.Text = "Title";
-                ColumnHeader columnHeader2 = new ColumnHeader();
-                columnHeader2.Text = "publishing date";
-
-                ColumnHeader columnHeader3 = new ColumnHeader();
-                columnHeader3.Text = "Author";
-
-                ColumnHeader columnHeader4 = new ColumnHeader();
-                columnHeader4.Text = "read";
-
-
-                lVFeedItems.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4 });
-
-
                 foreach (FeedItem feedItem in feedItems)
                 {
                     if (feedItem != null)
                     {
-                        string update = "";
-
-                        if (feedItem.PublishingDate != null)
-                        {
-                            if (feedItem.PublishingDate.Value != null)
-                            {
-                                update = feedItem.PublishingDate.Value.ToShortDateString();
-                            }
-                        }
-
-                        string read = "no";
-
-                        if (feedItem.Read)
-                        {
-                            read = "yes";
-                        }
-
-
-                        string[] itemProperties = new string[] {    feedItem.Title,
-                                                                        update,
-                                                                        feedItem.Author,
-                                                                        read
-                                                                    };
-
-                        ListViewItem item = new ListViewItem(itemProperties);
+                        ListViewItem item = new ListViewItem(feedItem.Title);
                         item.Tag = feedItem;
 
                         if (!feedItem.Read)
@@ -377,10 +288,7 @@ namespace FeedBee.UI
 
 
                 lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                lVFeedItems.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                lVFeedItems.View = View.Details;
             }
-    
         }
 
 
@@ -393,21 +301,25 @@ namespace FeedBee.UI
         /// <param name="milliseconds">if smaller than 1 -> text gets shown permanently</param>
         public void SetStatusText(string text, int milliseconds)
         {
-            if(milliseconds > 0)
+            this.UIThreadAsync(delegate
             {
-                statusLabel.setTimedText(text, milliseconds);
-            }
-            else
-            {
-                try
+
+                if (milliseconds > 0)
                 {
-                    statusLabel.Text = text;
+                    statusLabel.setTimedText(text, milliseconds);
                 }
-                catch (Exception ex)
+                else
                 {
-                    Debug.WriteLine("Error setting statuslabel-text: " + ex.Message);
+                    try
+                    {
+                        statusLabel.Text = text;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error setting statuslabel-text: " + ex.Message);
+                    }
                 }
-            }
+            });
         }
         #endregion
 
@@ -418,14 +330,14 @@ namespace FeedBee.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void tVMain_AfterSelect(object sender, TreeViewEventArgs e)
+        private void TreeView_FeedGroupAfterSelect(object sender, TreeViewEventArgs e)
         {
-            ClearPropertyDisplays();
             lVFeedItems.Items.Clear();
 
             if (tVMain.SelectedNode != null)
             {
                 object tagObj = tVMain.SelectedNode.Tag;
+
                 if(tagObj != null)
                 {
                     if(tagObj.GetType() == typeof(Feed))
@@ -439,7 +351,9 @@ namespace FeedBee.UI
                     {
                         FeedGroup selGroup = (FeedGroup)tagObj;
 
-                        ShowFeedList(selGroup);
+                        List<FeedItem> items = controller.GetUnreadFeedItems(selGroup);
+
+                        UpdateListView(items);
                     }
                 }
             }
@@ -447,113 +361,33 @@ namespace FeedBee.UI
 
         
 
+        
+
         /// <summary>
-        /// method for displaying information about a selected feed-item
+        /// open link if double-clicked on listview-item
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void lVFeedItems_SelectedIndexChanged(object sender, EventArgs e)
+        private void lVFeedItems_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-
-            ClearPropertyDisplays();
-
-            if (lVFeedItems.SelectedItems.Count > 0)
+            if (lVFeedItems.SelectedItems != null)
             {
-                //Debug.WriteLine("number of selected items: " + listView1.SelectedItems.Count);
-
-                ListViewItem ob = lVFeedItems.SelectedItems[0];
-                if (ob != null && ob.Tag != null)
+                if (lVFeedItems.SelectedItems.Count > 0)
                 {
-                    /*
-                    if (ob.Tag.GetType() == typeof(ComicChapter))
+                    if (lVFeedItems.SelectedItems[0].Tag != null)
                     {
-
-                        ComicChapter chapter = (ComicChapter)(ob.Tag);
-                        if (chapter != null)
+                        if (lVFeedItems.SelectedItems[0].Tag.GetType() == typeof(FeedItem))
                         {
-                            //show properties, navigate to webpage
-                            l_Title.Text = chapter.Title;
-                            l_Update.Text = chapter.DateTime.ToString("dd.MM.yyyy");
-                            lL_Url.Text = chapter.ChapterUrl;
-                            sCMainBrowse.Panel1Collapsed = false;
-                            browser.Navigate(chapter.ChapterUrl);
-                        }
-                        else
-                        {
-                            browser.Navigate("about:blank");
-                        }
-                    }
-                    else */
-                    if (ob.Tag.GetType() == typeof(FeedItem))
-                    {
-                        FeedItem item = (FeedItem)(ob.Tag);
-                        if (item != null)
-                        {
-                            lL_Url.Text = item.Title;
-                            lL_Url.Links.Add(0, item.Title.Length, item.Link);
-
-                            sCMainBrowse.Panel1Collapsed = false;
-
-                                                        
-                            //try to display the description of the feed -> if not possible: load webpage
-                            bool loadWebpage = false;
-
-                            //find out if webpage should get loaded directly (by getting the propertiy of the parent-feed)
-                            if(tVMain.SelectedNode != null)
+                            FeedItem item = (FeedItem)(lVFeedItems.SelectedItems[0].Tag);
+                            if (item != null)
                             {
-                                object fob = tVMain.SelectedNode.Tag;
-                                if(fob != null)
-                                {
-                                    if(fob.GetType() == typeof(Feed))
-                                    {
-                                        Feed parentFeed = (Feed)fob;
-                                        if(parentFeed != null)
-                                        {
-                                            loadWebpage = parentFeed.DirectlyLoadWebpage;
-                                        }
-                                    }
-                                }
+                                System.Diagnostics.Process.Start(item.Link);
                             }
-
-                            //try to load the description
-                            if(item.Description != null && (loadWebpage == false))
-                            {
-                                if(!string.IsNullOrEmpty(item.Description) && !string.IsNullOrWhiteSpace(item.Description))
-                                {
-                                    browser.DocumentText = item.Description;
-                                    loadWebpage = false;
-                                }
-                                else
-                                {
-                                    loadWebpage = true;
-                                }
-                            }
-
-                            //if description couldn't or shouldn't get loaded, show the webpage
-                            if(loadWebpage)
-                            {
-                                browser.Navigate(item.Link);
-                            }
-                                
-                            //}
                         }
                     }
                 }
             }
-            
         }
-
-        /// <summary>
-        /// method for starting the loading of the webpage / url aof the Link-Label in the default browser
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void lL_Url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            lL_Url.LinkVisited = true;
-            System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
-        }
-
         #endregion
 
         #region context-menu-functions
@@ -650,6 +484,8 @@ namespace FeedBee.UI
                 }
             }
         }
+
+
 
 
 

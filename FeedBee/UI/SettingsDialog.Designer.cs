@@ -40,10 +40,12 @@
             this.cB_UpdateNSFW = new System.Windows.Forms.CheckBox();
             this.cB_UpdateUponLoad = new System.Windows.Forms.CheckBox();
             this.cB_DisplayFeedIcons = new System.Windows.Forms.CheckBox();
-            this.cB_FilterIFrames = new System.Windows.Forms.CheckBox();
             this.cB_ExpandNodes = new System.Windows.Forms.CheckBox();
             this.tC_Main = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.mTB_autoUpdateTimeSpan = new System.Windows.Forms.MaskedTextBox();
+            this.l_autoUpdateInterval = new System.Windows.Forms.Label();
+            this.cB_automaticUpdate = new System.Windows.Forms.CheckBox();
             this.bSelectFeedDefFilePath = new System.Windows.Forms.Button();
             this.tB_FeedDefFilePath = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -51,9 +53,6 @@
             this.b_SelectIconFolder = new System.Windows.Forms.Button();
             this.tB_IconFolder = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.cB_automaticUpdate = new System.Windows.Forms.CheckBox();
-            this.l_autoUpdateInterval = new System.Windows.Forms.Label();
-            this.mTB_autoUpdateTimeSpan = new System.Windows.Forms.MaskedTextBox();
             this.toolTipUpdateTime = new System.Windows.Forms.ToolTip(this.components);
             this.tC_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -156,23 +155,13 @@
             // cB_DisplayFeedIcons
             // 
             this.cB_DisplayFeedIcons.AutoSize = true;
-            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(6, 52);
+            this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(3, 29);
             this.cB_DisplayFeedIcons.Name = "cB_DisplayFeedIcons";
             this.cB_DisplayFeedIcons.Size = new System.Drawing.Size(183, 17);
             this.cB_DisplayFeedIcons.TabIndex = 12;
             this.cB_DisplayFeedIcons.Text = "display feed-icons where possible";
             this.cB_DisplayFeedIcons.UseVisualStyleBackColor = true;
             this.cB_DisplayFeedIcons.CheckedChanged += new System.EventHandler(this.cB_DisplayFeedIcons_CheckedChanged);
-            // 
-            // cB_FilterIFrames
-            // 
-            this.cB_FilterIFrames.AutoSize = true;
-            this.cB_FilterIFrames.Location = new System.Drawing.Point(6, 29);
-            this.cB_FilterIFrames.Name = "cB_FilterIFrames";
-            this.cB_FilterIFrames.Size = new System.Drawing.Size(168, 17);
-            this.cB_FilterIFrames.TabIndex = 13;
-            this.cB_FilterIFrames.Text = "Browser: don\'t display IFrames";
-            this.cB_FilterIFrames.UseVisualStyleBackColor = true;
             // 
             // cB_ExpandNodes
             // 
@@ -219,6 +208,37 @@
             this.tabPage1.Text = "Feeds";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // mTB_autoUpdateTimeSpan
+            // 
+            this.mTB_autoUpdateTimeSpan.Culture = new System.Globalization.CultureInfo("");
+            this.mTB_autoUpdateTimeSpan.Location = new System.Drawing.Point(135, 150);
+            this.mTB_autoUpdateTimeSpan.Mask = "00:00:00";
+            this.mTB_autoUpdateTimeSpan.Name = "mTB_autoUpdateTimeSpan";
+            this.mTB_autoUpdateTimeSpan.Size = new System.Drawing.Size(61, 20);
+            this.mTB_autoUpdateTimeSpan.TabIndex = 19;
+            this.toolTipUpdateTime.SetToolTip(this.mTB_autoUpdateTimeSpan, "Updateinterval: HH:mm:ss => hours : minutes : seconds");
+            this.mTB_autoUpdateTimeSpan.ValidatingType = typeof(System.DateTime);
+            // 
+            // l_autoUpdateInterval
+            // 
+            this.l_autoUpdateInterval.AutoSize = true;
+            this.l_autoUpdateInterval.Location = new System.Drawing.Point(29, 153);
+            this.l_autoUpdateInterval.Name = "l_autoUpdateInterval";
+            this.l_autoUpdateInterval.Size = new System.Drawing.Size(79, 13);
+            this.l_autoUpdateInterval.TabIndex = 18;
+            this.l_autoUpdateInterval.Text = "Updateinterval:";
+            // 
+            // cB_automaticUpdate
+            // 
+            this.cB_automaticUpdate.AutoSize = true;
+            this.cB_automaticUpdate.Location = new System.Drawing.Point(6, 127);
+            this.cB_automaticUpdate.Name = "cB_automaticUpdate";
+            this.cB_automaticUpdate.Size = new System.Drawing.Size(155, 17);
+            this.cB_automaticUpdate.TabIndex = 16;
+            this.cB_automaticUpdate.Text = "automatically update Feeds";
+            this.cB_automaticUpdate.UseVisualStyleBackColor = true;
+            this.cB_automaticUpdate.CheckedChanged += new System.EventHandler(this.cB_automaticUpdate_CheckedChanged);
+            // 
             // bSelectFeedDefFilePath
             // 
             this.bSelectFeedDefFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -255,11 +275,10 @@
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.cB_DisplayFeedIcons);
             this.tabPage2.Controls.Add(this.cB_ExpandNodes);
-            this.tabPage2.Controls.Add(this.cB_FilterIFrames);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(540, 253);
+            this.tabPage2.Size = new System.Drawing.Size(540, 184);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "View";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -267,7 +286,7 @@
             // b_SelectIconFolder
             // 
             this.b_SelectIconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_SelectIconFolder.Location = new System.Drawing.Point(460, 67);
+            this.b_SelectIconFolder.Location = new System.Drawing.Point(457, 44);
             this.b_SelectIconFolder.Name = "b_SelectIconFolder";
             this.b_SelectIconFolder.Size = new System.Drawing.Size(75, 23);
             this.b_SelectIconFolder.TabIndex = 17;
@@ -279,7 +298,7 @@
             // 
             this.tB_IconFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tB_IconFolder.Location = new System.Drawing.Point(135, 69);
+            this.tB_IconFolder.Location = new System.Drawing.Point(132, 46);
             this.tB_IconFolder.Name = "tB_IconFolder";
             this.tB_IconFolder.Size = new System.Drawing.Size(319, 20);
             this.tB_IconFolder.TabIndex = 16;
@@ -287,42 +306,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 72);
+            this.label3.Location = new System.Drawing.Point(20, 49);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(106, 13);
             this.label3.TabIndex = 15;
             this.label3.Text = "Fodler for feed-icons:";
-            // 
-            // cB_automaticUpdate
-            // 
-            this.cB_automaticUpdate.AutoSize = true;
-            this.cB_automaticUpdate.Location = new System.Drawing.Point(6, 127);
-            this.cB_automaticUpdate.Name = "cB_automaticUpdate";
-            this.cB_automaticUpdate.Size = new System.Drawing.Size(155, 17);
-            this.cB_automaticUpdate.TabIndex = 16;
-            this.cB_automaticUpdate.Text = "automatically update Feeds";
-            this.cB_automaticUpdate.UseVisualStyleBackColor = true;
-            this.cB_automaticUpdate.CheckedChanged += new System.EventHandler(this.cB_automaticUpdate_CheckedChanged);
-            // 
-            // l_autoUpdateInterval
-            // 
-            this.l_autoUpdateInterval.AutoSize = true;
-            this.l_autoUpdateInterval.Location = new System.Drawing.Point(29, 153);
-            this.l_autoUpdateInterval.Name = "l_autoUpdateInterval";
-            this.l_autoUpdateInterval.Size = new System.Drawing.Size(79, 13);
-            this.l_autoUpdateInterval.TabIndex = 18;
-            this.l_autoUpdateInterval.Text = "Updateinterval:";
-            // 
-            // mTB_autoUpdateTimeSpan
-            // 
-            this.mTB_autoUpdateTimeSpan.Culture = new System.Globalization.CultureInfo("");
-            this.mTB_autoUpdateTimeSpan.Location = new System.Drawing.Point(135, 150);
-            this.mTB_autoUpdateTimeSpan.Mask = "00:00:00";
-            this.mTB_autoUpdateTimeSpan.Name = "mTB_autoUpdateTimeSpan";
-            this.mTB_autoUpdateTimeSpan.Size = new System.Drawing.Size(61, 20);
-            this.mTB_autoUpdateTimeSpan.TabIndex = 19;
-            this.toolTipUpdateTime.SetToolTip(this.mTB_autoUpdateTimeSpan, "Updateinterval: HH:mm:ss => hours : minutes : seconds");
-            this.mTB_autoUpdateTimeSpan.ValidatingType = typeof(System.DateTime);
             // 
             // toolTipUpdateTime
             // 
@@ -362,7 +350,6 @@
         private System.Windows.Forms.CheckBox cB_UpdateNSFW;
         private System.Windows.Forms.CheckBox cB_UpdateUponLoad;
         private System.Windows.Forms.CheckBox cB_DisplayFeedIcons;
-        private System.Windows.Forms.CheckBox cB_FilterIFrames;
         private System.Windows.Forms.CheckBox cB_ExpandNodes;
         private System.Windows.Forms.TabControl tC_Main;
         private System.Windows.Forms.TabPage tabPage1;

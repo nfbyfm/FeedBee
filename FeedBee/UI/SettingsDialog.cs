@@ -1,4 +1,4 @@
-﻿using FeedBee.Control;
+﻿using FeedBee.Controlling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -198,7 +198,6 @@ namespace FeedBee.UI
             
 
             cB_DisplayFeedIcons.Checked = Properties.Settings.Default.displayFeedIcons;
-            cB_FilterIFrames.Checked = Properties.Settings.Default.filterIFrames;
             cB_UpdateUponLoad.Checked = Properties.Settings.Default.updateUponLoad;
 
             cB_ExpandNodes.Checked = Properties.Settings.Default.expandNodes;
@@ -223,7 +222,6 @@ namespace FeedBee.UI
             Properties.Settings.Default.WebpageFeedDefPath = tB_FeedDefFilePath.Text;
             
             Properties.Settings.Default.displayFeedIcons = cB_DisplayFeedIcons.Checked;
-            Properties.Settings.Default.filterIFrames = cB_FilterIFrames.Checked;
             Properties.Settings.Default.updateUponLoad = cB_UpdateUponLoad.Checked;
             Properties.Settings.Default.expandNodes = cB_ExpandNodes.Checked;
 

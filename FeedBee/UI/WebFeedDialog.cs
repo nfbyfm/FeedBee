@@ -1,4 +1,4 @@
-﻿using FeedBee.Control;
+﻿using FeedBee.Controlling;
 using FeedBee.Utilities.FeedSubs;
 using System;
 using System.Collections.Generic;

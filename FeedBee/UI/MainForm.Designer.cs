@@ -49,6 +49,8 @@
             this.MarkAllAsReadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openExternallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenAllUnreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.resetAllEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extrasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -68,13 +70,8 @@
             this.cMS_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.cMS_Delete = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lVFeedItems = new System.Windows.Forms.ListView();
-            this.sCMainBrowse = new System.Windows.Forms.SplitContainer();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.lL_Url = new System.Windows.Forms.LinkLabel();
-            this.browser = new System.Windows.Forms.WebBrowser();
+            this.cH_Title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -82,15 +79,6 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.cMS_Treeview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sCMainBrowse)).BeginInit();
-            this.sCMainBrowse.Panel1.SuspendLayout();
-            this.sCMainBrowse.Panel2.SuspendLayout();
-            this.sCMainBrowse.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -177,7 +165,9 @@
             this.cancelUpdateToolStripMenuItem,
             this.toolStripSeparator5,
             this.markToolStripMenuItem,
-            this.openExternallyToolStripMenuItem});
+            this.openExternallyToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.resetAllEntriesToolStripMenuItem});
             this.feedToolStripMenuItem.Name = "feedToolStripMenuItem";
             this.feedToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.feedToolStripMenuItem.Text = "&Feeds";
@@ -248,6 +238,18 @@
             this.OpenAllUnreadToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.OpenAllUnreadToolStripMenuItem.Text = "all unread";
             this.OpenAllUnreadToolStripMenuItem.Click += new System.EventHandler(this.OpenAllUnreadToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(144, 6);
+            // 
+            // resetAllEntriesToolStripMenuItem
+            // 
+            this.resetAllEntriesToolStripMenuItem.Name = "resetAllEntriesToolStripMenuItem";
+            this.resetAllEntriesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.resetAllEntriesToolStripMenuItem.Text = "reset all entries";
+            this.resetAllEntriesToolStripMenuItem.Click += new System.EventHandler(this.ResetAllEntries);
             // 
             // extrasToolStripMenuItem
             // 
@@ -327,7 +329,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Panel2.Controls.Add(this.lVFeedItems);
             this.splitContainer1.Size = new System.Drawing.Size(800, 404);
             this.splitContainer1.SplitterDistance = 157;
             this.splitContainer1.TabIndex = 2;
@@ -340,7 +342,7 @@
             this.tVMain.Name = "tVMain";
             this.tVMain.Size = new System.Drawing.Size(157, 404);
             this.tVMain.TabIndex = 0;
-            this.tVMain.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tVMain_AfterSelect);
+            this.tVMain.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_FeedGroupAfterSelect);
             // 
             // cMS_Treeview
             // 
@@ -402,108 +404,23 @@
             this.cMS_Delete.Text = "delete";
             this.cMS_Delete.Click += new System.EventHandler(this.cMS_Delete_Click);
             // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.lVFeedItems);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.sCMainBrowse);
-            this.splitContainer2.Size = new System.Drawing.Size(639, 404);
-            this.splitContainer2.SplitterDistance = 88;
-            this.splitContainer2.TabIndex = 0;
-            // 
             // lVFeedItems
             // 
+            this.lVFeedItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.cH_Title});
             this.lVFeedItems.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lVFeedItems.Location = new System.Drawing.Point(0, 0);
             this.lVFeedItems.MultiSelect = false;
             this.lVFeedItems.Name = "lVFeedItems";
-            this.lVFeedItems.Size = new System.Drawing.Size(639, 88);
+            this.lVFeedItems.Size = new System.Drawing.Size(639, 404);
             this.lVFeedItems.TabIndex = 0;
             this.lVFeedItems.UseCompatibleStateImageBehavior = false;
-            this.lVFeedItems.SelectedIndexChanged += new System.EventHandler(this.lVFeedItems_SelectedIndexChanged);
+            this.lVFeedItems.View = System.Windows.Forms.View.Details;
+            this.lVFeedItems.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lVFeedItems_MouseDoubleClick);
             // 
-            // sCMainBrowse
+            // cH_Title
             // 
-            this.sCMainBrowse.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sCMainBrowse.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.sCMainBrowse.Location = new System.Drawing.Point(0, 0);
-            this.sCMainBrowse.Name = "sCMainBrowse";
-            this.sCMainBrowse.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // sCMainBrowse.Panel1
-            // 
-            this.sCMainBrowse.Panel1.Controls.Add(this.tableLayoutPanel1);
-            // 
-            // sCMainBrowse.Panel2
-            // 
-            this.sCMainBrowse.Panel2.Controls.Add(this.browser);
-            this.sCMainBrowse.Size = new System.Drawing.Size(639, 312);
-            this.sCMainBrowse.SplitterDistance = 31;
-            this.sCMainBrowse.TabIndex = 1;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 6;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lL_Url, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(639, 31);
-            this.tableLayoutPanel1.TabIndex = 7;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Location = new System.Drawing.Point(3, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(62, 31);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Webpage:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lL_Url
-            // 
-            this.lL_Url.AutoSize = true;
-            this.lL_Url.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lL_Url.Location = new System.Drawing.Point(71, 0);
-            this.lL_Url.Name = "lL_Url";
-            this.lL_Url.Size = new System.Drawing.Size(176, 31);
-            this.lL_Url.TabIndex = 2;
-            this.lL_Url.TabStop = true;
-            this.lL_Url.Text = "link";
-            this.lL_Url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lL_Url.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lL_Url_LinkClicked);
-            // 
-            // browser
-            // 
-            this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.browser.Location = new System.Drawing.Point(0, 0);
-            this.browser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.browser.Name = "browser";
-            this.browser.ScriptErrorsSuppressed = true;
-            this.browser.Size = new System.Drawing.Size(639, 277);
-            this.browser.TabIndex = 0;
-            this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
+            this.cH_Title.Text = "Title";
             // 
             // MainForm
             // 
@@ -527,16 +444,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.cMS_Treeview.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
-            this.sCMainBrowse.Panel1.ResumeLayout(false);
-            this.sCMainBrowse.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.sCMainBrowse)).EndInit();
-            this.sCMainBrowse.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -559,16 +466,10 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView tVMain;
-        private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListView lVFeedItems;
-        private System.Windows.Forms.WebBrowser browser;
-        private System.Windows.Forms.SplitContainer sCMainBrowse;
         private System.Windows.Forms.ToolStripMenuItem openListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveListToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.LinkLabel lL_Url;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem updateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
@@ -589,6 +490,9 @@
         private System.Windows.Forms.ToolStripMenuItem webpageFeedDefinitionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripProgressBar mainProgressBar;
         private System.Windows.Forms.ToolStripMenuItem cancelUpdateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem resetAllEntriesToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader cH_Title;
     }
 }
 

@@ -24,7 +24,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Timers;
 
-namespace FeedBee.Control
+namespace FeedBee.Controlling
 {
     
 
@@ -60,36 +60,37 @@ namespace FeedBee.Control
             this.mainModel = new FeedGroup(mainModelID, false, "");
             this.updateGroup = mainModel;
             this.internetCheck = iCheck;
-
+                            
             SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_CONTINUOUS);
 
             InitializeFeedUpdateBackgroundWorker();
 
-            
+
 
             //load list of webpageFeed-definitions
             LoadWebPageFeedList();
 
-            
+
 
             //load default-List upon startup
+                
             if (Properties.Settings.Default.bLoadUponStartup)
             {
                 try
                 {
                     OpenListFromXML(Properties.Settings.Default.loadListPath);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine("Error while loading list: " + ex.Message);
                 }
 
             }
-
+                
             //update feeds upon load
-            if(Properties.Settings.Default.updateUponLoad)
+            if (Properties.Settings.Default.updateUponLoad)
             {
-                UpdateFeeds(null,null);
+                UpdateFeeds(null, null);
             }
 
             //setup automatic Timer
@@ -98,7 +99,14 @@ namespace FeedBee.Control
             updateTimer.Tick += new EventHandler(UpdateFeeds);
             updateTimer.Enabled = Properties.Settings.Default.automaticUpdateEnabled;
 
-            Console.WriteLine("automatic Updateinterval set to: " + updateTimer.Interval+ " milliseconds.");
+            if(updateTimer.Enabled)
+            {
+                Console.WriteLine("Automatic update is enabled. Updateinterval set to: " + (updateTimer.Interval / 1000).ToString() + " seconds.");
+            }
+            else
+            {
+                Console.WriteLine("Automatic update is not enabled.");
+            }
 
         }
 
@@ -526,14 +534,15 @@ namespace FeedBee.Control
         public void ShowSettings()
         {
             SettingsDialog sedi = new SettingsDialog(this);
+
             if(sedi.ShowDialog(mainForm) == DialogResult.OK)
             {
                 //save settings
                 Properties.Settings.Default.Save();
 
                 updateTimer.Interval = Convert.ToInt32(Properties.Settings.Default.automaticUpdateTime.TotalMilliseconds);
-                bool autoUpdateEnabled = Properties.Settings.Default.automaticUpdateEnabled;
-                updateTimer.Enabled = autoUpdateEnabled;
+                
+                updateTimer.Enabled = Properties.Settings.Default.automaticUpdateEnabled;
             }
         }
 
@@ -1165,6 +1174,52 @@ namespace FeedBee.Control
         }
 
         /// <summary>
+        /// resets all feed-items
+        /// </summary>
+        internal void ResetAllFeeds()
+        {
+            while (updateFeedsbGWorker.IsBusy)
+            {
+                updateFeedsbGWorker.CancelAsync();
+            }
+
+            if(mainModel!=null)
+            {
+                ResetFeedGroup(mainModel);
+                mainForm.UpdateTreeView();
+            }
+        }
+
+        /// <summary>
+        /// resets all items of a Feedgroup
+        /// </summary>
+        /// <param name="group"></param>
+        private void ResetFeedGroup(FeedGroup group)
+        {
+            if(group!=null)
+            {
+                if(group.FeedGroups!=null)
+                {
+                    Parallel.ForEach(group.FeedGroups, (subGroup) =>
+                    {
+                        ResetFeedGroup(subGroup);
+                    });
+                }
+
+                if(group.FeedList!=null)
+                {
+                    Parallel.ForEach(group.FeedList, (subFeed) =>
+                    {
+                        if(subFeed!=null)
+                        {
+                            subFeed.Items.Clear();
+                        }
+                    });
+                }
+            }
+        }
+
+        /// <summary>
         /// method for actually calling the update-Method
         /// </summary>
         /// <param name="sender"></param>
@@ -1335,6 +1390,7 @@ namespace FeedBee.Control
                     if (tList.Count > 0)
                     {
                         int numberOfThreads = tList.Count();
+                        //List<DateTime> endTimes = new List<DateTime>();
                         //Debug.WriteLine("new List of threads created. Number of threads in list: " + numberOfThreads);
 
                         //start every thread at once
@@ -1342,6 +1398,14 @@ namespace FeedBee.Control
                         {
                             th.Start();
                         }
+
+                        /*
+                        for (int i = 0; i<numberOfThreads;i++)// 
+                        {
+                            endTimes.Add(DateTime.Now.AddSeconds(10));
+                            tList[i].Start();
+                        }
+                        */
 
                         bool updateFinished = false;
                         int counter_before = 0;
@@ -1352,6 +1416,30 @@ namespace FeedBee.Control
                         {
                             int counter = 0;
                             Thread lastThread = null;
+                            /*
+                            for(int i =0; i<numberOfThreads;i++)
+                            {
+                                if(tList[i].IsAlive)
+                                {
+                                    if(endTimes[i] > DateTime.Now)
+                                    {
+                                        tList[i].Abort();
+                                        Console.WriteLine("Thread '" + tList[i].Name + "' aborted because of timeout (more than 10 seconds).");
+                                    }
+                                }
+                            }
+                            */
+
+                            /*
+                            Parallel.ForEach(tList, (t) =>
+                            {
+                                if (!t.Join(TimeSpan.FromSeconds(10)))
+                                {
+                                    t.Abort();
+                                    Console.WriteLine("Thread '" + t.Name + "' takes more than 10 secs.");
+                                }
+                            });
+                            */
 
                             foreach (Thread thr in tList)
                             {
@@ -1361,7 +1449,7 @@ namespace FeedBee.Control
                                     counter++;
                                 }
                             }
-
+                            
                             if (counter != counter_before)
                             {
                                 if((numberOfThreads-counter) == 1 && lastThread != null)
@@ -2778,10 +2866,7 @@ namespace FeedBee.Control
                 {
                     imageList = new ImageList();
                     imageList.Images.Add(Properties.Resources.defaultTreeNodeIcon);
-
                 }
-
-                
 
                 //add feedgroup-Nodes to the list
                 if (mainModel.FeedGroups != null)
@@ -2795,6 +2880,8 @@ namespace FeedBee.Control
                             {
                                 mainNodes.Add(tmpNode);
                             }
+
+                            //Console.WriteLine("got node for Group " + (i + 1).ToString() + " of " + mainModel.FeedGroups.Count().ToString());
                         }
                     }
                 }
@@ -2811,14 +2898,11 @@ namespace FeedBee.Control
                     }
                 }
 
-
-                
-
                 //Debug.WriteLine("Length of imagelist for treeview after update: " + icons.Images.Count);
             }
             else
             {
-                Debug.WriteLine("get-TreeNodes: mainModel is null");
+                Console.WriteLine("get-TreeNodes: mainModel is null");
             }
 
         }
@@ -2871,6 +2955,7 @@ namespace FeedBee.Control
                         Debug.WriteLine("Error while trying to get the image for feed '" + group.Title + "'. Image-URL = " + imagePath + "   Error: " + ex.Message);
                     }
                 }
+                
 
                 //change node-color depending upon porperty(-ies) of the FeedGroup
                 if (group.GetNoOfUnreadFeedItems() > 0)
@@ -2934,7 +3019,7 @@ namespace FeedBee.Control
             }
 
 
-
+            
             //if wanted, try to get image
             if (getIcon)
             {
@@ -2992,7 +3077,9 @@ namespace FeedBee.Control
                 {
                     Debug.WriteLine("Error while trying to get the image for feed '" + feed.Title + "'. Image-URL = " + imageUrl + "   Error: " + ex.Message);
                 }
+                
             }
+            
             return feedNode;
         }
 

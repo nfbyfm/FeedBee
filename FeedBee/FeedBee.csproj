@@ -52,12 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Control\FeedExtractor.cs" />
+    <Compile Include="Controlling\FeedExtractor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\FormInvokeExtension.cs" />
     <Compile Include="UI\WebFeedDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,7 +171,7 @@
     <Compile Include="UI\AddFeedDialog.Designer.cs">
       <DependentUpon>AddFeedDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\Controller.cs" />
+    <Compile Include="Controlling\Controller.cs" />
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

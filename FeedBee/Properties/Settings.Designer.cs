@@ -74,18 +74,6 @@ namespace FeedBee.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool filterIFrames {
-            get {
-                return ((bool)(this["filterIFrames"]));
-            }
-            set {
-                this["filterIFrames"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool displayFeedIcons {
             get {
                 return ((bool)(this["displayFeedIcons"]));
