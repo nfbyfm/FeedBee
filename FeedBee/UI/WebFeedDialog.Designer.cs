@@ -93,6 +93,7 @@
             // lV_Definitions
             // 
             this.lV_Definitions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lV_Definitions.HideSelection = false;
             this.lV_Definitions.Location = new System.Drawing.Point(3, 16);
             this.lV_Definitions.Name = "lV_Definitions";
             this.lV_Definitions.Size = new System.Drawing.Size(233, 395);
@@ -135,7 +136,7 @@
             this.tB_Name.Location = new System.Drawing.Point(133, 19);
             this.tB_Name.Name = "tB_Name";
             this.tB_Name.Size = new System.Drawing.Size(322, 20);
-            this.tB_Name.TabIndex = 12;
+            this.tB_Name.TabIndex = 0;
             // 
             // label1
             // 
@@ -162,7 +163,7 @@
             this.tB_BaseURL.Location = new System.Drawing.Point(133, 46);
             this.tB_BaseURL.Name = "tB_BaseURL";
             this.tB_BaseURL.Size = new System.Drawing.Size(322, 20);
-            this.tB_BaseURL.TabIndex = 3;
+            this.tB_BaseURL.TabIndex = 1;
             // 
             // tB_FeeditemID
             // 
@@ -171,7 +172,7 @@
             this.tB_FeeditemID.Location = new System.Drawing.Point(133, 72);
             this.tB_FeeditemID.Name = "tB_FeeditemID";
             this.tB_FeeditemID.Size = new System.Drawing.Size(322, 20);
-            this.tB_FeeditemID.TabIndex = 4;
+            this.tB_FeeditemID.TabIndex = 2;
             // 
             // label4
             // 
@@ -189,7 +190,7 @@
             this.tb_DateID.Location = new System.Drawing.Point(133, 98);
             this.tb_DateID.Name = "tb_DateID";
             this.tb_DateID.Size = new System.Drawing.Size(322, 20);
-            this.tb_DateID.TabIndex = 5;
+            this.tb_DateID.TabIndex = 3;
             // 
             // groupBox2
             // 
@@ -215,7 +216,7 @@
             this.rTB_Testresults.Location = new System.Drawing.Point(7, 46);
             this.rTB_Testresults.Name = "rTB_Testresults";
             this.rTB_Testresults.Size = new System.Drawing.Size(448, 183);
-            this.rTB_Testresults.TabIndex = 0;
+            this.rTB_Testresults.TabIndex = 2;
             this.rTB_Testresults.Text = "";
             // 
             // label3
@@ -234,7 +235,7 @@
             this.tB_TestpageUrl.Location = new System.Drawing.Point(68, 19);
             this.tB_TestpageUrl.Name = "tB_TestpageUrl";
             this.tB_TestpageUrl.Size = new System.Drawing.Size(308, 20);
-            this.tB_TestpageUrl.TabIndex = 7;
+            this.tB_TestpageUrl.TabIndex = 0;
             // 
             // bTest
             // 
@@ -242,7 +243,7 @@
             this.bTest.Location = new System.Drawing.Point(382, 17);
             this.bTest.Name = "bTest";
             this.bTest.Size = new System.Drawing.Size(75, 23);
-            this.bTest.TabIndex = 8;
+            this.bTest.TabIndex = 1;
             this.bTest.Text = "test";
             this.bTest.UseVisualStyleBackColor = true;
             this.bTest.Click += new System.EventHandler(this.bTest_Click);
@@ -253,7 +254,7 @@
             this.bAdd.Location = new System.Drawing.Point(400, 388);
             this.bAdd.Name = "bAdd";
             this.bAdd.Size = new System.Drawing.Size(75, 23);
-            this.bAdd.TabIndex = 9;
+            this.bAdd.TabIndex = 0;
             this.bAdd.Text = "add to list";
             this.bAdd.UseVisualStyleBackColor = true;
             this.bAdd.Click += new System.EventHandler(this.bAdd_Click);
@@ -264,7 +265,7 @@
             this.bSave.Location = new System.Drawing.Point(565, 420);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(75, 23);
-            this.bSave.TabIndex = 1;
+            this.bSave.TabIndex = 0;
             this.bSave.Text = "Save";
             this.bSave.UseVisualStyleBackColor = true;
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -275,7 +276,7 @@
             this.bCancel.Location = new System.Drawing.Point(646, 420);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
-            this.bCancel.TabIndex = 2;
+            this.bCancel.TabIndex = 1;
             this.bCancel.Text = "Cancel";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);

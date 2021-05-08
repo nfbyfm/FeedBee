@@ -32,6 +32,8 @@ namespace FeedBee.UI
 
             this.controller = parentController;
             this.groupNames = groupNames;
+            this.CancelButton = b_Cancel;
+            this.AcceptButton = b_Next;
         }
 
         private void AddFeedDialog_Load(object sender, EventArgs e)

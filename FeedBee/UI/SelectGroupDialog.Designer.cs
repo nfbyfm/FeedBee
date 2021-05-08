@@ -57,7 +57,7 @@
             this.rB_CreateNewGroup.Location = new System.Drawing.Point(12, 44);
             this.rB_CreateNewGroup.Name = "rB_CreateNewGroup";
             this.rB_CreateNewGroup.Size = new System.Drawing.Size(111, 17);
-            this.rB_CreateNewGroup.TabIndex = 1;
+            this.rB_CreateNewGroup.TabIndex = 2;
             this.rB_CreateNewGroup.TabStop = true;
             this.rB_CreateNewGroup.Text = "create new group:";
             this.rB_CreateNewGroup.UseVisualStyleBackColor = true;
@@ -70,14 +70,14 @@
             this.cB_Groups.Location = new System.Drawing.Point(144, 12);
             this.cB_Groups.Name = "cB_Groups";
             this.cB_Groups.Size = new System.Drawing.Size(177, 21);
-            this.cB_Groups.TabIndex = 2;
+            this.cB_Groups.TabIndex = 1;
             // 
             // b_AddToGroup
             // 
             this.b_AddToGroup.Location = new System.Drawing.Point(327, 10);
             this.b_AddToGroup.Name = "b_AddToGroup";
             this.b_AddToGroup.Size = new System.Drawing.Size(75, 23);
-            this.b_AddToGroup.TabIndex = 3;
+            this.b_AddToGroup.TabIndex = 5;
             this.b_AddToGroup.Text = "add";
             this.b_AddToGroup.UseVisualStyleBackColor = true;
             this.b_AddToGroup.Click += new System.EventHandler(this.b_AddToGroup_Click);
@@ -87,7 +87,7 @@
             this.b_AddToNewGroup.Location = new System.Drawing.Point(327, 41);
             this.b_AddToNewGroup.Name = "b_AddToNewGroup";
             this.b_AddToNewGroup.Size = new System.Drawing.Size(75, 23);
-            this.b_AddToNewGroup.TabIndex = 4;
+            this.b_AddToNewGroup.TabIndex = 6;
             this.b_AddToNewGroup.Text = "add";
             this.b_AddToNewGroup.UseVisualStyleBackColor = true;
             this.b_AddToNewGroup.Click += new System.EventHandler(this.b_AddToNewGroup_Click);
@@ -97,14 +97,14 @@
             this.tB_NewGroupName.Location = new System.Drawing.Point(144, 43);
             this.tB_NewGroupName.Name = "tB_NewGroupName";
             this.tB_NewGroupName.Size = new System.Drawing.Size(177, 20);
-            this.tB_NewGroupName.TabIndex = 5;
+            this.tB_NewGroupName.TabIndex = 3;
             // 
             // b_Cancel
             // 
             this.b_Cancel.Location = new System.Drawing.Point(327, 70);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.b_Cancel.TabIndex = 6;
+            this.b_Cancel.TabIndex = 7;
             this.b_Cancel.Text = "Cancel";
             this.b_Cancel.UseVisualStyleBackColor = true;
             this.b_Cancel.Click += new System.EventHandler(this.b_Cancel_Click);
@@ -115,7 +115,7 @@
             this.cB_GroupIsNSFW.Location = new System.Drawing.Point(144, 70);
             this.cB_GroupIsNSFW.Name = "cB_GroupIsNSFW";
             this.cB_GroupIsNSFW.Size = new System.Drawing.Size(90, 17);
-            this.cB_GroupIsNSFW.TabIndex = 7;
+            this.cB_GroupIsNSFW.TabIndex = 4;
             this.cB_GroupIsNSFW.Text = "Group is nsfw";
             this.cB_GroupIsNSFW.UseVisualStyleBackColor = true;
             // 

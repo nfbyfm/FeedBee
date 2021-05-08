@@ -37,6 +37,8 @@ namespace FeedBee.UI
 
             this.ActiveControl = tB_NewName;
 
+            this.AcceptButton = bOK;
+            this.CancelButton = bCancel;
         }
         
 

@@ -30,6 +30,9 @@ namespace FeedBee.UI
             this.directlyLoadWebURL = directlyLoad;
 
             this.ActiveControl = tB_FeedTitle;
+
+            this.AcceptButton = b_OK;
+            this.CancelButton = b_Cancel;
         }
 
         private void b_OK_Click(object sender, EventArgs e)

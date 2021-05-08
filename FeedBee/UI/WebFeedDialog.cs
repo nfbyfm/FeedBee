@@ -25,6 +25,9 @@ namespace FeedBee.UI
             this.webPageFeedDefinitionList = webPageFeedDefList;
 
             this.parentController = parentController;
+
+            this.AcceptButton = bSave;
+            this.CancelButton = bCancel;
         }
 
         private void WebFeedDialog_Load(object sender, EventArgs e)

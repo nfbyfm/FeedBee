@@ -146,7 +146,7 @@
             this.okButton.Location = new System.Drawing.Point(339, 239);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 24;
+            this.okButton.TabIndex = 0;
             this.okButton.Text = "&OK";
             // 
             // AboutBoxFeedBee

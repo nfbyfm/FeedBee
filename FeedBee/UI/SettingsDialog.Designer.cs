@@ -65,7 +65,7 @@
             this.b_Reset.Location = new System.Drawing.Point(12, 228);
             this.b_Reset.Name = "b_Reset";
             this.b_Reset.Size = new System.Drawing.Size(75, 23);
-            this.b_Reset.TabIndex = 3;
+            this.b_Reset.TabIndex = 0;
             this.b_Reset.Text = "reset";
             this.b_Reset.UseVisualStyleBackColor = true;
             this.b_Reset.Click += new System.EventHandler(this.b_Reset_Click);
@@ -76,7 +76,7 @@
             this.b_Save.Location = new System.Drawing.Point(404, 228);
             this.b_Save.Name = "b_Save";
             this.b_Save.Size = new System.Drawing.Size(75, 23);
-            this.b_Save.TabIndex = 4;
+            this.b_Save.TabIndex = 1;
             this.b_Save.Text = "Save";
             this.b_Save.UseVisualStyleBackColor = true;
             this.b_Save.Click += new System.EventHandler(this.b_Save_Click);
@@ -87,7 +87,7 @@
             this.b_Cancel.Location = new System.Drawing.Point(485, 228);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.b_Cancel.TabIndex = 5;
+            this.b_Cancel.TabIndex = 2;
             this.b_Cancel.Text = "Cancel";
             this.b_Cancel.UseVisualStyleBackColor = true;
             this.b_Cancel.Click += new System.EventHandler(this.b_Cancel_Click);
@@ -118,7 +118,7 @@
             this.bSelectFeedList.Location = new System.Drawing.Point(459, 27);
             this.bSelectFeedList.Name = "bSelectFeedList";
             this.bSelectFeedList.Size = new System.Drawing.Size(75, 23);
-            this.bSelectFeedList.TabIndex = 8;
+            this.bSelectFeedList.TabIndex = 1;
             this.bSelectFeedList.Text = "select ...";
             this.bSelectFeedList.UseVisualStyleBackColor = true;
             this.bSelectFeedList.Click += new System.EventHandler(this.bSelectFeedList_Click);
@@ -130,7 +130,7 @@
             this.tB_FeedListPath.Location = new System.Drawing.Point(135, 29);
             this.tB_FeedListPath.Name = "tB_FeedListPath";
             this.tB_FeedListPath.Size = new System.Drawing.Size(318, 20);
-            this.tB_FeedListPath.TabIndex = 9;
+            this.tB_FeedListPath.TabIndex = 0;
             // 
             // cB_UpdateNSFW
             // 
@@ -138,7 +138,7 @@
             this.cB_UpdateNSFW.Location = new System.Drawing.Point(6, 55);
             this.cB_UpdateNSFW.Name = "cB_UpdateNSFW";
             this.cB_UpdateNSFW.Size = new System.Drawing.Size(113, 17);
-            this.cB_UpdateNSFW.TabIndex = 10;
+            this.cB_UpdateNSFW.TabIndex = 2;
             this.cB_UpdateNSFW.Text = "update nsfw-feeds";
             this.cB_UpdateNSFW.UseVisualStyleBackColor = true;
             // 
@@ -148,7 +148,7 @@
             this.cB_UpdateUponLoad.Location = new System.Drawing.Point(6, 78);
             this.cB_UpdateUponLoad.Name = "cB_UpdateUponLoad";
             this.cB_UpdateUponLoad.Size = new System.Drawing.Size(138, 17);
-            this.cB_UpdateUponLoad.TabIndex = 11;
+            this.cB_UpdateUponLoad.TabIndex = 3;
             this.cB_UpdateUponLoad.Text = "update feeds upon load";
             this.cB_UpdateUponLoad.UseVisualStyleBackColor = true;
             // 
@@ -158,7 +158,7 @@
             this.cB_DisplayFeedIcons.Location = new System.Drawing.Point(3, 29);
             this.cB_DisplayFeedIcons.Name = "cB_DisplayFeedIcons";
             this.cB_DisplayFeedIcons.Size = new System.Drawing.Size(183, 17);
-            this.cB_DisplayFeedIcons.TabIndex = 12;
+            this.cB_DisplayFeedIcons.TabIndex = 1;
             this.cB_DisplayFeedIcons.Text = "display feed-icons where possible";
             this.cB_DisplayFeedIcons.UseVisualStyleBackColor = true;
             this.cB_DisplayFeedIcons.CheckedChanged += new System.EventHandler(this.cB_DisplayFeedIcons_CheckedChanged);
@@ -169,7 +169,7 @@
             this.cB_ExpandNodes.Location = new System.Drawing.Point(6, 6);
             this.cB_ExpandNodes.Name = "cB_ExpandNodes";
             this.cB_ExpandNodes.Size = new System.Drawing.Size(108, 17);
-            this.cB_ExpandNodes.TabIndex = 14;
+            this.cB_ExpandNodes.TabIndex = 0;
             this.cB_ExpandNodes.Text = "expand Treeview";
             this.cB_ExpandNodes.UseVisualStyleBackColor = true;
             // 
@@ -215,7 +215,7 @@
             this.mTB_autoUpdateTimeSpan.Mask = "00:00:00";
             this.mTB_autoUpdateTimeSpan.Name = "mTB_autoUpdateTimeSpan";
             this.mTB_autoUpdateTimeSpan.Size = new System.Drawing.Size(61, 20);
-            this.mTB_autoUpdateTimeSpan.TabIndex = 19;
+            this.mTB_autoUpdateTimeSpan.TabIndex = 7;
             this.toolTipUpdateTime.SetToolTip(this.mTB_autoUpdateTimeSpan, "Updateinterval: HH:mm:ss => hours : minutes : seconds");
             this.mTB_autoUpdateTimeSpan.ValidatingType = typeof(System.DateTime);
             // 
@@ -234,7 +234,7 @@
             this.cB_automaticUpdate.Location = new System.Drawing.Point(6, 127);
             this.cB_automaticUpdate.Name = "cB_automaticUpdate";
             this.cB_automaticUpdate.Size = new System.Drawing.Size(155, 17);
-            this.cB_automaticUpdate.TabIndex = 16;
+            this.cB_automaticUpdate.TabIndex = 6;
             this.cB_automaticUpdate.Text = "automatically update Feeds";
             this.cB_automaticUpdate.UseVisualStyleBackColor = true;
             this.cB_automaticUpdate.CheckedChanged += new System.EventHandler(this.cB_automaticUpdate_CheckedChanged);
@@ -245,7 +245,7 @@
             this.bSelectFeedDefFilePath.Location = new System.Drawing.Point(459, 99);
             this.bSelectFeedDefFilePath.Name = "bSelectFeedDefFilePath";
             this.bSelectFeedDefFilePath.Size = new System.Drawing.Size(75, 23);
-            this.bSelectFeedDefFilePath.TabIndex = 14;
+            this.bSelectFeedDefFilePath.TabIndex = 5;
             this.bSelectFeedDefFilePath.Text = "select ...";
             this.bSelectFeedDefFilePath.UseVisualStyleBackColor = true;
             this.bSelectFeedDefFilePath.Click += new System.EventHandler(this.bSelectFeedDefFilePath_Click);
@@ -257,7 +257,7 @@
             this.tB_FeedDefFilePath.Location = new System.Drawing.Point(135, 101);
             this.tB_FeedDefFilePath.Name = "tB_FeedDefFilePath";
             this.tB_FeedDefFilePath.Size = new System.Drawing.Size(318, 20);
-            this.tB_FeedDefFilePath.TabIndex = 13;
+            this.tB_FeedDefFilePath.TabIndex = 4;
             // 
             // label4
             // 
@@ -289,7 +289,7 @@
             this.b_SelectIconFolder.Location = new System.Drawing.Point(457, 44);
             this.b_SelectIconFolder.Name = "b_SelectIconFolder";
             this.b_SelectIconFolder.Size = new System.Drawing.Size(75, 23);
-            this.b_SelectIconFolder.TabIndex = 17;
+            this.b_SelectIconFolder.TabIndex = 3;
             this.b_SelectIconFolder.Text = "select ...";
             this.b_SelectIconFolder.UseVisualStyleBackColor = true;
             this.b_SelectIconFolder.Click += new System.EventHandler(this.b_SelectIconFolder_Click);
@@ -301,7 +301,7 @@
             this.tB_IconFolder.Location = new System.Drawing.Point(132, 46);
             this.tB_IconFolder.Name = "tB_IconFolder";
             this.tB_IconFolder.Size = new System.Drawing.Size(319, 20);
-            this.tB_IconFolder.TabIndex = 16;
+            this.tB_IconFolder.TabIndex = 2;
             // 
             // label3
             // 

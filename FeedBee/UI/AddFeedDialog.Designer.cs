@@ -63,7 +63,7 @@
             this.tB_Url.Location = new System.Drawing.Point(35, 24);
             this.tB_Url.Name = "tB_Url";
             this.tB_Url.Size = new System.Drawing.Size(291, 20);
-            this.tB_Url.TabIndex = 1;
+            this.tB_Url.TabIndex = 0;
             this.tB_Url.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tB_Url_MouseClick);
             // 
             // lb_FoundFeeds
@@ -83,7 +83,7 @@
             this.b_checkFeeds.Location = new System.Drawing.Point(332, 22);
             this.b_checkFeeds.Name = "b_checkFeeds";
             this.b_checkFeeds.Size = new System.Drawing.Size(112, 23);
-            this.b_checkFeeds.TabIndex = 3;
+            this.b_checkFeeds.TabIndex = 1;
             this.b_checkFeeds.Text = "check for feeds";
             this.b_checkFeeds.UseVisualStyleBackColor = true;
             this.b_checkFeeds.Click += new System.EventHandler(this.b_checkFeeds_Click);
@@ -103,7 +103,7 @@
             this.b_Next.Location = new System.Drawing.Point(306, 254);
             this.b_Next.Name = "b_Next";
             this.b_Next.Size = new System.Drawing.Size(75, 23);
-            this.b_Next.TabIndex = 5;
+            this.b_Next.TabIndex = 0;
             this.b_Next.Text = "Add";
             this.b_Next.UseVisualStyleBackColor = true;
             this.b_Next.Click += new System.EventHandler(this.b_Add_Click);
@@ -114,7 +114,7 @@
             this.b_Cancel.Location = new System.Drawing.Point(387, 254);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.b_Cancel.TabIndex = 6;
+            this.b_Cancel.TabIndex = 1;
             this.b_Cancel.Text = "Cancel";
             this.b_Cancel.UseVisualStyleBackColor = true;
             this.b_Cancel.Click += new System.EventHandler(this.b_Cancel_Click);
@@ -142,7 +142,7 @@
             this.cB_GroupIsNSFW.Location = new System.Drawing.Point(341, 52);
             this.cB_GroupIsNSFW.Name = "cB_GroupIsNSFW";
             this.cB_GroupIsNSFW.Size = new System.Drawing.Size(90, 17);
-            this.cB_GroupIsNSFW.TabIndex = 15;
+            this.cB_GroupIsNSFW.TabIndex = 2;
             this.cB_GroupIsNSFW.Text = "Group is nsfw";
             this.cB_GroupIsNSFW.UseVisualStyleBackColor = true;
             // 
@@ -151,7 +151,7 @@
             this.tB_NewGroupName.Location = new System.Drawing.Point(138, 50);
             this.tB_NewGroupName.Name = "tB_NewGroupName";
             this.tB_NewGroupName.Size = new System.Drawing.Size(177, 20);
-            this.tB_NewGroupName.TabIndex = 13;
+            this.tB_NewGroupName.TabIndex = 1;
             // 
             // cB_Groups
             // 
@@ -160,7 +160,7 @@
             this.cB_Groups.Location = new System.Drawing.Point(138, 19);
             this.cB_Groups.Name = "cB_Groups";
             this.cB_Groups.Size = new System.Drawing.Size(177, 21);
-            this.cB_Groups.TabIndex = 10;
+            this.cB_Groups.TabIndex = 0;
             // 
             // rB_CreateNewGroup
             // 

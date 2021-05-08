@@ -55,7 +55,7 @@
             this.bOK.Location = new System.Drawing.Point(208, 130);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(75, 23);
-            this.bOK.TabIndex = 1;
+            this.bOK.TabIndex = 5;
             this.bOK.Text = "OK";
             this.bOK.UseVisualStyleBackColor = true;
             this.bOK.Click += new System.EventHandler(this.bOK_Click);
@@ -66,7 +66,7 @@
             this.bCancel.Location = new System.Drawing.Point(289, 130);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
-            this.bCancel.TabIndex = 2;
+            this.bCancel.TabIndex = 6;
             this.bCancel.Text = "Cancel";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
@@ -78,7 +78,7 @@
             this.tB_NewName.Location = new System.Drawing.Point(48, 21);
             this.tB_NewName.Name = "tB_NewName";
             this.tB_NewName.Size = new System.Drawing.Size(316, 20);
-            this.tB_NewName.TabIndex = 3;
+            this.tB_NewName.TabIndex = 0;
             // 
             // cB_MarkNSFW
             // 
@@ -86,7 +86,7 @@
             this.cB_MarkNSFW.Location = new System.Drawing.Point(12, 77);
             this.cB_MarkNSFW.Name = "cB_MarkNSFW";
             this.cB_MarkNSFW.Size = new System.Drawing.Size(58, 17);
-            this.cB_MarkNSFW.TabIndex = 4;
+            this.cB_MarkNSFW.TabIndex = 3;
             this.cB_MarkNSFW.Text = "is nsfw";
             this.cB_MarkNSFW.UseVisualStyleBackColor = true;
             // 
@@ -106,7 +106,7 @@
             this.tB_IconPath.Location = new System.Drawing.Point(73, 49);
             this.tB_IconPath.Name = "tB_IconPath";
             this.tB_IconPath.Size = new System.Drawing.Size(210, 20);
-            this.tB_IconPath.TabIndex = 6;
+            this.tB_IconPath.TabIndex = 1;
             // 
             // bSelectIconpath
             // 
@@ -114,7 +114,7 @@
             this.bSelectIconpath.Location = new System.Drawing.Point(289, 47);
             this.bSelectIconpath.Name = "bSelectIconpath";
             this.bSelectIconpath.Size = new System.Drawing.Size(75, 23);
-            this.bSelectIconpath.TabIndex = 7;
+            this.bSelectIconpath.TabIndex = 2;
             this.bSelectIconpath.Text = "select ...";
             this.bSelectIconpath.UseVisualStyleBackColor = true;
             this.bSelectIconpath.Click += new System.EventHandler(this.bSelectIconpath_Click);
@@ -125,7 +125,7 @@
             this.cB_SetIconForFeeds.Location = new System.Drawing.Point(12, 100);
             this.cB_SetIconForFeeds.Name = "cB_SetIconForFeeds";
             this.cB_SetIconForFeeds.Size = new System.Drawing.Size(149, 17);
-            this.cB_SetIconForFeeds.TabIndex = 8;
+            this.cB_SetIconForFeeds.TabIndex = 4;
             this.cB_SetIconForFeeds.Text = "set same Icon for all feeds";
             this.cB_SetIconForFeeds.UseVisualStyleBackColor = true;
             // 

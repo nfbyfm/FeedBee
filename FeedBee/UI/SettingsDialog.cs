@@ -23,6 +23,9 @@ namespace FeedBee.UI
             this.parentController = controller;
 
             InitializeComponent();
+
+            this.AcceptButton = b_Save;
+            this.CancelButton = b_Cancel;
         }
 
         /// <summary>

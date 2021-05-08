@@ -20,6 +20,7 @@ namespace FeedBee.UI
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
+            this.AcceptButton = okButton;
         }
 
         #region Assemblyattributaccessoren

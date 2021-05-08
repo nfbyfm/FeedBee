@@ -23,6 +23,8 @@ namespace FeedBee.UI
             InitializeComponent();
 
             this.groupNames = groupNames;
+            this.AcceptButton = b_AddToGroup;
+            this.CancelButton = b_Cancel;
         }
 
         private void SelectGroupDialog_Load(object sender, EventArgs e)

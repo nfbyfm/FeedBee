@@ -57,7 +57,7 @@
             this.tB_FeedTitle.Location = new System.Drawing.Point(49, 10);
             this.tB_FeedTitle.Name = "tB_FeedTitle";
             this.tB_FeedTitle.Size = new System.Drawing.Size(373, 20);
-            this.tB_FeedTitle.TabIndex = 1;
+            this.tB_FeedTitle.TabIndex = 0;
             // 
             // cB_DirectlyLoadWebURL
             // 
@@ -75,7 +75,7 @@
             this.b_OK.Location = new System.Drawing.Point(267, 114);
             this.b_OK.Name = "b_OK";
             this.b_OK.Size = new System.Drawing.Size(75, 23);
-            this.b_OK.TabIndex = 3;
+            this.b_OK.TabIndex = 5;
             this.b_OK.Text = "OK";
             this.b_OK.UseVisualStyleBackColor = true;
             this.b_OK.Click += new System.EventHandler(this.b_OK_Click);
@@ -86,7 +86,7 @@
             this.b_Cancel.Location = new System.Drawing.Point(348, 114);
             this.b_Cancel.Name = "b_Cancel";
             this.b_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.b_Cancel.TabIndex = 4;
+            this.b_Cancel.TabIndex = 6;
             this.b_Cancel.Text = "Cancel";
             this.b_Cancel.UseVisualStyleBackColor = true;
             this.b_Cancel.Click += new System.EventHandler(this.b_Cancel_Click);
@@ -107,14 +107,14 @@
             this.tB_IconPath.Location = new System.Drawing.Point(74, 79);
             this.tB_IconPath.Name = "tB_IconPath";
             this.tB_IconPath.Size = new System.Drawing.Size(268, 20);
-            this.tB_IconPath.TabIndex = 6;
+            this.tB_IconPath.TabIndex = 3;
             // 
             // b_SelectIconPath
             // 
             this.b_SelectIconPath.Location = new System.Drawing.Point(348, 77);
             this.b_SelectIconPath.Name = "b_SelectIconPath";
             this.b_SelectIconPath.Size = new System.Drawing.Size(75, 23);
-            this.b_SelectIconPath.TabIndex = 7;
+            this.b_SelectIconPath.TabIndex = 4;
             this.b_SelectIconPath.Text = "select ...";
             this.b_SelectIconPath.UseVisualStyleBackColor = true;
             this.b_SelectIconPath.Click += new System.EventHandler(this.b_SelectIconPath_Click);
@@ -136,7 +136,7 @@
             this.tb_URL.Name = "tb_URL";
             this.tb_URL.ReadOnly = true;
             this.tb_URL.Size = new System.Drawing.Size(373, 20);
-            this.tb_URL.TabIndex = 9;
+            this.tb_URL.TabIndex = 1;
             // 
             // EditFeedDialog
             // 
